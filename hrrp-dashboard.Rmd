@@ -1,0 +1,387 @@
+---
+title: "Analysis of Medicare's Hospital Readmission Reduction Program"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    source_code: embed
+    navbar:
+      - { title: "Home", href: "index.html"}
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggmosaic)
+library(scales)
+library(DT)
+library(sp)
+library(leaflet)
+library(plotly)
+library(tidyverse)
+
+# Write a function to generate gauges for percentages
+my_gauge <- function(x) {
+  gauge(
+    value = x, min = 0, max = 100,
+    sectors = gaugeSectors(
+      success = c(80, 100), warning = c(50, 79.99), danger = c(0, 49.99),
+      colors = c("green", "yellow", "red")
+    ),
+    symbol = "%"
+  )
+}
+
+# Read in hospital data
+hosp_data <- read_rds("ghi_data.rds") %>%
+  
+  # Keep only the necessary variables
+  select(
+    provider_id, state, hospital_name, hospital_overall_rating, hospital_type,
+    location.coordinates, ends_with("national_comparison")
+  ) %>%
+  
+  # Clean up the variable names
+  set_names(
+    names(.) %>% str_replace_all("hospital_", "") %>% 
+      str_replace_all("_national_comparison", "")
+  ) %>%
+  
+  dplyr::rename(
+    timeliness = "timeliness_of_care", 
+    effectiveness = "effectiveness_of_care",
+    imaging = "efficient_use_of_medical_imaging",
+    experience = "patient_experience",
+    safety = "safety_of_care"
+  ) %>%
+  
+  # Replace all the values of "Not Available" with NA
+  mutate_all(
+    funs(replace(., . == "Not Available", NA_character_))
+  ) %>%
+  
+  # Covert all categorical variables to factor
+  mutate_at(
+    vars(effectiveness:timeliness), 
+    funs(
+      str_to_title(.) %>%
+      fct_relevel(
+        "Above The National Average", "Same As The National Average",
+        "Below The National Average"
+      )
+    )
+  ) %>% 
+  
+  # Reorder the overall rating variable from 1 to 5 and create a status variable
+  # indicating whether a hospital is monitored by the HRRP
+  mutate(
+    overall_rating = as.character(overall_rating) %>% 
+      fct_relevel(as.character(1:5)),
+    status = ifelse(
+      str_detect(type, "^Acute") & !state == "MD", "HRRP", "Exempt")
+  )
+
+# Unlist the location data
+hosp_data <- hosp_data %>%
+  left_join(
+    hosp_data %>% select(provider_id, location.coordinates) %>%
+      drop_na(location.coordinates) %>%
+      mutate(
+        long = flatten_dbl(
+          map(location.coordinates, ~ ifelse(!is.null(.x), .x[1], .x))
+        ), 
+        lat = flatten_dbl(
+          map(location.coordinates, ~ ifelse(!is.null(.x), .x[2], .x))
+        )
+      ) %>%
+      select(-location.coordinates),
+    by = "provider_id"
+  ) %>%
+  select(-location.coordinates)
+
+
+# Read in the program data
+prog_data <- read_rds("hrrp_data.rds") %>%
+  
+  # Keep only necessary variables
+  select(provider_id, measure_id, readm_ratio) %>%
+  
+  # Keep only the important parts of the measure ID label names and convert it
+  # to a factor variable and convert the readmission ratio data to numeric
+  mutate(
+    measure_id = str_replace_all(measure_id, "^READM-30-", "") %>%
+      str_replace_all("-HRRP", "") %>% as_factor,
+    readm_ratio = as.numeric(readm_ratio)
+  )
+
+# Merge the data
+hrrp_data <- hosp_data %>%
+  left_join(
+    prog_data %>%
+      
+      # Spread the column with the conditions across multiple columns using the
+      # readmission ratio as the values
+      spread(measure_id, readm_ratio) %>%
+      
+      # Create a variable indicating whether the given hospital has readmissions
+      # rate data
+      mutate(
+        rprt = select(., -provider_id) %>% 
+          apply(1, function(x) as.numeric(sum(!is.na(x)) > 0)),
+        mn_rr = rowMeans(select(., -provider_id, -rprt), na.rm = TRUE)
+      ),
+    by = "provider_id"
+  )
+
+geo_data <- hrrp_data %>%
+  filter(status %in% "HRRP") %>%
+  select(long, lat, readm_ratio = "mn_rr", name) %>%
+  drop_na()
+
+cols <- colorQuantile(c("blue", "gray", "red"), geo_data$readm_ratio, n = 5)
+
+geo_data <- SpatialPointsDataFrame(
+  geo_data %>% select(long, lat), 
+  geo_data %>% select(-c(long, lat))
+)
+```
+
+Main
+================================================================================
+
+Row {data-height=150}
+--------------------------------------------------------------------------------
+
+```{r gen_counts, echo=FALSE, include=FALSE}
+# Generate sample counts, counts of hospitals reporting, total readmissions per
+# hospital, and percent reporting
+counts <- hrrp_data %>%
+  group_by(status) %>%
+  summarise(
+    count = n(),
+    rprt_count = sum(rprt, na.rm = T), 
+    mean_rr = mean(mn_rr, na.rm = T)
+  ) %>%
+  bind_rows(
+    hrrp_data %>%
+      summarise(
+        count = n(),
+        rprt_count = sum(rprt, na.rm = T), 
+        mean_rr = mean(mn_rr, na.rm = T)
+      ) %>%
+      mutate(status = "All")
+  ) %>%
+  ungroup %>%
+  mutate(pct_rprt = scales::percent(rprt_count / count))
+```
+
+### Sample Size: All
+```{r sample_all}
+valueBox(counts %>% filter(status == "All") %>% pull(count))
+```
+
+
+### Percent Reorting: All
+```{r pct_rprt_all}
+my_gauge(counts %>% filter(status == "All") %>% pull(pct_rprt))
+```
+
+### Sample Size: HRRP
+```{r sample_hrrp}
+valueBox(counts %>% filter(status == "HRRP") %>% pull(count))
+```
+
+
+### Percent Reorting: HRRP
+```{r pct_rprt_hrrp}
+my_gauge(counts %>% filter(status == "HRRP") %>% pull(pct_rprt))
+```
+
+### Sample Size: Exempt
+```{r sample_exempt}
+valueBox(counts %>% filter(status == "Exempt") %>% pull(count))
+```
+
+
+### Percent Reorting: Exempt
+```{r pct_rprt_exempt}
+my_gauge(counts %>% filter(status == "Exempt") %>% pull(pct_rprt))
+```
+
+
+Row {data-height=425}
+--------------------------------------------------------------------------------
+
+### Readmissions Ratio Violin Plot: HRRP
+```{r vio_plot_hrrp}
+hosp_data %>%
+  left_join(prog_data, by = "provider_id") %>%
+  filter(status %in% "HRRP") %>%
+  drop_na(measure_id, readm_ratio) %>%
+  plot_ly(
+    x = ~measure_id, y = ~readm_ratio, split = ~measure_id, type = 'violin',
+    meanline = list(visible = TRUE)
+  ) %>%
+  layout(
+    xaxis = list(title = "Condition"), 
+    yaxis = list(title = "Readmissions Ratio"),
+    title = "Readmissions Ratio Distributions Across Conditions: HRRP",
+    showlegend = FALSE
+  )
+```
+
+### Readmissions Ratio Violin Plot: Exempt
+```{r vio_plot_exempt}
+hosp_data %>%
+  left_join(prog_data, by = "provider_id") %>%
+  filter(status %in% "Exempt") %>%
+  drop_na(measure_id, readm_ratio) %>%
+  plot_ly(
+    x = ~measure_id, y = ~readm_ratio, split = ~measure_id, type = 'violin',
+    meanline = list(visible = TRUE)
+  ) %>%
+  layout(
+    xaxis = list(title = "Condition"), 
+    yaxis = list(title = "Readmissions Ratio"),
+    title = "Readmissions Ratio Distributions Across Conditions: Exempt",
+    showlegend = FALSE
+  )
+```
+
+
+Row {data-height=425}
+--------------------------------------------------------------------------------
+
+### HRRP Readmissions Ratio Map
+```{r}
+# Generate the map
+leaflet(data = geo_data) %>%
+  addTiles() %>%
+  
+  # Set the center of the map and the zoom level
+  setView(
+    lng = ((max(geo_data$long) - min(geo_data$long)) / 2) + min(geo_data$long),
+    lat = ((max(geo_data$lat) - min(geo_data$lat)) / 2) + min(geo_data$lat),
+    zoom = 2.45
+  ) %>%
+  
+  # Add the markers colored based on whether the given hospital ratio's was high
+  # or low and add a label that shows the hospital name and its readmission
+  # ratio
+  addCircleMarkers(
+    radius = 1,
+    color = ~cols(readm_ratio),
+    opacity = 0.8,
+    label = ~paste(name, "-", readm_ratio)
+  ) %>%
+  addLegend(
+    "bottomright", pal = cols, values = ~readm_ratio,
+    title = "Readmissions Ratio Quintile", opacity = 1
+  )
+```
+
+
+### National Comparison Mosaic Plot
+```{r}
+p <- hrrp_data %>%
+  mutate(
+    readmission = str_replace_all(readmission, " The National Average", "") %>%
+      str_replace_all(" As", "") %>%
+      fct_relevel("Below", "Same", "Above")
+  ) %>%
+  ggplot() +
+  geom_mosaic(
+    aes(
+      x = product(readmission, overall_rating), 
+      fill = readmission, 
+      conds = product(status)
+    ),
+    na.rm = TRUE
+  ) +
+  coord_flip() +
+  labs(
+    x = "Readmissions Rating vs National Avg. by Status",
+    y = "Overall Rating",
+    title = str_wrap(
+      "Readmissions Rating vs National Avg. by Overall Rating by Status",
+      40
+    )
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  theme_light() +
+  theme(
+    panel.grid = element_blank(),
+    panel.border = element_blank(),
+    legend.title = element_blank(),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  scale_fill_brewer(palette = "Set1")
+
+ggplotly(p) %>%
+  add_annotations(
+    text = str_wrap("Comparison Values", 10),
+    xref = "paper", yref = "paper",
+    x = 1.02, xanchor = "left",
+    y = 0.6, yanchor = "bottom",    # Same y as legend below
+    legendtitle = TRUE, showarrow = FALSE
+  ) %>%
+  layout(legend = list(y = 0.6, yanchor = "top"))
+```
+
+
+Data
+================================================================================
+
+### HRRP Data
+```{r hrrp_table}
+DT::datatable(
+  hrrp_data %>% 
+    select(name, state, status, mn_rr) %>%
+    mutate(mn_rr = round(mn_rr, 3)) %>%
+    set_names(
+      c("Hospital Name", "State", "HRRP Status", "Mean Readmission Ratio")
+    ), 
+  options = list(pageLength = 25, scrollX = TRUE)
+)
+```
+
+
+Documentation {data-orientation=rows}
+================================================================================
+
+**Background**
+
+The Hospital Readmissions Reduction Program (HRRP) aims to reduce patient readmissions by reducing payments disbursed to hospitals with excessive readmissions that occur within 30 days of the initial visit. Payments can be reduced upto a cap of 3% for any Fee-For-Service hospital. The program tracks six specific conditions:
+
+- Acute Myocardial Infarction (AMI)
+- Chronic Obstructive Pulmonary Disease (COPD)
+- Heart Failure (HF)
+- Pneumonia
+- Coronary Artery Bypass Graft (CABG) Surgery
+- Elective Primary Total Hip Arthroplasty and/or Total Knee Arthroplasty (THA/TKA)
+
+The General Hospital Information (GHI) dataset comes from an additional dataset available. on Medicare's open data portal. It includes data on hospital features such as type of ownership (e.g., government, private, non-profit), hospital type (e.g., children's hospital, acute care hospital, etc.), and comparisons to national averages of ratings across various dimensions such as patient experience.
+
+
+**Calculating Readmission Ratios**
+
+Excess readmissions are measured with a ratio for each type of condition. The ratio is calculated by dividing the number of "predicted" 30-day readmissions for a hospital for the given condition by the number that is "expected" for the same hospital and condition.
+
+$$Readmission\:Ratio=\frac{Predicted\:Readmissions}{Expected\:Readmissions}$$
+
+Total "predicted" 30-day readmissions is the number of readmissions that would be anticipated in a particular hospital adjusted for risk using the demographics of the area covered by the hospital. Total "expected" 30-day readmissions is the number of readmissions that would be expected if the same patients had been treated at an "average" hospital.
+
+
+**Resources**
+
+Description of the HRRP from the Centers for Medicare & Medicaid Services ---
+<a href="https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html">
+https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html</a>
+
+HRRP Data --- 
+<a href="https://data.medicare.gov/Hospital-Compare/Hospital-Readmissions-Reduction-Program/9n3s-kdb3">https://data.medicare.gov/Hospital-Compare/Hospital-Readmissions-Reduction-Program/9n3s-kdb3</a>
+
+General Hospital Information Data --- 
+<a href="https://data.medicare.gov/Hospital-Compare/Hospital-General-Information/xubh-q36u">https://data.medicare.gov/Hospital-Compare/Hospital-General-Information/xubh-q36u</a> 
+
+Description of computation methods from the Agency for Healthcare Research and Quality --- 
+<a href="https://www.ahrq.gov/professionals/systems/hospital/red/toolkit/redtool-30day.html">https://www.ahrq.gov/professionals/systems/hospital/red/toolkit/redtool-30day.html</a>

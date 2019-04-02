@@ -1,0 +1,13 @@
+name: "Arcenis Rojas"
+output_dir: "."
+navbar:
+  title: "Arcenis Rojas"
+  left:
+    - text: "Home"
+      href: "index.html"
+    - text: "Data Science Projects"
+      href: "ds-projects.html"
+output:
+  html_document:
+    theme: paper
+    css: 'styles.css'

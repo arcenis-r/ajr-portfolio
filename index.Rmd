@@ -1,0 +1,7 @@
+<link rel="stylesheet" href="styles.css" type="text/css">
+
+<img src="images/arcenis.jpeg" style="width:25%; border:2px solid; margin-right: 20px" align="left">
+
+I'm an economist with strong interests in statistics and data science. I hold a B.S. in Applied Economics from <a href="https://www.ithaca.edu" target="_blank">Ithaca College</a> and an M.S. in Economics from the <a href="https://www.ccny.cuny.edu/" target="_blank">City University of New York - City College</a>.
+
+After completing graduate school I took a position as an economist with the U.S. Beaureau of Labor Statistics in the Division of Consumer Expenditure Surveys.
