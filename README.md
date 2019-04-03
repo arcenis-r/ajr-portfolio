@@ -1,2 +1,2 @@
 # ajr-portfolio
-A portfolio of data science projects with various datasets.
+This portfolio will contain short descriptions of and links to my data science projects.
