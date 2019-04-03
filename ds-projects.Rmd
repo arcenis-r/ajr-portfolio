@@ -1,8 +1,0 @@
----
-title: "Data Science Projects"
-output: html_document
----
-
-###Analysis of Medicare's Hospital Readmission Rate Reduction Program (HRRP):
-In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt.<br>
-<a href="hrrp-dashboard.html" target="_blank">HRRP Analysis Dashboard</a>

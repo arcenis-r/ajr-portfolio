@@ -2,11 +2,11 @@ name: "Arcenis Rojas"
 output_dir: "."
 navbar:
   title: "Arcenis Rojas"
-  left:
-    - text: "Home"
-      href: "index.html"
-    - text: "Data Science Projects"
-      href: "ds-projects.html"
+  right:
+    - icon: fa-github fa-lg
+      href: "https://github.com/arcenis-r"
+    - icon: fa-linkedin fa-lg
+      href: "https://linkedin.com/in/arcenisrojas"
 output:
   html_document:
     theme: paper
