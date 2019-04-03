@@ -2,19 +2,20 @@
 
 <img src="images/arcenis.jpeg" style="width:20%; border:2px solid; margin-right: 20px; margin-bottom: 25px" align="left">
 
-I'm an economist with strong interests in statistics and data science with a B.S. in Applied Economics from <a href="https://www.ithaca.edu" target="_blank">Ithaca College</a> and an M.S. in Economics from the <a href="https://www.ccny.cuny.edu/" target="_blank">City University of New York - City College</a>. I enjoy projects that allow me to learn an implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.
+I'm an economist with strong interests in statistics and data science with a B.S. in Applied Economics from [Ithaca College](https://www.ithaca.edu) and an M.S. in Economics from the [City University of New York - City College](https://www.ccny.cuny.edu/). I enjoy projects that allow me to learn an implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.
 
 <h2 style="clear: both;">Data Projects</h2>
 
-### Analysis of Medicare's Hospital Readmission Rate Reduction Program (HRRP):
+### Medicare's Hospital Readmission Rate Reduction Program (HRRP):
 In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt.
 <ul>
-  <li><a href="hrrp-dashboard.html" target="_blank">HRRP Analysis Dashboard</a></li>
+  <li>[HRRP Analysis Dashboard](hrrp-dashboard.html)</li>
+  <li>[ANOVA of the relationships between hosptial factors and readmission ratio](hrrp-anova.html)
 </ul>
 
 ### Consumer Expenditure Survey (CE)
 The following two links are R Shiny applications that I developed with CE Public-Use Microdata (PUMD) to help its users better understand some of its limitations and features.
 <ul>
-  <li><a href="https://osmrbls.shinyapps.io/ce_shiny_app/" target="_blank">Interactive CE Visualization Tool</a></li>
-  <li><a href="https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/" target="_blank">Interactive CE Dictionary</a></li>
+  <li>[Interactive CE Visualization Tool](https://osmrbls.shinyapps.io/ce_shiny_app/)</li>
+  <li>[Interactive CE Dictionary](https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/)</li>
 </ul>

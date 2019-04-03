@@ -32,7 +32,7 @@ my_gauge <- function(x) {
 }
 
 # Read in hospital data
-hosp_data <- read_rds("ghi_data.rds") %>%
+hosp_data <- read_rds("ghi-data.rds") %>%
   
   # Keep only the necessary variables
   select(
@@ -100,7 +100,7 @@ hosp_data <- hosp_data %>%
 
 
 # Read in the program data
-prog_data <- read_rds("hrrp_data.rds") %>%
+prog_data <- read_rds("hrrp-data.rds") %>%
   
   # Keep only necessary variables
   select(provider_id, measure_id, readm_ratio) %>%
