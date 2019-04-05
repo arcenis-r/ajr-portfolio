@@ -21,18 +21,10 @@ Data.Medicare.gov data can be downloaded as flat files or through the Socrata Op
 
 ```{r dl_data}
 # Read in the readmission data via SODA using the RSocrata package
-# hrrp_data <- read.socrata("https://data.medicare.gov/resource/kac9-a9fp.json")
+hrrp_data <- read.socrata("https://data.medicare.gov/resource/kac9-a9fp.json")
 
 # Read in the general hospital information data
-# ghi_data <- read.socrata("https://data.medicare.gov/resource/rbry-mqwu.json")
-
-# Store the data locally to avoid having to ping the API repeatedly
-# write_rds(hrrp_data, "hrrp_data.rds")
-# write_rds(ghi_data, "ghi_data.rds")
-
-# Using the data that were saved above as pulling from the API will take longer.
-hrrp_data <- read_rds("hrrp-data.rds")
-ghi_data <- read_rds("ghi-data.rds")
+ghi_data <- read.socrata("https://data.medicare.gov/resource/rbry-mqwu.json")
 ```
 
 

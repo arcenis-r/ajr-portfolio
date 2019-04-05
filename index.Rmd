@@ -9,7 +9,9 @@ I'm an economist with strong interests in statistics and data science with a B.S
 ### Medicare's Hospital Readmission Rate Reduction Program (HRRP):
 In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt.
 <ul>
-  <li>[HRRP Analysis Dashboard](hrrp-dashboard.html)</li>
+  <li>[HRRP Analysis Dashboard](
+  https://arcenis-r.github.io/ajr-dashboards/hrrp-dashboard.html
+  )</li>
   <li>[ANOVA of the relationships between hosptial factors and readmission ratio](hrrp-anova.html)
 </ul>
 
