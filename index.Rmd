@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="styles.css" type="text/css">
 
-<img src="images/arcenis.jpeg" style="width:20%; border:2px solid; margin-right: 20px; margin-bottom: 25px" align="left">
+<img src="images/profile-pic-20201207.jpg" style="width:25%; border:2px solid; margin-right: 20px; margin-bottom: 25px" align="left">
 
-I'm an economist with strong interests in statistics and data science with a B.S. in Applied Economics from [Ithaca College](https://www.ithaca.edu) and an M.S. in Economics from the [City University of New York - City College](https://www.ccny.cuny.edu/). I enjoy projects that allow me to learn and implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.
+I'm an economist turned consultant/data scientist with strong interests in the divergence between inferential modeling and predictive modeling. I hold a B.S. in Applied Economics from [Ithaca College](https://www.ithaca.edu) and an M.S. in Economics from the [City University of New York - City College](https://www.ccny.cuny.edu/). I enjoy projects that allow me to learn and implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.
 
 <h2 style="clear: both;">Data Projects</h2>
 
@@ -20,4 +20,10 @@ The following two links are R Shiny applications that I developed with CE Public
 <ul>
   <li>[Interactive CE Visualization Tool](https://osmrbls.shinyapps.io/ce_shiny_app/)</li>
   <li>[Interactive CE Dictionary](https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/)</li>
+</ul>
+
+### Exploring Machine Learning
+Most recently I have been exploring various machine learning methods. Below is a link to a small project that I completed based on a real-life problem that I faced on a project.
+<ul>
+  <li>[Opening the ML 'Black Box' with Shapley Values - A Tidy Approach](https://arcenis-r.github.io/ajr-dashboards/tidy-ml-evaluation.html)</li>
 </ul>
