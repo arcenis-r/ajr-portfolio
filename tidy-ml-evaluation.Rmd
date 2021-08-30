@@ -86,7 +86,7 @@ library(tidymodels, quietly = TRUE)
 library(kableExtra)   # Just for the Markdown document
 ```
 
-Next I loaded a script containing some functions that I defined (available on GitHub).
+Next I loaded a script containing some functions that I defined [(available on GitHub)](https://github.com/arcenis-r/ajr-portfolio/tree/master/helper-functions).
 
 ```{r load_funs}
 source("./helper-functions/tidy-ml-evaluation-funs.R")
