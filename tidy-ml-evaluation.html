@@ -363,7 +363,7 @@ library(fastshap, quietly = TRUE)
 library(tidyverse, quietly = TRUE)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.4     ✓ purrr   0.3.4
-## ✓ tibble  3.1.2     ✓ dplyr   1.0.7
+## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
 ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
 ## ✓ readr   1.4.0     ✓ forcats 0.5.1</code></pre>
 <pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -953,7 +953,14 @@ model_metrics &lt;- final_wflow_evals |&gt;
       pivot_wider(names_from = .metric, values_from = .estimate) |&gt;
       mutate(algorithm = .y) |&gt;
       relocate(algorithm)
-  )</code></pre>
+  )
+
+model_metrics</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##   algorithm  rmse    mae  mape rsq_trad
+##   &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 xgb       0.137 0.0955 0.876    0.853
+## 2 lm        0.152 0.106  0.969    0.818</code></pre>
 <p>It looks like the XGB model outperformed the Linear Model on every metric, but not by very much. Both seem to have performed pretty well at predicting home sale prices. It’s important to keep in mind here that the data were transformed, which is why the RMSE and MAE are so small. Now let’s go ahead and open these “black boxes”.</p>
 </div>
 </div>
