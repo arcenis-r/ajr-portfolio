@@ -955,6 +955,7 @@ model_metrics &lt;- final_wflow_evals |&gt;
       relocate(algorithm)
   )
 
+<<<<<<< HEAD
 kable(model_metrics, booktabs = TRUE) |&gt; kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -1013,6 +1014,14 @@ lm
 </tr>
 </tbody>
 </table>
+=======
+model_metrics</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##   algorithm  rmse    mae  mape rsq_trad
+##   &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 xgb       0.137 0.0955 0.876    0.853
+## 2 lm        0.152 0.106  0.969    0.818</code></pre>
+>>>>>>> 8488acda2ed8b7cd06edae88084c7ca7a1404308
 <p>It looks like the XGB model outperformed the Linear Model on every metric, but not by very much. Both seem to have performed pretty well at predicting home sale prices. It’s important to keep in mind here that the data were transformed, which is why the RMSE and MAE are so small. Now let’s go ahead and open these “black boxes”.</p>
 </div>
 </div>

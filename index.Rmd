@@ -21,6 +21,7 @@ Most recently I have been exploring various machine learning methods. Below is a
 <ul>
   <li>[Opening the ML 'Black Box' with Shapley Values - A Tidy Approach](https://arcenis-r.github.io/ajr-portfolio/tidy-ml-evaluation.html)</li>
 </ul>
+<<<<<<< HEAD
 
 ### Medicare's Hospital Readmission Rate Reduction Program (HRRP):
 In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt then display it using \code{flexdashboard}
@@ -30,3 +31,5 @@ In this project I consider what features might influence the readmission ratio o
   )</li>
   <li>[ANOVA of the relationships between hosptial factors and readmission ratio](hrrp-anova.html)
 </ul>
+=======
+>>>>>>> 8488acda2ed8b7cd06edae88084c7ca7a1404308
