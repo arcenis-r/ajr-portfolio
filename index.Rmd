@@ -6,10 +6,12 @@ I'm an economist turned consultant/data scientist with strong interests in the d
 
 I hold a B.S. in Applied Economics from [Ithaca College](https://www.ithaca.edu) and an M.S. in Economics from the [City University of New York - City College](https://www.ccny.cuny.edu/). I enjoy projects that allow me to learn and implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.
 
+One of the most fun personal projects of mine has been to create the `cepumd` package. You can read more about it here: https://arcenis-r.github.io/ajr-portfolio/cepumd.html
+
 <h2 style="clear: both;">Data Projects</h2>
 
 ### Consumer Expenditure Survey (CE)
-The following three links are and R package and two R Shiny applications that I developed with CE Public-Use Microdata (PUMD) to help its users better understand some of its limitations and features. \code{cepumd} is a package that eases the burden of downloading a variety of files from the CE and performing complex data wrangling tasks towards calculating weighted annual mean expenditure estimates.
+The following three links are and R package and two R Shiny applications that I developed with CE Public-Use Microdata (PUMD) to help its users better understand some of its limitations and features. [cepumd](https://arcenis-r.github.io/ajr-portfolio/cepumd.html) is a package that eases the burden of downloading a variety of files from the CE and performing complex data wrangling tasks towards calculating weighted annual mean expenditure estimates.
 <ul>
   <li>[R Package: cepumd](https://github.com/arcenis-r/cepumd)
   <li>[Interactive CE Visualization Tool](https://osmrbls.shinyapps.io/ce_shiny_app/)</li>
@@ -21,15 +23,12 @@ Most recently I have been exploring various machine learning methods. Below is a
 <ul>
   <li>[Opening the ML 'Black Box' with Shapley Values - A Tidy Approach](https://arcenis-r.github.io/ajr-portfolio/tidy-ml-evaluation.html)</li>
 </ul>
-<<<<<<< HEAD
 
 ### Medicare's Hospital Readmission Rate Reduction Program (HRRP):
-In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt then display it using \code{flexdashboard}
+In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt then display it using `flexdashboard`
 <ul>
   <li>[HRRP Analysis Dashboard](
   https://arcenis-r.github.io/ajr-dashboards/hrrp-dashboard.html
   )</li>
   <li>[ANOVA of the relationships between hosptial factors and readmission ratio](hrrp-anova.html)
 </ul>
-=======
->>>>>>> 8488acda2ed8b7cd06edae88084c7ca7a1404308
