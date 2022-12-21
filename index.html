@@ -13,8 +13,8 @@
 
 <title>index.knit</title>
 
-<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -59,6 +59,7 @@ if (window.hljs) {
 
 
 
+
 <link rel="stylesheet" href="styles.css" type="text/css" />
 
 
@@ -83,6 +84,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -140,11 +144,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -173,8 +181,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -182,16 +190,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -275,40 +276,71 @@ $(document).ready(function () {
 
 <p><link rel="stylesheet" href="styles.css" type="text/css"></p>
 <p><img src="images/profile-pic-20201207.jpg" style="width:25%; border:2px solid; margin-right: 20px; margin-bottom: 25px" align="left"></p>
-<p>I’m an economist turned consultant/data scientist with strong interests in the divergence between inferential modeling and predictive modeling. I hold a B.S. in Applied Economics from <a href="https://www.ithaca.edu">Ithaca College</a> and an M.S. in Economics from the <a href="https://www.ccny.cuny.edu/">City University of New York - City College</a>. I enjoy projects that allow me to learn and implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.</p>
+<p>I’m an economist turned consultant/data scientist with strong
+interests in the divergence between inferential modeling and predictive
+modeling. Over the last few years I’ve started to really enjoy
+programming in the Tidyverse style and have even begun to work quite a
+bit with Tidymodels.</p>
+<p>I hold a B.S. in Applied Economics from <a
+href="https://www.ithaca.edu">Ithaca College</a> and an M.S. in
+Economics from the <a href="https://www.ccny.cuny.edu/">City University
+of New York - City College</a>. I enjoy projects that allow me to learn
+and implement new techniques ranging from different types of regression
+analysis to more advanced machine learning algorithms.</p>
 <h2 style="clear: both;">
 Data Projects
 </h2>
-<div id="medicares-hospital-readmission-rate-reduction-program-hrrp" class="section level3">
-<h3>Medicare’s Hospital Readmission Rate Reduction Program (HRRP):</h3>
-In this project I consider what features might influence the readmission ratio of a given hospital and I compare different quality metrics between hospitals in the program and those that are exempt.
-<ul>
-<li>
-<a href="https://arcenis-r.github.io/ajr-dashboards/hrrp-dashboard.html">HRRP Analysis Dashboard</a>
-</li>
-<li>
-<a href="hrrp-anova.html">ANOVA of the relationships between hosptial factors and readmission ratio</a>
-</ul>
-</div>
 <div id="consumer-expenditure-survey-ce" class="section level3">
 <h3>Consumer Expenditure Survey (CE)</h3>
-The following two links are R Shiny applications that I developed with CE Public-Use Microdata (PUMD) to help its users better understand some of its limitations and features.
+The following three links are and R package and two R Shiny applications
+that I developed with CE Public-Use Microdata (PUMD) to help its users
+better understand some of its limitations and features. is a package
+that eases the burden of downloading a variety of files from the CE and
+performing complex data wrangling tasks towards calculating weighted
+annual mean expenditure estimates.
 <ul>
 <li>
-<a href="https://osmrbls.shinyapps.io/ce_shiny_app/">Interactive CE Visualization Tool</a>
+<a href="https://github.com/arcenis-r/cepumd">R Package: cepumd</a>
+<li>
+<a href="https://osmrbls.shinyapps.io/ce_shiny_app/">Interactive CE
+Visualization Tool</a>
 </li>
 <li>
-<a href="https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/">Interactive CE Dictionary</a>
+<a
+href="https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/">Interactive
+CE Dictionary</a>
 </li>
 </ul>
 </div>
 <div id="exploring-machine-learning" class="section level3">
 <h3>Exploring Machine Learning</h3>
-Most recently I have been exploring various machine learning methods. Below is a link to a small project that I completed based on a real-life problem that I faced on a project.
+Most recently I have been exploring various machine learning methods.
+Below is a link to a small project that I completed based on a real-life
+problem that I faced on a project.
 <ul>
 <li>
-<a href="https://arcenis-r.github.io/ajr-portfolio/tidy-ml-evaluation.html">Opening the ML ‘Black Box’ with Shapley Values - A Tidy Approach</a>
+<a
+href="https://arcenis-r.github.io/ajr-portfolio/tidy-ml-evaluation.html">Opening
+the ML ‘Black Box’ with Shapley Values - A Tidy Approach</a>
 </li>
+</ul>
+</div>
+<div id="medicares-hospital-readmission-rate-reduction-program-hrrp"
+class="section level3">
+<h3>Medicare’s Hospital Readmission Rate Reduction Program (HRRP):</h3>
+In this project I consider what features might influence the readmission
+ratio of a given hospital and I compare different quality metrics
+between hospitals in the program and those that are exempt then display
+it using
+<ul>
+<li>
+<a
+href="https://arcenis-r.github.io/ajr-dashboards/hrrp-dashboard.html">HRRP
+Analysis Dashboard</a>
+</li>
+<li>
+<a href="hrrp-anova.html">ANOVA of the relationships between hosptial
+factors and readmission ratio</a>
 </ul>
 </div>
 

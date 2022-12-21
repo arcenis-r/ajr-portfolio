@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>cepumd.knit</title>
+
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<!DOCTYPE html>
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation" style="background-color:#000fff">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="index.html" style="color:#FFF">Arcenis Rojas</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                    
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                      <li>
+                      <a href="https://github.com/arcenis-r">
+                        <span class="fa fa-github fa-lg" style="color:#FFF"></span>
+                          
+                          </a>
+                          </li>
+                          <li>
+                          <a href="https://linkedin.com/in/arcenisrojas">
+                            <span class="fa fa-linkedin fa-lg" style="color:#FFF"></span>
+                              
+                              </a>
+                              </li>
+                              </ul>
+                              </div><!--/.nav-collapse -->
+                              </div><!--/.container -->
+                              </div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<div id="cepumd" class="section level1">
+<h1>cepumd</h1>
+<p><code>cepumd</code> facilitates the calculation of Consumer
+Expenditure Survey (CE) annual, weighted, estimated mean expenditures
+using CE Public-Use Microdata (PUMD) by addressing some unique
+challenges that exist in working with CE PUMD. Some examples are:</p>
+<ul>
+<li>Downloading CE PUMD from within R</li>
+<li>Converting hierarchical grouping (HG) files to data tables</li>
+<li>Accounting for the factor (annual vs. quarterly expenditure)</li>
+<li>Accounting for the “months in scope” of a given consumer unit
+(CU)</li>
+<li>Annualizing expenditures for either Diary or Interview
+expenditures</li>
+<li>Integrating Interview and Diary data as necessary</li>
+<li>Calculating weighted CE quantiles</li>
+</ul>
+<p>For more information on the CE, please visit <a
+href="https://www.bls.gov/cex/"
+class="uri">https://www.bls.gov/cex/</a>.</p>
+<p>The workhorse of is <code>ce_prepdata()</code>. It merges the
+household characteristics file (FMLI/-D) with the corresponding
+expenditure tabulation file (MTBI/EXPD) for a specified year, adjusts
+weights for months-in-scope and the number of collection quarters,
+adjusts some cost values by their periodicity factor (some cost
+categories are represented as annual figures and others as quarterly).
+With the recent update it only requires the first 3 arguments to
+function: the year, the survey type, and one or more valid UCCs.
+<code>ce_prepdata()</code> now creates all of the other necessary
+objects within the function if not provided.</p>
+<p>There are three other functions that help the user download and
+wrangle the data and necessary documentation, such as the HG files:</p>
+<ul>
+<li><code>ce_download()</code> downloads zip files for a given year and
+survey instrument directly from the CE website</li>
+<li><code>ce_hg()</code> pulls the requested type of HG file (Interview,
+Diary, or Integrated) for a specified year.</li>
+<li><code>ce_uccs()</code> filters the HG file for the specified
+expenditure category and returns either a data frame with only that
+section of the HG file or the Universal Classification Codes (UCCs) that
+make up that expenditure category.</li>
+</ul>
+<p>There are two functions that the user can use to calculate CE summary
+statistics:</p>
+<ul>
+<li><code>ce_mean()</code> calculates a mean expenditure, standard error
+of the mean, coefficient of variation, and an aggregate
+expenditure.</li>
+<li><code>ce_quantiles()</code> calculates weighted expenditure
+quantiles. It is important to note that calculating means for integrated
+expenditures is not recommended because the calculation involves using
+weights from both the Diary and Survey instruments.</li>
+</ul>
+<p>There are two functions that allow the user to download metadata that
+can be useful in preparing data:</p>
+<ul>
+<li><code>store_ce_hg()</code> downloads the zip file containing all HG
+files maintained by the CE to the specified location.</li>
+<li><code>store_ce_dict()</code> downloades the CE PUMD dictionary from
+CE’s website to the specified location.</li>
+</ul>
+<p>Finally, there are two utility functions to make the workflow a bit
+easier:</p>
+<ul>
+<li><code>ce_pumd_years()</code> scrapes the main PUMD website to get a
+vector of years for which PUMD are available. The vector is limited to
+the years for which there are also HG files available.</li>
+<li><code>ce_cleanup()</code> deletes a file containing CE data that may
+only be necessary temporarily.</li>
+</ul>
+<div id="updates" class="section level2">
+<h2>Updates</h2>
+<p>Due to changes in the way CE PUMD stores their data starting with the
+2020 PUMD I revisited the way that the main functions of stores and
+accesses files locally. The main overarching change is that all files
+are expected to be stored in one directory. To that end, if a directory
+is not provided to the functions, one will be created in the local
+temporary directory. Also, the most of the functions used for
+downloading or preparing data now take a argument to help with this. The
+major benefit of this change is that all files are now in one place and
+can be quickly cleaned up. An ancillary benefit is that it can make the
+workflow much simpler for quickly getting an expenditure estimate.</p>
+</div>
+<div id="word-of-caution" class="section level2">
+<h2>Word of caution</h2>
+<p>The CE PUMD is a wonderfully rich dataset that can provide all manner
+of insight into how Americans spend money, but there are some strict
+limitations with respect to the types of analyses that can be done with
+this data. One of the more common violations of sound statistical
+methodology that I’m aware of is trying to calculate annual expenditure
+means for subgroups that are defined by variables that were not used in
+the sample design, i.e., the weights. The best advice that I can give is
+that users of this package (or anyone using CE PUMD to estimate annual
+expenditures) is to stick to the same classifications used by the CE in
+their published tables (<a
+href="https://www.bls.gov/cex/tables.htm"></a>). I’ll also point users
+of this package to the <a href="https://www.bls.gov/cex/tables.htm">CE
+PUMD Getting Started Guide</a>.</p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the development version of <code>cepumd</code> from
+<a href="https://github.com">GitHub</a> with:</p>
+<pre class="r"><code>devtools::install_github(&quot;arcenis-r/cepumd&quot;)</code></pre>
+</div>
+<div id="prep-work" class="section level2">
+<h2>Prep work</h2>
+<p>The first step is to load the necessary packages into the
+environment.</p>
+<pre class="r"><code>
+# Store a vector of names of additional packages to be used
+pkgs &lt;- c(&quot;tidyverse&quot;, &quot;devtools&quot;, &quot;rlang&quot;, &quot;readxl&quot;, &quot;knitr&quot;)
+
+# Install packages from CRAN
+invisible(
+  sapply(
+    pkgs, function(x) if (!x %in% installed.packages()) install.packages(x)
+  )
+)
+
+# Load &#39;cepumd&#39; and &#39;tidyverse&#39; to the workspace
+library(knitr)
+library(readxl)
+library(cepumd)
+library(tidyverse)</code></pre>
+</div>
+<div id="example-workflow-1" class="section level2">
+<h2>Example Workflow 1</h2>
+<p>The following is an example of how someone might go about using
+<code>cepumd</code> to calculate a 2021 annual, weighted estimate of
+mean expenditures on pets for all of the U.S. using CE integrated data
+without creating a separate directory for the data. This is just a quick
+and easy calculation.</p>
+<pre class="r"><code>ex1 &lt;- ce_prepdata(
+  2021,
+  integrated,
+  uccs = ce_hg(2021, integrated) %&gt;% ce_uccs(&quot;Pets&quot;)
+) %&gt;%
+  ce_mean() %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<p>Yup… that’s all it takes. I simply ran <code>ce_prepdata()</code>
+with the year, the survey type, and the uccs I needed and piped that
+directly into <code>ce_mean()</code>.</p>
+<p>But where are all the files? Zip files, etc.? They’re in my R
+session’s temporary directory under a sub-directory named “ce-data”.</p>
+<pre class="r"><code>list.files(file.path(tempdir(), &quot;ce-data&quot;))
+#&gt; [1] &quot;ce-stubs.zip&quot; &quot;diary21&quot;      &quot;diary21.zip&quot;  &quot;intrvw20&quot;     &quot;intrvw20.zip&quot;
+#&gt; [6] &quot;intrvw21&quot;     &quot;intrvw21.zip&quot;</code></pre>
+<p>I’ll go ahead and clean those files up really quickly.</p>
+<pre class="r"><code>ce_cleanup()
+list.files(file.path(tempdir(), &quot;ce-data&quot;))
+#&gt; character(0)</code></pre>
+<p>This works because if <code>ce_cleanup()</code> isn’t given a
+directory to clean up it looks R’s temporary directory for a
+subdirectory called “ce-data”. If it doesn’t find that AND it gets no
+other directory to look in, it returns a message saying there’s nothing
+to clean up.</p>
+<p>We saw the mean in the last example, but getting the annual, weighted
+estimate of the median would be just as easy.</p>
+<pre class="r"><code>ce_prepdata(
+  2021,
+  integrated,
+  uccs = ce_hg(2021, integrated) %&gt;% ce_uccs(&quot;Pets&quot;)
+) %&gt;%
+  ce_quantiles() %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">probs</th>
+<th align="right">quantile</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">50%</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>
+ce_cleanup()</code></pre>
+</div>
+<div id="example-workflow-2" class="section level2">
+<h2>Example Workflow 2</h2>
+<p>In this example I’ll calculate estimated annual expenditures on used
+cars and trucks by urbanicity also for 2021. I already know that the
+title of that expenditure category in the HG files is “Cars and trucks,
+used” and the UCCs are 460110 for used cars and 460901 for used trucks.
+I also know that all of these data are collected through the interview
+survey, so I’ll use the interview data only. Now here’s a wrinkle:
+because I’m going to add a grouping variable (“BLS_URBN”), I do need to
+specify all of the other named arguments. This is due to the developer’s
+inexperience with using missing arguments (if anyone can help me out
+with this, I would greatly appreciate it). Once the data are prepped
+with <code>ce_data()</code> I’ll just nest the data by urbanicity and
+run <code>ce_means()</code> on the nested datasets.</p>
+<pre class="r"><code>ce_prepdata(
+  2021,
+  interview,
+  uccs = c(&quot;460110&quot;, &quot;460901&quot;),
+  recode_variables = TRUE,
+  ce_dir = NULL,
+  dict_path = NULL,
+  int_zp = NULL,
+  dia_zp = NULL,
+  hg = NULL,
+  bls_urbn
+) %&gt;%
+  nest(data = -bls_urbn) %&gt;%
+  mutate(ce_mn_df = map(data, ce_mean)) %&gt;% 
+  select(-data) %&gt;% 
+  unnest(ce_mn_df) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">bls_urbn</th>
+<th align="right">agg_exp</th>
+<th align="right">mean_exp</th>
+<th align="right">se</th>
+<th align="right">cv</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Urban</td>
+<td align="right">310383802180</td>
+<td align="right">2472.104</td>
+<td align="right">49.69722</td>
+<td align="right">2.010321</td>
+</tr>
+<tr class="even">
+<td align="left">Rural</td>
+<td align="right">30912654497</td>
+<td align="right">3844.600</td>
+<td align="right">61.73577</td>
+<td align="right">1.605779</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>
+ce_cleanup()</code></pre>
+</div>
+<div id="example-workflow-3" class="section level2">
+<h2>Example Workflow 3</h2>
+<p>In this last example I’m going to assume very little knowledge about
+the CE. I’d like to compare mean annual expenditures on food away from
+home between 2010 and 2020 by household size. Also, I’m going to set up
+a directory on my local machine to put all the data and metadata files
+into.</p>
+<p>First, I’ll set up that directory. I’ll put the directory path in a
+variable called “food_away_dir” for simplicity.</p>
+<pre class="r"><code>food_away_dir &lt;- file.path(&quot;..&quot;, &quot;food-away&quot;)
+dir.create(food_away_dir)
+list.files(food_away_dir)
+#&gt; character(0)</code></pre>
+<p>Next, I want to make sure that there are data for my years of
+interest.</p>
+<pre class="r"><code>ce_pumd_years()
+#&gt;  [1] 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007
+#&gt; [16] 2006 2005 2004 2003 2002 2001 2000 1999 1998 1997</code></pre>
+<p>Now I want to store the CE HG files and data dictionary.</p>
+<pre class="r"><code>store_ce_hg(food_away_dir)
+store_ce_dict(food_away_dir)</code></pre>
+<p>Let’s take a look at what the files are called.</p>
+<pre class="r"><code>list.files(food_away_dir)
+#&gt; [1] &quot;ce-dict.xlsx&quot; &quot;ce-stubs.zip&quot;</code></pre>
+<p>Next I want to see what the 2010 HG file looks like for 2010 for
+expenditures on “food away from home”. First I’ll download both HG files
+(2010 and 2020), then I’ll find the correct title in the 2010 HG file
+for my category.</p>
+<pre class="r"><code>hg_10 &lt;- ce_hg(2010, integrated, food_away_dir)
+hg_20 &lt;- ce_hg(2020, integrated, food_away_dir)</code></pre>
+<pre class="r"><code>food_away_title &lt;- hg_10 %&gt;%
+  filter(str_detect(title, &quot;[F|f]ood [A|a]way&quot;)) %&gt;%
+  pull(title)
+
+food_away_title
+#&gt; [1] &quot;Food away from home&quot;</code></pre>
+<p>Now I’ll use that title to get the UCCs and see the entire table with
+“food away from home” expenditures for 2010</p>
+<pre class="r"><code>food_away_hg_10 &lt;- ce_uccs(hg_10, food_away_title, uccs_only = FALSE)
+food_away_hg_20 &lt;- ce_uccs(hg_20, food_away_title, uccs_only = FALSE)
+
+food_away_hg_10 %&gt;% kable(booktabs = TRUE)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="4%" />
+<col width="77%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">level</th>
+<th align="left">title</th>
+<th align="left">ucc</th>
+<th align="left">survey</th>
+<th align="left">factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Food away from home</td>
+<td align="left">FOODAWAY</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Meals at restaurants, carry outs and other</td>
+<td align="left">RESTCOAO</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Lunch</td>
+<td align="left">LUNCH</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Lunch at fast food, take-out, delivery, concession
+stands, buffet and cafeteria (other than employer</td>
+<td align="left">190111</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Lunch at full service restaurants</td>
+<td align="left">190112</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Lunch at vending machines and mobile vendors</td>
+<td align="left">190113</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Lunch at employer and school cafeterias</td>
+<td align="left">190114</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Dinner</td>
+<td align="left">DINNER</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Dinner at fast food, take-out, delivery, concession
+stands, buffet and cafeteria (other than employer</td>
+<td align="left">190211</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Dinner at full service restaurants</td>
+<td align="left">190212</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Dinner at vending machines and mobile vendors</td>
+<td align="left">190213</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Dinner at employer and school cafeterias</td>
+<td align="left">190214</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Snacks and nonalcoholic beverages</td>
+<td align="left">SNKNABEV</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Snacks and nonalcoholic beverages at fast food,
+take-out, delivery, concession stands, buffet and</td>
+<td align="left">190311</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Snacks and nonalcoholic beverages at full service
+restaurants</td>
+<td align="left">190312</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Snacks and nonalcoholic beverages at vending machines
+and mobile vendors</td>
+<td align="left">190313</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Snacks and nonalcoholic beverages at employer and
+school cafeterias</td>
+<td align="left">190314</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Breakfast and brunch</td>
+<td align="left">BRKFBRUN</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Breakfast and brunch at fast food, take-out, delivery,
+concession stands, buffet and cafeteria</td>
+<td align="left">190321</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Breakfast and brunch at full service restaurants</td>
+<td align="left">190322</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Breakfast and brunch at vending machines and mobile
+vendors</td>
+<td align="left">190323</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Breakfast and brunch at employer and school
+cafeterias</td>
+<td align="left">190324</td>
+<td align="left">D</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Food or board at school</td>
+<td align="left">190901</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Catered affairs</td>
+<td align="left">190902</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Food on out-of-town trips</td>
+<td align="left">190903</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">School lunches</td>
+<td align="left">790430</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Meals as pay</td>
+<td align="left">800700</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">Alcoholic beverages</td>
+<td align="left">ALCBEVG</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<p>Next I’ll use the dictionary to find the variable for household size.
+First I’ll take a look at the sheets in the dictionary.</p>
+<pre class="r"><code>ce_dict_file_path &lt;- file.path(food_away_dir, &quot;ce-dict.xlsx&quot;)
+excel_sheets(ce_dict_file_path)
+#&gt; [1] &quot;Cover&quot;     &quot;Variables&quot; &quot;Codes &quot;</code></pre>
+<p>Next I’ll see what variables contain anything about the number of
+household members. To do that I’ll have to load the sheet from the
+dictionary containing the variable definitions</p>
+<pre class="r"><code>ce_variables &lt;- read_excel(ce_dict_file_path, sheet = &quot;Variables&quot;)
+
+ce_variables %&gt;%
+  filter(
+    str_detect(File, &quot;FMLI&quot;), is.na(`Last year`),
+    str_detect(
+      tolower(`Variable description`), &quot;number of members&quot;
+    )
+  ) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<colgroup>
+<col width="4%" />
+<col width="2%" />
+<col width="5%" />
+<col width="14%" />
+<col width="6%" />
+<col width="4%" />
+<col width="6%" />
+<col width="28%" />
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="5%" />
+<col width="4%" />
+<col width="3%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Survey</th>
+<th align="left">File</th>
+<th align="left">Variable Name</th>
+<th align="left">Variable description</th>
+<th align="left">Formula</th>
+<th align="left">Flag name</th>
+<th align="left">Section number</th>
+<th align="left">Section description</th>
+<th align="left">Section part</th>
+<th align="right">First year</th>
+<th align="right">First Quarter</th>
+<th align="right">Last quarter</th>
+<th align="right">Last year</th>
+<th align="left">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INTERVIEW</td>
+<td align="left">FMLI</td>
+<td align="left">AS_COMP5</td>
+<td align="left">Number of members under age 2 in CU</td>
+<td align="left">COUNT (AGE &lt; 2)</td>
+<td align="left">AS_C_MP5</td>
+<td align="left">NA</td>
+<td align="left">CU characteristics, income, weights, and summary level
+expenditures.</td>
+<td align="left">NA</td>
+<td align="right">1984</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">FMLI</td>
+<td align="left">FAM_SIZE</td>
+<td align="left">Number of Members in CU</td>
+<td align="left">NA</td>
+<td align="left">FAM__IZE</td>
+<td align="left">NA</td>
+<td align="left">CU characteristics, income, weights, and summary level
+expenditures.</td>
+<td align="left">NA</td>
+<td align="right">1984</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>It looks like FAM_SIZE Might be the variable. I’ll look at the full
+description.</p>
+<pre class="r"><code>ce_variables %&gt;%
+  filter(
+    `Variable Name` %in% &quot;FAM_SIZE&quot;,
+    str_detect(File, &quot;FMLI&quot;), is.na(`Last year`)
+  ) %&gt;%
+  pull(&quot;Variable description&quot;)
+#&gt; [1] &quot;Number of Members in CU&quot;</code></pre>
+<p>Next I’ll check whether the FAM_SIZE variable has any value codes
+associated with it. I’ll have to pull in the “Codes” sheet. (Check your
+spelling here.)</p>
+<pre class="r"><code>ce_codes &lt;- read_excel(ce_dict_file_path, sheet = &quot;Codes &quot;)
+
+ce_codes %&gt;%
+  filter(File %in% &quot;FMLI&quot;, Variable %in% &quot;FAM_SIZE&quot;) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="4%" />
+<col width="8%" />
+<col width="9%" />
+<col width="15%" />
+<col width="9%" />
+<col width="12%" />
+<col width="9%" />
+<col width="11%" />
+<col width="7%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Survey</th>
+<th align="left">File</th>
+<th align="left">Variable</th>
+<th align="left">Code value</th>
+<th align="left">Code description</th>
+<th align="right">First year</th>
+<th align="right">First quarter</th>
+<th align="right">Last year</th>
+<th align="right">Last quarter</th>
+<th align="left">Comment</th>
+<th align="left">…11</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<p>It looks like FAM_SIZE is not a coded variable (no observations in
+the “Codes” sheet). So I’m ready to prepare my data. The first thing
+I’ll need are the UCCs for each of the two years in my analysis.</p>
+<pre class="r"><code>food_away_uccs_10 &lt;- ce_uccs(food_away_hg_10, food_away_title, uccs_only = TRUE)
+food_away_uccs_20 &lt;- ce_uccs(food_away_hg_20, food_away_title, uccs_only = TRUE)
+
+food_away_uccs_10
+#&gt;  [1] &quot;190111&quot; &quot;190112&quot; &quot;190113&quot; &quot;190114&quot; &quot;190211&quot; &quot;190212&quot; &quot;190213&quot; &quot;190214&quot;
+#&gt;  [9] &quot;190311&quot; &quot;190312&quot; &quot;190313&quot; &quot;190314&quot; &quot;190321&quot; &quot;190322&quot; &quot;190323&quot; &quot;190324&quot;
+#&gt; [17] &quot;190901&quot; &quot;190902&quot; &quot;190903&quot; &quot;790430&quot; &quot;800700&quot;</code></pre>
+<p>Next I’ll prepare the 2010 data and get a summary of the FAM_SIZE
+variable since it is a continuous variable.</p>
+<pre class="r"><code>food_away_data_10 &lt;- ce_prepdata(
+  2010,
+  integrated,
+  food_away_uccs_10,
+  recode_variables = FALSE,
+  ce_dir = food_away_dir,
+  dict_path = &quot;ce-dict.xslx&quot;,
+  int_zp = NULL,
+  dia_zp = NULL,
+  hg = food_away_hg_10,
+  fam_size
+)
+
+summary(food_away_data_10$fam_size)
+#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;   1.000   1.000   2.000   2.592   4.000  14.000</code></pre>
+<p>Since some housholds have as many as 14 peopl, I’ll create a FAM_SIZE
+label with any number greater than 4 taking on the value “5+” later on.
+Next, I’ll prepare the 2020 data and rowbind it with the 2010 data as
+well as create the fam_size_label variable. I’ll also go ahead and get
+weighted, annual estimated means in one go.</p>
+<pre class="r"><code>food_away_data_20 &lt;- ce_prepdata(
+  2020,
+  integrated,
+  food_away_uccs_20,
+  recode_variables = FALSE,
+  ce_dir = food_away_dir,
+  dict_path = &quot;ce-dict.xslx&quot;,
+  int_zp = NULL,
+  dia_zp = NULL,
+  hg = food_away_hg_20,
+  fam_size
+)
+
+food_away_comp_data &lt;- food_away_data_10 %&gt;%
+  mutate(year = 2010) %&gt;%
+  bind_rows(food_away_data_20 %&gt;% mutate(year = 2020)) %&gt;%
+  mutate(
+    fam_size_label = if_else(fam_size &gt; 4, &quot;5+&quot;, as.character(fam_size)),
+    year = factor(year)
+  ) %&gt;%
+  nest(data = -c(year, fam_size_label)) %&gt;%
+  mutate(ce_mn_df = map(data, ce_mean)) %&gt;% 
+  ungroup() %&gt;%
+  select(-data) %&gt;% 
+  unnest(ce_mn_df) %&gt;%
+  mutate(
+    lower = mean_exp - (qnorm(0.975) * se),
+    upper = mean_exp + (qnorm(0.975) * se)
+  )
+
+food_away_comp_data %&gt;% kable(booktabs = TRUE)</code></pre>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="19%" />
+<col width="16%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">year</th>
+<th align="left">fam_size_label</th>
+<th align="right">agg_exp</th>
+<th align="right">mean_exp</th>
+<th align="right">se</th>
+<th align="right">cv</th>
+<th align="right">lower</th>
+<th align="right">upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2010</td>
+<td align="left">2</td>
+<td align="right">97933894378</td>
+<td align="right">2477.569</td>
+<td align="right">49.74981</td>
+<td align="right">2.008009</td>
+<td align="right">2380.061</td>
+<td align="right">2575.077</td>
+</tr>
+<tr class="even">
+<td align="left">2010</td>
+<td align="left">3</td>
+<td align="right">50395554564</td>
+<td align="right">2865.902</td>
+<td align="right">53.62464</td>
+<td align="right">1.871126</td>
+<td align="right">2760.799</td>
+<td align="right">2971.004</td>
+</tr>
+<tr class="odd">
+<td align="left">2010</td>
+<td align="left">1</td>
+<td align="right">55083803458</td>
+<td align="right">1572.640</td>
+<td align="right">39.59669</td>
+<td align="right">2.517848</td>
+<td align="right">1495.032</td>
+<td align="right">1650.248</td>
+</tr>
+<tr class="even">
+<td align="left">2010</td>
+<td align="left">5+</td>
+<td align="right">43444179130</td>
+<td align="right">3337.577</td>
+<td align="right">57.81740</td>
+<td align="right">1.732317</td>
+<td align="right">3224.257</td>
+<td align="right">3450.897</td>
+</tr>
+<tr class="odd">
+<td align="left">2010</td>
+<td align="left">4</td>
+<td align="right">56019572596</td>
+<td align="right">3558.723</td>
+<td align="right">59.76521</td>
+<td align="right">1.679400</td>
+<td align="right">3441.585</td>
+<td align="right">3675.861</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">1</td>
+<td align="right">56785595827</td>
+<td align="right">1448.125</td>
+<td align="right">37.83664</td>
+<td align="right">2.612801</td>
+<td align="right">1373.967</td>
+<td align="right">1522.284</td>
+</tr>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">2</td>
+<td align="right">103761786275</td>
+<td align="right">2387.793</td>
+<td align="right">48.86163</td>
+<td align="right">2.046310</td>
+<td align="right">2292.026</td>
+<td align="right">2483.560</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">4</td>
+<td align="right">58215175414</td>
+<td align="right">3555.463</td>
+<td align="right">59.70768</td>
+<td align="right">1.679322</td>
+<td align="right">3438.438</td>
+<td align="right">3672.488</td>
+</tr>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">3</td>
+<td align="right">51769500538</td>
+<td align="right">2682.933</td>
+<td align="right">51.89517</td>
+<td align="right">1.934270</td>
+<td align="right">2581.220</td>
+<td align="right">2784.645</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">5+</td>
+<td align="right">41476737207</td>
+<td align="right">3178.722</td>
+<td align="right">56.67492</td>
+<td align="right">1.782947</td>
+<td align="right">3067.641</td>
+<td align="right">3289.802</td>
+</tr>
+</tbody>
+</table>
+<p>Plotting these data would be pretty straightforward, as well.</p>
+<pre class="r"><code>food_away_comp_data %&gt;%
+  ggplot(aes(x = fam_size_label, y = mean_exp, fill = year, group = year)) +
+  geom_bar(stat = &quot;identity&quot;, position = &quot;dodge&quot;, width = 0.8) +
+  geom_errorbar(
+    aes(ymin = lower, ymax = upper),
+    width = 0.4,
+    position = position_dodge(0.75)
+  ) +
+  scale_fill_manual(values = c(&quot;red&quot;, &quot;blue&quot;)) +
+  labs(
+    title =
+      &quot;Estimated annual mean food away from home expenditures by CU size&quot;,
+    x = &quot;CU size&quot;,
+    y = &quot;Estimated, weighted, annual mean expenditure ($)&quot;,
+    fill = &quot;Year&quot;
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="cepumd_files/figure-html/cepumd-ex-3-group-means-plot-1.png" width="100%" /></p>
+<p>And that’s it. This analysis would give me the weighted, annual
+estimated mean expenditures on food away from home by family size in
+2010 and 2020. Now for a very quick comparison, I’ll take a quick look
+at the median and 60th, 75th and 95th weighted, annual estimated
+quantiles for the same years.</p>
+<pre class="r"><code>food_away_comp_quantiles &lt;- food_away_data_10 %&gt;%
+  mutate(year = 2010) %&gt;%
+  bind_rows(food_away_data_20 %&gt;% mutate(year = 2020)) %&gt;%
+  mutate(year = factor(year)) %&gt;%
+  group_by(year) %&gt;%
+  nest() %&gt;%
+  mutate(
+    fa_qtile = map(data, ce_quantiles, probs = c(seq(0, 0.95, by = 0.05), 0.99))
+  ) %&gt;% 
+  ungroup() %&gt;%
+  select(-data) %&gt;% 
+  unnest(fa_qtile) %&gt;%
+  mutate(probs = parse_number(probs) / 100)
+
+food_away_comp_quantiles %&gt;%
+  ggplot(aes(x = probs, y = quantile, group = year, color = year)) +
+  geom_line() +
+  scale_color_manual(values = c(&quot;red&quot;, &quot;blue&quot;)) +
+  scale_x_continuous(labels = scales::percent) +
+  labs(
+    title =
+      &quot;Estimated, annual food away from home expenditure quantiles&quot;,
+    x = &quot;Quantile&quot;,
+    y = &quot;Estimated, weighted, annual expenditure ($)&quot;,
+    color = &quot;Year&quot;
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="cepumd_files/figure-html/cepumd-ex-3-group-qtile-plot-1.png" width="100%" /></p>
+<pre class="r"><code>
+ce_cleanup(food_away_dir)</code></pre>
+<p>There are a lot of 0-value reported expenditures in the CE on food
+away from home. Unfortunately, I can’t perform an analysis using only
+respondents that did have expenditures in this category, i.e., dropping
+the 0’s, because whether someone had an expenditure on food away from
+home is not one of the variables used for generating the survey weights.
+In other words, the analysis can be done, but it would not be
+statistically valid and I definitely wouldn’t be able to make any
+inferences from it. This is my cautionary note to anyone using this
+package who might use it in a way that is not statistically sound.
+Please visit the <a href="https://www.bls.gov/cex/">CE’s website</a> and
+read the <a href="https://www.bls.gov/cex/tables.htm">CE PUMD Getting
+Started Guide</a> for more information.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
