@@ -446,8 +446,7 @@ The next step is to calculate means, for which I'll use some more Tidyverse func
 ```{r get_food_away_means, cache=TRUE}
 food_away_means <- food_away_comp_data %>%
   nest(data = -c(year, fam_size_label)) %>%
-  mutate(ce_mn_df = map(data, ce_mean)) %>% 
-  ungroup() %>%
+  mutate(ce_mn_df = map(data, ce_mean)) %>%
   select(-data) %>% 
   unnest(ce_mn_df) %>%
   mutate(lower = mean_exp - cv, upper = mean_exp + cv)
@@ -534,8 +533,149 @@ food_away_comp_quantiles %>%
   theme(plot.title = element_text(hjust = 0.5), legend.position = "bottom")
 ```
 
-```{r final_cleanup}
+```{r another_cleanup}
 ce_cleanup(food_away_dir)
 ```
 
 Interestingly the expenditures don't appear to have changed much between 2010 and 2020 across quantiles on an inflation-adjusted basis, but we can see that across all quantiles, CU's spent less in 2020 than they did in 2010 on food away from home, which is consistent with the means that we calculated above. There are a lot of 0-value reported expenditures, though, in the CE on food away from home. Unfortunately, I can't perform an analysis using only respondents that did have expenditures in this category, i.e., dropping the 0's, because whether someone had an expenditure on food away from home is not one of the variables used for generating the survey weights. In other words, the analysis can be done, but it would not be statistically valid and I definitely wouldn't be able to infer from it. This is my cautionary note to anyone using this package who might use it in a way that is not statistically sound. Please visit the [CE's website](https://www.bls.gov/cex/) and read the [CE PUMD Getting Started Guide](https://www.bls.gov/cex/tables.htm) for more information.
+
+### Dealing with inconsistent code definitions
+
+In this workflow I'm going to calculate estimated mean utilities expenditures for 2015 using integrated data by CU composition using the FAM_TYPE variable. In this case I'm going to start by looking at the codes for that variable to show how one might run into an inconsistency in code definitions across survey instruments. First I'm going to set up a sub-directory in my temporary directory and store what I'll need to get started.
+
+```{r setup_utilities_dir}
+data_dir <- file.path(tempdir(), "ce-utilities-data")
+dir.create(data_dir)
+
+store_ce_dict(data_dir, "ce-data-dictionary.xlsx")
+store_ce_hg(data_dir, "ce-stubs.zip")
+
+list.files(data_dir)
+```
+
+Now I can look at the code descriptions for the "FAM_TYPE" variable in the dictionary.
+
+```{r show_fam_type_codes}
+ce_codes <- read_excel(
+  file.path(data_dir, "ce-data-dictionary.xlsx"),
+  sheet = "Codes "
+) %>%
+  janitor::clean_names() %>%
+  select(survey:last_quarter)
+
+ce_codes %>% filter(
+  variable %in% "FAM_TYPE",
+  first_year <= 2015,
+  (last_year >= 2015 | is.na(last_year)),
+  code_value %in% c("3", "5", "7")
+) %>%
+  select(survey, code_value, code_description) %>%
+  arrange(code_value, survey) %>%
+  kable(booktabs = TRUE)
+```
+
+The code descriptions for these 3 code values are different across instruments. To resolve this I'm going to create a table containing only codes from the Interview survey.
+
+```{r create_own_codeset}
+fam_type_codes <- ce_codes %>%
+  filter(
+    variable %in% "FAM_TYPE",
+    first_year <= 2015,
+    (last_year >= 2015 | is.na(last_year))
+  )
+
+codes2keep <- fam_type_codes %>%
+  filter(survey %in% "INTERVIEW") %>%
+  select(code_value, code_description)
+
+fam_type_codes <- fam_type_codes %>%
+  select(-code_description) %>%
+  left_join(codes2keep, by = "code_value") %>%
+  relocate(code_description, .after = code_value)
+
+fam_type_codes %>%
+  filter(code_value %in% c("3", "5", "7")) %>%
+  select(survey, code_value, code_description) %>%
+  arrange(code_value, survey) %>%
+  kable(booktabs = TRUE)
+```
+
+Now the codes are consistent across survey instruments and I can use this codebook in my call to `ce_prepdata()` using the "own_codebook" argument. Then I'll pass that to `ce_mean()` per usual.
+
+Next I'll get some information about how utilities expenditures are organized using the stub file.
+
+```{r get_utilities_title}
+hg_15 <- ce_hg(2015, integrated, data_dir, "ce-stubs.zip")
+
+hg_15 %>% filter(str_detect(title, "[U|u]tilities")) %>% kable(booktabs = TRUE)
+```
+
+The expenditure category associated with utilities is "Utilities, fuels, and public services". I'll store that title to work with later and narrow down the section of the stub file that includes only these expenditures.
+
+```{r}
+utilities_title <- hg_15 %>%
+  filter(str_detect(title, "[U|u]tilities")) %>%
+  pull(title)
+
+utilities_hg <- ce_uccs(hg_15, expenditure = utilities_title, uccs_only = FALSE)
+
+utilities_hg %>% kable(booktabs = TRUE)
+```
+
+I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both "I" and "D" in the survey colum of the stub file if expenditures are collected through both instruments.
+
+```{r check_utilities_instruments}
+utilities_hg %>% distinct(survey) %>% kable(booktabs = TRUE)
+```
+
+It seems utlities expenditures are collected only through the Interview survey, so I'll only need to download Interview data files.
+
+```{r dl_interview}
+ce_download(2015, interview, data_dir)
+```
+
+Now I can go ahead and calculate estimates.
+
+```{r fam_type_utilities, cache=TRUE}
+
+fam_type_utilities <- ce_prepdata(
+  2015,
+  interview,
+  ce_uccs(utilities_hg, expenditure = utilities_title, uccs_only = TRUE),
+  recode_variables = TRUE,
+  own_codebook = fam_type_codes,
+  ce_dir = data_dir,
+  int_zp = "intrvw15.zip",
+  hg = utilities_hg,
+  fam_type
+) %>%
+  nest(data = -fam_type) %>%
+  mutate(ce_mean_df = map(data, ce_mean)) %>%
+  select(-data) %>%
+  unnest(ce_mean_df)
+
+fam_type_utilities %>% arrange(fam_type) %>% kable(booktabs = TRUE)
+```
+
+And finally, a quick lollipop plot.
+
+```{r plot_fam_type_utilities}
+fam_type_utilities %>%
+  mutate(fam_type = fct_reorder(fam_type, mean_exp)) %>%
+  ggplot(aes(x = mean_exp, y = fam_type, mean_exp)) +
+  geom_segment(aes(x = 0, xend = mean_exp, yend = fam_type)) +
+  geom_point(color = "red", size = 5) +
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  labs(
+    y = "CU composition (FAM_TYPE)",
+    x = "Estimated, weighted, annual mean expenditure ($)",
+    title =
+      "Estimated annual mean utilities expenditures by CU composition"
+  ) +
+  theme_bw()
+```
+
+```{r final_cleanup}
+ce_cleanup(data_dir)
+```
+

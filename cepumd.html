@@ -308,6 +308,9 @@ href="#very-advanced-workflow-inflation-adjusted-food-away-from-home-expenditure
 id="toc-very-advanced-workflow-inflation-adjusted-food-away-from-home-expenditures">Very
 advanced workflow: Inflation adjusted food away from home
 expenditures</a></li>
+<li><a href="#dealing-with-inconsistent-code-definitions"
+id="toc-dealing-with-inconsistent-code-definitions">Dealing with
+inconsistent code definitions</a></li>
 </ul></li>
 </ul>
 </div>
@@ -1779,8 +1782,7 @@ food_away_comp_data %&gt;%
 Tidyverse functions.</p>
 <pre class="r"><code>food_away_means &lt;- food_away_comp_data %&gt;%
   nest(data = -c(year, fam_size_label)) %&gt;%
-  mutate(ce_mn_df = map(data, ce_mean)) %&gt;% 
-  ungroup() %&gt;%
+  mutate(ce_mn_df = map(data, ce_mean)) %&gt;%
   select(-data) %&gt;% 
   unnest(ce_mn_df) %&gt;%
   mutate(lower = mean_exp - cv, upper = mean_exp + cv)
@@ -2008,6 +2010,711 @@ statistically sound. Please visit the <a
 href="https://www.bls.gov/cex/">CE’s website</a> and read the <a
 href="https://www.bls.gov/cex/tables.htm">CE PUMD Getting Started
 Guide</a> for more information.</p>
+</div>
+<div id="dealing-with-inconsistent-code-definitions"
+class="section level3">
+<h3>Dealing with inconsistent code definitions</h3>
+<p>In this workflow I’m going to calculate estimated mean utilities
+expenditures for 2015 using integrated data by CU composition using the
+FAM_TYPE variable. In this case I’m going to start by looking at the
+codes for that variable to show how one might run into an inconsistency
+in code definitions across survey instruments. First I’m going to set up
+a sub-directory in my temporary directory and store what I’ll need to
+get started.</p>
+<pre class="r"><code>data_dir &lt;- file.path(tempdir(), &quot;ce-utilities-data&quot;)
+dir.create(data_dir)
+
+store_ce_dict(data_dir, &quot;ce-data-dictionary.xlsx&quot;)
+store_ce_hg(data_dir, &quot;ce-stubs.zip&quot;)
+
+list.files(data_dir)
+#&gt; [1] &quot;ce-data-dictionary.xlsx&quot; &quot;ce-stubs.zip&quot;</code></pre>
+<p>Now I can look at the code descriptions for the “FAM_TYPE” variable
+in the dictionary.</p>
+<pre class="r"><code>ce_codes &lt;- read_excel(
+  file.path(data_dir, &quot;ce-data-dictionary.xlsx&quot;),
+  sheet = &quot;Codes &quot;
+) %&gt;%
+  janitor::clean_names() %&gt;%
+  select(survey:last_quarter)
+
+ce_codes %&gt;% filter(
+  variable %in% &quot;FAM_TYPE&quot;,
+  first_year &lt;= 2015,
+  (last_year &gt;= 2015 | is.na(last_year)),
+  code_value %in% c(&quot;3&quot;, &quot;5&quot;, &quot;7&quot;)
+) %&gt;%
+  select(survey, code_value, code_description) %&gt;%
+  arrange(code_value, survey) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="13%" />
+<col width="73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">survey</th>
+<th align="left">code_value</th>
+<th align="left">code_description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DIARY</td>
+<td align="left">3</td>
+<td align="left">Married couple, own children only, oldest child &gt; 6,
+&lt; 18</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">3</td>
+<td align="left">Married Couple, own children only oldest child &gt;= 6,
+&lt;= 17</td>
+</tr>
+<tr class="odd">
+<td align="left">DIARY</td>
+<td align="left">5</td>
+<td align="left">All other Married couple families</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">5</td>
+<td align="left">All other Husband and wife families</td>
+</tr>
+<tr class="odd">
+<td align="left">DIARY</td>
+<td align="left">7</td>
+<td align="left">One parent, female, own children, at least one age &lt;
+18</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">7</td>
+<td align="left">One parent, female, own children, at least one age &lt;
+18</td>
+</tr>
+</tbody>
+</table>
+<p>The code descriptions for these 3 code values are different across
+instruments. To resolve this I’m going to create a table containing only
+codes from the Interview survey.</p>
+<pre class="r"><code>fam_type_codes &lt;- ce_codes %&gt;%
+  filter(
+    variable %in% &quot;FAM_TYPE&quot;,
+    first_year &lt;= 2015,
+    (last_year &gt;= 2015 | is.na(last_year))
+  )
+
+codes2keep &lt;- fam_type_codes %&gt;%
+  filter(survey %in% &quot;INTERVIEW&quot;) %&gt;%
+  select(code_value, code_description)
+
+fam_type_codes &lt;- fam_type_codes %&gt;%
+  select(-code_description) %&gt;%
+  left_join(codes2keep, by = &quot;code_value&quot;) %&gt;%
+  relocate(code_description, .after = code_value)
+
+fam_type_codes %&gt;%
+  filter(code_value %in% c(&quot;3&quot;, &quot;5&quot;, &quot;7&quot;)) %&gt;%
+  select(survey, code_value, code_description) %&gt;%
+  arrange(code_value, survey) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="13%" />
+<col width="73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">survey</th>
+<th align="left">code_value</th>
+<th align="left">code_description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DIARY</td>
+<td align="left">3</td>
+<td align="left">Married Couple, own children only oldest child &gt;= 6,
+&lt;= 17</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">3</td>
+<td align="left">Married Couple, own children only oldest child &gt;= 6,
+&lt;= 17</td>
+</tr>
+<tr class="odd">
+<td align="left">DIARY</td>
+<td align="left">5</td>
+<td align="left">All other Husband and wife families</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">5</td>
+<td align="left">All other Husband and wife families</td>
+</tr>
+<tr class="odd">
+<td align="left">DIARY</td>
+<td align="left">7</td>
+<td align="left">One parent, female, own children, at least one age &lt;
+18</td>
+</tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">7</td>
+<td align="left">One parent, female, own children, at least one age &lt;
+18</td>
+</tr>
+</tbody>
+</table>
+<p>Now the codes are consistent across survey instruments and I can use
+this codebook in my call to <code>ce_prepdata()</code> using the
+“own_codebook” argument. Then I’ll pass that to <code>ce_mean()</code>
+per usual.</p>
+<p>Next I’ll get some information about how utilities expenditures are
+organized using the stub file.</p>
+<pre class="r"><code>hg_15 &lt;- ce_hg(2015, integrated, data_dir, &quot;ce-stubs.zip&quot;)
+
+hg_15 %&gt;% filter(str_detect(title, &quot;[U|u]tilities&quot;)) %&gt;% kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">level</th>
+<th align="left">title</th>
+<th align="left">ucc</th>
+<th align="left">survey</th>
+<th align="left">factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Utilities, fuels, and public services</td>
+<td align="left">UTILS</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<p>The expenditure category associated with utilities is “Utilities,
+fuels, and public services”. I’ll store that title to work with later
+and narrow down the section of the stub file that includes only these
+expenditures.</p>
+<pre class="r"><code>utilities_title &lt;- hg_15 %&gt;%
+  filter(str_detect(title, &quot;[U|u]tilities&quot;)) %&gt;%
+  pull(title)
+
+utilities_hg &lt;- ce_uccs(hg_15, expenditure = utilities_title, uccs_only = FALSE)
+
+utilities_hg %&gt;% kable(booktabs = TRUE)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="7%" />
+<col width="64%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">level</th>
+<th align="left">title</th>
+<th align="left">ucc</th>
+<th align="left">survey</th>
+<th align="left">factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Utilities, fuels, and public services</td>
+<td align="left">UTILS</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Natural gas</td>
+<td align="left">NATRLG</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Utility-natural gas (renter)</td>
+<td align="left">260211</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Utility-natural gas (owned home)</td>
+<td align="left">260212</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Utility-natural gas (owned vacation)</td>
+<td align="left">260213</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Utility-natural gas (rented vacation)</td>
+<td align="left">260214</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Electricity</td>
+<td align="left">ELECTR</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Electricity (renter)</td>
+<td align="left">260111</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Electricity (owned home)</td>
+<td align="left">260112</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Electricity (owned vacation)</td>
+<td align="left">260113</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Electricity (rented vacation)</td>
+<td align="left">260114</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Fuel oil and other fuels</td>
+<td align="left">OTHRFU</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Fuel oil</td>
+<td align="left">FUELOI</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Fuel oil (renter)</td>
+<td align="left">250111</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Fuel oil (owned home)</td>
+<td align="left">250112</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Fuel oil (owned vacation)</td>
+<td align="left">250113</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Fuel oil (rented vacation)</td>
+<td align="left">250114</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Coal, wood, and other fuels</td>
+<td align="left">CLWDOT</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Coal, wood, other fuels (renter)</td>
+<td align="left">250911</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Coal, wood, other fuels (owned home)</td>
+<td align="left">250912</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Coal, wood, other fuels (owned vacation)</td>
+<td align="left">250913</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Coal, wood, other fuels (rented vacation)</td>
+<td align="left">250914</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Bottled gas</td>
+<td align="left">BOTTLG</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Gas, btld/tank (renter)</td>
+<td align="left">250211</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Gas, btld/tank (owned home)</td>
+<td align="left">250212</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Gas, btld/tank (owned vacation)</td>
+<td align="left">250213</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Gas, btld/tank (rented vacation)</td>
+<td align="left">250214</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Telephone services</td>
+<td align="left">PHONE</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Residential phone service, VOIP, and phone cards</td>
+<td align="left">RESPHO</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Phone cards</td>
+<td align="left">270104</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Residential telephone including VOIP</td>
+<td align="left">270106</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Cellular phone service</td>
+<td align="left">270102</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Water and other public services</td>
+<td align="left">WATER</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Water and sewerage maintenance</td>
+<td align="left">SEWER</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Water/sewer maint. (renter)</td>
+<td align="left">270211</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Water/sewer maint. (owned home)</td>
+<td align="left">270212</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Water/sewer maint. (owned vacation)</td>
+<td align="left">270213</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Water/sewer maint. (rented vacation)</td>
+<td align="left">270214</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Trash and garbage collection</td>
+<td align="left">TRASH</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Trash/garb. coll. (renter)</td>
+<td align="left">270411</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Trash/garb. coll. (owned home)</td>
+<td align="left">270412</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Trash/garb. coll. (owned vacation)</td>
+<td align="left">270413</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Trash/garb. coll. (rented vacation)</td>
+<td align="left">270414</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Septic tank cleaning</td>
+<td align="left">SEPTAN</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Septic tank clean. (renter)</td>
+<td align="left">270901</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Septic tank clean. (owned home)</td>
+<td align="left">270902</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">Septic tank clean. (owned vacation)</td>
+<td align="left">270903</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">Septic tank clean. (rented vacation)</td>
+<td align="left">270904</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<p>I also want to know what survey instruments the expenditures are
+collected through for published estimates. My stub file is the
+integrated stub file, so I should see both “I” and “D” in the survey
+colum of the stub file if expenditures are collected through both
+instruments.</p>
+<pre class="r"><code>utilities_hg %&gt;% distinct(survey) %&gt;% kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">survey</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">G</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+</tr>
+</tbody>
+</table>
+<p>It seems utlities expenditures are collected only through the
+Interview survey, so I’ll only need to download Interview data
+files.</p>
+<pre class="r"><code>ce_download(2015, interview, data_dir)</code></pre>
+<p>Now I can go ahead and calculate estimates.</p>
+<pre class="r"><code>
+fam_type_utilities &lt;- ce_prepdata(
+  2015,
+  interview,
+  ce_uccs(utilities_hg, expenditure = utilities_title, uccs_only = TRUE),
+  recode_variables = TRUE,
+  own_codebook = fam_type_codes,
+  ce_dir = data_dir,
+  int_zp = &quot;intrvw15.zip&quot;,
+  hg = utilities_hg,
+  fam_type
+) %&gt;%
+  nest(data = -fam_type) %&gt;%
+  mutate(ce_mean_df = map(data, ce_mean)) %&gt;%
+  select(-data) %&gt;%
+  unnest(ce_mean_df)
+
+fam_type_utilities %&gt;% arrange(fam_type) %&gt;% kable(booktabs = TRUE)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="58%" />
+<col width="12%" />
+<col width="8%" />
+<col width="9%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">fam_type</th>
+<th align="right">agg_exp</th>
+<th align="right">mean_exp</th>
+<th align="right">se</th>
+<th align="right">cv</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Married Couple only</td>
+<td align="right">122623482952</td>
+<td align="right">4378.377</td>
+<td align="right">76.25699</td>
+<td align="right">1.741673</td>
+</tr>
+<tr class="even">
+<td align="left">Married Couple, own children only, oldest child &lt;
+6</td>
+<td align="right">21592090354</td>
+<td align="right">4073.529</td>
+<td align="right">241.48233</td>
+<td align="right">5.928087</td>
+</tr>
+<tr class="odd">
+<td align="left">Married Couple, own children only oldest child &gt;= 6,
+&lt;= 17</td>
+<td align="right">73899626502</td>
+<td align="right">5136.781</td>
+<td align="right">132.53306</td>
+<td align="right">2.580080</td>
+</tr>
+<tr class="even">
+<td align="left">Married Couple, own children only, oldest child &gt;
+17</td>
+<td align="right">53687574363</td>
+<td align="right">5585.027</td>
+<td align="right">190.15164</td>
+<td align="right">3.404668</td>
+</tr>
+<tr class="odd">
+<td align="left">All other Husband and wife families</td>
+<td align="right">26767356778</td>
+<td align="right">5699.177</td>
+<td align="right">331.83382</td>
+<td align="right">5.822487</td>
+</tr>
+<tr class="even">
+<td align="left">One parent, male, own children at least one age &lt;
+18</td>
+<td align="right">4647315390</td>
+<td align="right">3887.863</td>
+<td align="right">532.21229</td>
+<td align="right">13.689069</td>
+</tr>
+<tr class="odd">
+<td align="left">One parent, female, own children, at least one age &lt;
+18</td>
+<td align="right">22862016917</td>
+<td align="right">3684.480</td>
+<td align="right">237.12762</td>
+<td align="right">6.435851</td>
+</tr>
+<tr class="even">
+<td align="left">Single consumers</td>
+<td align="right">88002147354</td>
+<td align="right">2348.182</td>
+<td align="right">40.59815</td>
+<td align="right">1.728919</td>
+</tr>
+<tr class="odd">
+<td align="left">Other families</td>
+<td align="right">84986387660</td>
+<td align="right">3942.345</td>
+<td align="right">122.97865</td>
+<td align="right">3.119429</td>
+</tr>
+</tbody>
+</table>
+<p>And finally, a quick lollipop plot.</p>
+<pre class="r"><code>fam_type_utilities %&gt;%
+  mutate(fam_type = fct_reorder(fam_type, mean_exp)) %&gt;%
+  ggplot(aes(x = mean_exp, y = fam_type, mean_exp)) +
+  geom_segment(aes(x = 0, xend = mean_exp, yend = fam_type)) +
+  geom_point(color = &quot;red&quot;, size = 5) +
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  labs(
+    y = &quot;CU composition (FAM_TYPE)&quot;,
+    x = &quot;Estimated, weighted, annual mean expenditure ($)&quot;,
+    title =
+      &quot;Estimated annual mean utilities expenditures by CU composition&quot;
+  ) +
+  theme_bw()</code></pre>
+<p><img src="cepumd_files/figure-html/cepumd-plot_fam_type_utilities-1.png" width="100%" /></p>
+<pre class="r"><code>ce_cleanup(data_dir)</code></pre>
 </div>
 </div>
 
