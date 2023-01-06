@@ -276,12 +276,12 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>The purpose of is to make working with Consumer Expenditure Surveys
-(CE) Public-Use Microdata (PUMD) easier toward calculating mean,
-weighted, annual expenditures (henceforth “mean expenditures”). The
-challenges seeks to address deal primarily with pulling together the
-necessary data toward this end. Some of the overarching ideas underlying
-the package are as follows:</p>
+<p>The purpose of <code>cepumd</code> is to make working with Consumer
+Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward
+calculating mean, weighted, annual expenditures (henceforth “mean
+expenditures”). The challenges <code>cepumd</code> seeks to address deal
+primarily with pulling together the necessary data toward this end. Some
+of the overarching ideas underlying the package are as follows:</p>
 <ul>
 <li>Use a <a href="https://www.tidyverse.org/">Tidyverse</a> framework
 for most operations and be (hopefully) generally <a
@@ -336,8 +336,8 @@ expenditure categories are organized hierarchichally, and data are
 stored across thousands of files to which the CE provides access through
 their website. Also, given the length of the program, it would be
 difficult to harmonize data across all those years and files, so there
-are some inconsistencies in the way data are stored, which seeks to
-address (more on this further down).</p>
+are some inconsistencies in the way data are stored, which
+<code>cepumd</code> seeks to address (more on this further down).</p>
 <p>Please visit the following pages to learn more about the CE program
 overall and CE PUMD more specifically.</p>
 <ul>
@@ -364,9 +364,9 @@ class="uri">https://www.bls.gov/cex/csxfaqs.htm</a></li>
 </div>
 <div id="challenges-addressed-by-cepumd" class="section level2">
 <h2>Challenges addressed by {cepumd}</h2>
-<p>seeks to address challenges in three categories: data
-gathering/organization; managing data inconsistencies; and calculating
-weighted, annual metrics.</p>
+<p><code>cepumd</code> seeks to address challenges in three categories:
+data gathering/organization; managing data inconsistencies; and
+calculating weighted, annual metrics.</p>
 <ul>
 <li><strong>Data gathering/organization</strong>
 <ul>
@@ -508,9 +508,9 @@ only be necessary temporarily.</li>
 </div>
 <div id="example-workflows" class="section level2">
 <h2>Example workflows</h2>
-<p>The following are a few sample workflows that show how can be used.
-Before jumping into those I’ll first install and load the necessary
-pacakges.</p>
+<p>The following are a few sample workflows that show how
+<code>cepumd</code> can be used. Before jumping into those I’ll first
+install and load the necessary pacakges.</p>
 <pre class="r"><code>
 # Store a vector of names of additional packages to be used
 pkgs &lt;- c(&quot;tidyverse&quot;, &quot;devtools&quot;, &quot;readxl&quot;, &quot;knitr&quot;, &quot;blsR&quot;)
@@ -528,10 +528,11 @@ library(tidyverse)
 library(cepumd)</code></pre>
 <div id="simple-workflow" class="section level3">
 <h3>Simple workflow</h3>
-<p>The following is an example of how someone might go about using to
-calculate a 2021 annual, weighted estimate of mean expenditures on pets
-for all of the U.S. using CE integrated data without creating a separate
-directory for the data. This is just a quick and easy calculation.</p>
+<p>The following is an example of how someone might go about using
+<code>cepumd</code> to calculate a 2021 annual, weighted estimate of
+mean expenditures on pets for all of the U.S. using CE integrated data
+without creating a separate directory for the data. This is just a quick
+and easy calculation.</p>
 <pre class="r"><code>ce_prepdata(
   2021,
   integrated,
@@ -1886,7 +1887,7 @@ food_away_means %&gt;% kable(booktabs = TRUE)</code></pre>
   ) +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="cepumd_files/figure-html/cepumd-ex-3-group-means-plot-1.png" width="100%" /></p>
+<p><img src="cepumd_files/figure-html/cepumd-plot_food_away_means-1.png" width="100%" /></p>
 <p>Here we can see that on an inflation-adjusted basis, households of
 all sizes had higher expenditures on food away from home in 2010 than
 they did in 2020.</p>

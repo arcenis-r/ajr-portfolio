@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 
 ## Introduction
-The purpose of \code[cepumd]  is to make working with Consumer Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward calculating mean, weighted, annual expenditures (henceforth "mean expenditures"). The challenges \code[cepumd] seeks to address deal primarily with pulling together the necessary data toward this end. Some of the overarching ideas underlying the package are as follows:
+The purpose of `cepumd`  is to make working with Consumer Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward calculating mean, weighted, annual expenditures (henceforth "mean expenditures"). The challenges `cepumd` seeks to address deal primarily with pulling together the necessary data toward this end. Some of the overarching ideas underlying the package are as follows:
 
 * Use a [Tidyverse](https://www.tidyverse.org/) framework for most operations and be (hopefully) generally [Tidyverse](https://www.tidyverse.org/) friendly
 * The best practice is to put all required data in one place, which `cepumd` does by default
@@ -33,7 +33,7 @@ From the CE home page:
 
 > CE data are collected by the Census Bureau for BLS in two surveys, the Interview Survey for major and/or recurring items and the Diary Survey for more minor or frequently purchased items. CE data are primarily used to revise the relative importance of goods and services in the market basket of the Consumer Price Index. The CE is the only Federal household survey to provide information on the complete range of consumers' expenditures and incomes. Here is an overview of the CE program and its methods."
 
-Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchichally, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which \code[cepumd] seeks to address (more on this further down).
+Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchichally, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which `cepumd` seeks to address (more on this further down).
 
 Please visit the following pages to learn more about the CE program overall and CE PUMD more specifically.
 
@@ -46,7 +46,7 @@ Please visit the following pages to learn more about the CE program overall and 
 * CE Frequently Asked Questions: https://www.bls.gov/cex/csxfaqs.htm
 
 ## Challenges addressed by {cepumd}
-\code[cepumd] seeks to address challenges in three categories: data gathering/organization; managing data inconsistencies; and calculating weighted, annual metrics.
+`cepumd` seeks to address challenges in three categories: data gathering/organization; managing data inconsistencies; and calculating weighted, annual metrics.
 
 * **Data gathering/organization**
     + Facilitate data and metadata downloads with `ce_download()`, `store_ce_hg()`, and `store_ce_dict()`
@@ -113,7 +113,7 @@ devtools::install_github("arcenis-r/cepumd")
 
 ## Example workflows
 
-The following are a few sample workflows that show how \code[cepumd] can be used. Before jumping into those I'll first install and load the necessary pacakges.
+The following are a few sample workflows that show how `cepumd` can be used. Before jumping into those I'll first install and load the necessary pacakges.
 
 ```{r, load_pkgs}
 
@@ -134,7 +134,7 @@ library(cepumd)
 ```
 
 ### Simple workflow
-The following is an example of how someone might go about using \code[cepumd] to calculate a 2021 annual, weighted estimate of mean expenditures on pets for all of the U.S. using CE integrated data without creating a separate directory for the data. This is just a quick and easy calculation.
+The following is an example of how someone might go about using `cepumd` to calculate a 2021 annual, weighted estimate of mean expenditures on pets for all of the U.S. using CE integrated data without creating a separate directory for the data. This is just a quick and easy calculation.
 
 ```{r simple_wflow, cache=TRUE}
 ce_prepdata(
@@ -437,7 +437,7 @@ food_away_comp_data %>%
 
 The next step is to calculate means, for which I'll use some more Tidyverse functions.
 
-```{r get_food_away_means}
+```{r get_food_away_means, cache=TRUE}
 food_away_means <- food_away_comp_data %>%
   nest(data = -c(year, fam_size_label)) %>%
   mutate(ce_mn_df = map(data, ce_mean)) %>% 
@@ -451,7 +451,7 @@ food_away_means %>% kable(booktabs = TRUE)
 
 Plotting these data would be pretty straightforward, as well.
 
-```{r ex-3-group-means-plot}
+```{r plot_food_away_means}
 food_away_means %>%
   ggplot(aes(x = fam_size_label, y = mean_exp, fill = year, group = year)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.8) +
