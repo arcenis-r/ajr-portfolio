@@ -69,13 +69,15 @@ Please visit the following pages to learn more about the CE program overall and 
 Source code and other package information is available at https://github.com/arcenis-r/cepumd
 
 ## Cautions and Recommendations
-* Estimates produced using PUMD, which is topcoded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not topcoded nor have records suppressed. You can learn more at [CE Protection of Respondent Confidentiality](https://www.bls.gov/cex/pumd_disclosure.htm)
+* Estimates produced using PUMD, which is topcoded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not topcoded nor have records suppressed. You can learn more at [CE Protection of Respondent Confidentiality](https://www.bls.gov/cex/pumd_disclosure.htm).
 
-* When calculating estimates for sub-samples or crosss-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a [stratified, random sample](https://www.bls.gov/opub/hom/cex/design.htm) (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. `cepumd` currently does not support unweighted estimates, but data for such an analysis can be prepared using `ce_prepdata()`
+* When calculating estimates for sub-samples or crosss-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a [stratified, random sample](https://www.bls.gov/opub/hom/cex/design.htm) (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. `cepumd` currently does not support unweighted estimates, but data for such an analysis can be prepared using `ce_prepdata()`.
 
-* Check the expenditure category in the appropriate HG file to ensure that it is the category for which you intend to generate an estimate
+* Quantiles should only be generated using data from 1 survey instrument as the samples for the Interview and Diary are different.
 
-* Store an HG object in the environment and call that directly in `ce_prepdata()`
+* Check the expenditure category in the appropriate HG file to ensure that it is the category for which you intend to generate an estimate.
+
+* Store an HG object in the environment and call that directly in `ce_prepdata()`.
 
 ## Installation
 
@@ -134,7 +136,7 @@ library(cepumd)
 ### Simple workflow
 The following is an example of how someone might go about using \code[cepumd] to calculate a 2021 annual, weighted estimate of mean expenditures on pets for all of the U.S. using CE integrated data without creating a separate directory for the data. This is just a quick and easy calculation.
 
-```{r simple_wflow}
+```{r simple_wflow, cache=TRUE}
 ce_prepdata(
   2021,
   integrated,
@@ -169,22 +171,251 @@ In this example I'll calculate estimated annual expenditures on used cars and tr
 
 First, I'll get the portion of the stub file pertaining to used cars and trucks to ensure that I get the correct UCCs.
 
-```{r used_cars_stub}
+```{r filter_stub}
 stub_2021 <- ce_hg(2021, integrated)
-ce_uccs(stub_2021, "Used")
+
+stub_2021 %>%
+  filter(str_detect(title, "[C|c]ars")) %>%
+  kable(booktabs = TRUE)
+```
+
+It looks like the expenditure category I want is "Cars and trucks, used".
+
+```{r stub_used_cars_trucks}
+ce_uccs(stub_2021, "Cars and trucks, used", uccs_only = FALSE)
+```
+
+I notice from the "survey" column that all of the UCCs associated with used cars and trucks come from the Interview survey (as indicated by the "I"). So when I prepare my data I'll only need data from the Interview.
+
+```{r cars_trucks_means, cache = TRUE}
+cars_trucks <- ce_prepdata(
+  2021,
+  interview,
+  uccs = ce_uccs(stub_2021, "Cars and trucks, used", uccs_only = TRUE),
+  bls_urbn,
+  recode_variables = TRUE,
+  hg = stub_2021
+)
+
+cars_trucks %>%
+  nest(data = -bls_urbn) %>%
+  mutate(ce_mn_df = map(data, ce_mean)) %>% 
+  select(-data) %>% 
+  unnest(ce_mn_df) %>%
+  kable(booktabs = TRUE)
+```
+
+Getting the annual, weighted estimate of the median would be just as easy. Since I'm using interview data only here, this would be a good example. I'll calculate the median and 99th percentiles for the overall sample rather than breaking it down by urbanicity.
+
+```{r cars_trucks_median, cache = TRUE}
+ce_quantiles(cars_trucks, probs = c(0.5, 0.99)) %>% kable(booktabs = TRUE)
+```
+
+```{r cars_trucks_cleanup}
+ce_cleanup()
 ```
 
 
 ### Very advanced workflow
 
+In this last example I'm going to assume very little knowledge about the CE. I'd like to compare mean annual expenditures on food away from home between 2010 and 2020 by household size and I want to convert expenditures to 2022 dollars using the CPI. Also, I'm going to set up a directory on my local machine to put all the data and metadata files into.
 
-### Unweighted estimates with pets data
-* Add "weighted" to `ce_means()`
+First, I'll set up that directory. I'll put the directory path in a variable called "food_away_dir" for simplicity.
 
-### CPI adjusted data for pets in 2021 chained to 82-84
+```{r setup_dir}
+food_away_dir <- file.path("..", "food-away")
+dir.create(food_away_dir)
+list.files(food_away_dir)
+```
+
+Next, I want to make sure that there are data for my years of interest.
+```{r see_pumd_years}
+ce_pumd_years()
+```
+
+Now I want to store the CE HG files and data dictionary.
+
+```{r store_metadata}
+store_ce_hg(food_away_dir)
+store_ce_dict(food_away_dir)
+```
+
+Let's take a look at what the files are called.
+
+```{r show_md_files}
+list.files(food_away_dir)
+```
+
+Next I want to see what the 2010 HG file looks like for 2010 for expenditures on "food away from home". First I'll download both HG files (2010 and 2020), then I'll find the correct title in the 2010 HG file for my category.
+
+```{r convert_hg_files}
+hg_10 <- ce_hg(2010, integrated, food_away_dir)
+hg_20 <- ce_hg(2020, integrated, food_away_dir)
+
+hg_10 %>%
+  filter(str_detect(title, "[F|f]ood [A|a]way")) %>%
+  kable(booktabs = TRUE)
+
+hg_20 %>%
+  filter(str_detect(title, "[F|f]ood [A|a]way")) %>%
+  kable(booktabs = TRUE)
+```
+
+It looks like the title is the same in both years, so I'll store the title in a variable to use downstream.
+
+```{r store_title}
+food_away_title <- hg_10 %>%
+  filter(str_detect(title, "[F|f]ood [A|a]way")) %>%
+  pull(title)
+```
+
+Now I'll use that title to get the UCCs and see the entire table with "food away from home" expenditures (only for 2010 as a sample).
+
+```{r show_food_away_hg}
+food_away_hg_10 <- ce_uccs(hg_10, food_away_title, uccs_only = FALSE)
+food_away_hg_20 <- ce_uccs(hg_20, food_away_title, uccs_only = FALSE)
+
+food_away_hg_10 %>% kable(booktabs = TRUE)
+```
+
+Next I'll use the dictionary to find the variable for household size. First I'll take a look at the sheets in the dictionary.
+
+```{r show_dict_sheets}
+ce_dict_file_path <- file.path(food_away_dir, "ce-dict.xlsx")
+excel_sheets(ce_dict_file_path)
+```
+
+Now I'll see what variables contain anything about the number of household members. To do that I'll have to load the sheet from the dictionary containing the variable definitions. I also want to filter the variable data to only the FMLI where the "Last year" column is missing, i.e., the variable definition is still in use.
+```{r cu_size_vars}
+ce_variables <- read_excel(ce_dict_file_path, sheet = "Variables")
+
+ce_variables %>%
+  filter(
+    str_detect(File, "FMLI"),
+    str_detect(
+      tolower(`Variable description`), "number of members"
+    )
+  ) %>%
+  kable(booktabs = TRUE)
+```
+
+It looks like FAM_SIZE is the variable I want. I can see that this variable was used from 1980 through 1981 then was dropped and re-introduced in 1984 and has been in use since. So it looks like it's available for my 2 years of interest. Next I'll check whether the FAM_SIZE variable has any value codes associated with it. I'll have to pull in the "Codes" sheet. (Check your spelling here.)
+
+```{r fam_size_codes}
+ce_codes <- read_excel(ce_dict_file_path, sheet = "Codes ")
+
+ce_codes %>%
+  filter(File %in% "FMLI", Variable %in% "FAM_SIZE") %>%
+  kable(booktabs = TRUE)
+```
+
+It looks like FAM_SIZE is not a coded variable (no observations in the "Codes" sheet), so it must be numeric. With all that, I'm ready to prepare my data.
+The first thing I'll need are the UCCs for each of the two years in my analysis.
+
+```{r show_uccs_10}
+food_away_uccs_10 <- ce_uccs(food_away_hg_10, food_away_title, uccs_only = TRUE)
+food_away_uccs_20 <- ce_uccs(food_away_hg_20, food_away_title, uccs_only = TRUE)
+
+food_away_uccs_10
+```
+
+```{r show_uccs_20}
+food_away_uccs_20
+```
+
+The lists of UCCs look identical, but I'll keep both just to be cautious.
+
+Next I'll prepare the 2010 data and get a summary of the FAM_SIZE variable since it is a continuous variable.
+
+```{r prep_data_10}
+food_away_data_10 <- ce_prepdata(
+  2010,
+  integrated,
+  food_away_uccs_10,
+  recode_variables = FALSE,
+  ce_dir = food_away_dir,
+  dict_path = "ce-dict.xslx",
+  hg = food_away_hg_10,
+  fam_size
+)
+
+summary(food_away_data_10$fam_size)
+```
+
+Since some households have as many as 14 people, I'll create a FAM_SIZE label with any number greater than 4 taking on the value "5+". Next, I'll prepare the 2020 data and rowbind it with the 2010 data as well as create the "fam_size_label" variable. I'll also take a look at just a snippet of the data.
+
+```{r ex-3-get-wt-estimates}
+food_away_data_20 <- ce_prepdata(
+  2020,
+  integrated,
+  food_away_uccs_20,
+  recode_variables = FALSE,
+  ce_dir = food_away_dir,
+  dict_path = "ce-dict.xslx",
+  hg = food_away_hg_20,
+  fam_size
+)
+
+food_away_comp_data <- food_away_data_10 %>%
+  mutate(year = 2010) %>%
+  bind_rows(food_away_data_20 %>% mutate(year = 2020)) %>%
+  mutate(
+    fam_size_label = if_else(fam_size > 4, "5+", as.character(fam_size)),
+    year = factor(year)
+  )
+
+food_away_comp_data %>%
+  select(year, newid, finlwt21, cost, ref_yr, ref_mo) %>%
+  group_by(year) %>%
+  slice_sample(n = 5) %>%
+  ungroup() %>%
+  kable(booktabs = TRUE)
+```
+
+Since I'm going to adjust for inflation, I also want to see the years in which expenditures were made just as an extra check.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!----------------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # cepumd
 
