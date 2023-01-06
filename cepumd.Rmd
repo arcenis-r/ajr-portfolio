@@ -12,6 +12,180 @@ knitr::opts_chunk$set(
 ```
 
 
+## Introduction
+The purpose of \code[cepumd]  is to make working with Consumer Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward calculating mean, weighted, annual expenditures (henceforth "mean expenditures"). The challenges \code[cepumd] seeks to address deal primarily with pulling together the necessary data toward this end. Some of the overarching ideas underlying the package are as follows:
+
+* Use a [Tidyverse](https://www.tidyverse.org/) framework for most operations and be (hopefully) generally [Tidyverse](https://www.tidyverse.org/) friendly
+* The best practice is to put all required data in one place, which `cepumd` does by default
+* Balance the effort to make the end user's experience with CE PUMD easier while being flexible enough to allow that user to perform any analysis with the data they wish
+* Only designed to help users calculate mean **expenditures** on and of the consumer unit (CU), i.e., not income, not assets, not liabilities, not gifts, at least for now
+
+## History of CE
+First a little history...
+The first Consumer Expenditure Survey happened in 1888 (https://www.bls.gov/opub/hom/cex/history.htm), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more information on the detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called [130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)
+
+
+## Overview of CE and CE PUMD
+
+From the CE home page:
+
+> "The Consumer Expenditure Surveys (CE) program provides data on expenditures, income, and demographic characteristics of consumers in the United States. The CE program provides these data in tables, LABSTAT database, news releases, reports, and public use microdata files.
+
+> CE data are collected by the Census Bureau for BLS in two surveys, the Interview Survey for major and/or recurring items and the Diary Survey for more minor or frequently purchased items. CE data are primarily used to revise the relative importance of goods and services in the market basket of the Consumer Price Index. The CE is the only Federal household survey to provide information on the complete range of consumers' expenditures and incomes. Here is an overview of the CE program and its methods."
+
+Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchichally, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which \code[cepumd] seeks to address (more on this further down).
+
+Please visit the following pages to learn more about the CE program overall and CE PUMD more specifically.
+
+* CE homepage: (https://www.bls.gov/cex/)
+* CE PUMD page: (https://www.bls.gov/cex/pumd.htm)
+* CE PUMD Getting Started Guide: https://www.bls.gov/cex/pumd-getting-started-guide.htm
+* CE Dictionary for Interview and Diary Surveys (XLSX download) (https://www.bls.gov/cex/pumd/ce_pumd_interview_diary_dictionary.xlsx)
+* CE PUMD published tables: (https://www.bls.gov/cex/tables.htm)
+* CE PUMD Handbook of Methods: https://www.bls.gov/opub/hom/cex/
+* CE Frequently Asked Questions: https://www.bls.gov/cex/csxfaqs.htm
+
+## Challenges addressed by {cepumd}
+\code[cepumd] seeks to address challenges in three categories: data gathering/organization; managing data inconsistencies; and calculating weighted, annual metrics.
+
+* **Data gathering/organization**
+    + Facilitate data and metadata downloads with `ce_download()`, `store_ce_hg()`, and `store_ce_dict()`
+    + Convert hierarchical grouping (HG) files to data tables using `ce_hg()`
+    + Help the user identify the Universal Classification Codes (UCCs) related to their analysis using a combination of `ce_hg()` and `ce_uccs()`
+    + Combine all required files and variables using `ce_prepdata()`
+
+* **Managing data inconsistencies**
+    + Provide the ability to recode variable categories using the CE Dictionary for Interview and Diary Surveys
+    + Resolve some inconsistencies such as differences code definitions between the Interview and Diary (check the definitions of the "FAM_TYPE" variable categories in 2015 for an example)
+    + Provide useful errors or warnings when there are multiple categories of something the user is trying to access, e.g., some titles in the hierarchical grouping files ("stub" or "HG" files) repeat and requires more careful selection of UCCs
+
+* **Calculating weighted, annual metrics**
+    + Calculate a mean expenditure with `ce_mean()` or expenditure quantile with `ce_quantile()`
+    + Account for the factor (annual vs. quarterly expenditure)
+    + Account for the "months in scope" of a given consumer unit (CU)
+    + Annualize expenditures for either Diary or Interview expenditures
+    + Integrate Interview and Diary data as necessary
+    
+Source code and other package information is available at https://github.com/arcenis-r/cepumd
+
+## Cautions and Recommendations
+* Estimates produced using PUMD, which is topcoded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not topcoded nor have records suppressed. You can learn more at [CE Protection of Respondent Confidentiality](https://www.bls.gov/cex/pumd_disclosure.htm)
+
+* When calculating estimates for sub-samples or crosss-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a [stratified, random sample](https://www.bls.gov/opub/hom/cex/design.htm) (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. `cepumd` currently does not support unweighted estimates, but data for such an analysis can be prepared using `ce_prepdata()`
+
+* Check the expenditure category in the appropriate HG file to ensure that it is the category for which you intend to generate an estimate
+
+* Store an HG object in the environment and call that directly in `ce_prepdata()`
+
+## Installation
+
+You can install the development version of `cepumd` from [GitHub](https://github.com), but you'll first need the `devtools` package:
+
+```{r, installation, eval=FALSE}
+if (!"devtools" %in% installed.packages()[, "Package"]) {
+  install.packages("devtools", dependencies = TRUE)
+}
+
+devtools::install_github("arcenis-r/cepumd")
+```
+
+## Key cepumd functions
+* The workhorse of `cepumd` is `ce_prepdata()`. It merges the household characteristics file (FMLI/-D) with the corresponding expenditure tabulation file (MTBI/EXPD) for a specified year, adjusts weights for months-in-scope and the number of collection quarters, adjusts some cost values by their periodicity factor (some cost categories are represented as annual figures and others as quarterly). With the recent update it only requires the first 3 arguments to function: the year, the survey type, and one or more valid UCCs. `ce_prepdata()` now creates all of the other necessary objects within the function if not provided.
+
+* There are three functions for downloading the data and necessary documentation:
+    + `ce_download()` downloads zip files for a given year and survey instrument directly from the CE website
+    + `store_ce_hg()` downloads the zip file containing all HG files maintained by the CE to the specified location.
+    + `store_ce_dict()` downloades the CE PUMD dictionary from CE's website to the specified location.
+    
+* There are two functions for wrangling hierarchical grouping data into more useable formats:
+    + `ce_hg()` pulls the requested type of HG file (Interview, Diary, or Integrated) for a specified year.
+    + `ce_uccs()` filters the HG file for the specified expenditure category and returns either a data frame with only that section of the HG file or the Universal Classification Codes (UCCs) that make up that expenditure category.
+
+* There are two functions that the user can use to calculate CE summary statistics:
+    + `ce_mean()` calculates a mean expenditure, standard error of the mean, coefficient of variation, and an aggregate expenditure.
+    + `ce_quantiles()` calculates weighted expenditure quantiles. It is important to note that calculating medians for integrated expenditures is not recommended because the calculation involves using weights from both the Diary and Survey instruments.
+
+* There are two utility functions to make the workflow a bit easier:
+    + `ce_pumd_years()` scrapes the main PUMD website to get a vector of years for which PUMD are available. The vector is limited to the years for which there are also HG files available.
+    + `ce_cleanup()` deletes a file containing CE data that may only be necessary temporarily.
+
+## Example workflows
+
+The following are a few sample workflows that show how \code[cepumd] can be used. Before jumping into those I'll first install and load the necessary pacakges.
+
+```{r, load_pkgs}
+
+# Store a vector of names of additional packages to be used
+pkgs <- c("tidyverse", "devtools", "readxl", "knitr")
+
+# Install packages from CRAN
+invisible(
+  sapply(
+    pkgs, function(x) if (!x %in% installed.packages()) install.packages(x)
+  )
+)
+
+library(knitr)
+library(readxl)
+library(tidyverse)
+library(cepumd)
+```
+
+### Simple workflow
+The following is an example of how someone might go about using \code[cepumd] to calculate a 2021 annual, weighted estimate of mean expenditures on pets for all of the U.S. using CE integrated data without creating a separate directory for the data. This is just a quick and easy calculation.
+
+```{r simple_wflow}
+ce_prepdata(
+  2021,
+  integrated,
+  uccs = ce_hg(2021, integrated) %>% ce_uccs("Pets")
+) %>%
+  ce_mean() %>%
+  kable(booktabs = TRUE)
+```
+
+Yup... that's all it takes. I simply ran `ce_prepdata()` with the year, the survey type, and the uccs I needed and piped that directly into `ce_mean()`.
+
+But where are all the files? Zip files, etc.? They're in my R session's temporary directory under a sub-directory named "ce-data".
+
+```{r show-tempdir}
+list.files(file.path(tempdir(), "ce-data"))
+```
+
+I'll go ahead and clean those files up really quickly.
+
+```{r show-tempdir-2}
+ce_cleanup()
+list.files(file.path(tempdir(), "ce-data"))
+```
+
+### Slightly more advanced workflow
+* Used Cars & Trucks 2021, Interview
+* by Urbanicity
+* Show stub file to highlight that expenditures only come from Interview
+* Calculate median with the same `ce_prepdata()` object
+
+In this example I'll calculate estimated annual expenditures on used cars and trucks by urbanicity also for 2021. Once the data are prepped with `ce_data()` I'll just nest the data by urbanicity and run `ce_means()` and `ce_quantiles()` on the nested datasets. 
+
+First, I'll get the portion of the stub file pertaining to used cars and trucks to ensure that I get the correct UCCs.
+
+```{r used_cars_stub}
+stub_2021 <- ce_hg(2021, integrated)
+ce_uccs(stub_2021, "Used")
+```
+
+
+### Very advanced workflow
+
+
+### Unweighted estimates with pets data
+* Add "weighted" to `ce_means()`
+
+### CPI adjusted data for pets in 2021 chained to 82-84
+
+
+<!----------------------------------------------------------------------------->
+
 # cepumd
 
 [cepumd](https://github.com/arcenis-r/cepumd) facilitates the calculation of Consumer Expenditure Survey (CE) annual, weighted, estimated mean expenditures using CE Public-Use Microdata (PUMD) by addressing some unique challenges that exist in working with CE PUMD. Some examples are:
