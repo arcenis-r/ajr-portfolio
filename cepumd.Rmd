@@ -75,6 +75,8 @@ Source code and other package information is available at https://github.com/arc
 
 * Quantiles should only be generated using data from 1 survey instrument as the samples for the Interview and Diary are different.
 
+* The variables EXPNMO and EXPNYR (Diary reference month and year variables respectively) are only available from 2012 forward and will have missing values in them for any years before 2012.
+
 * Check the expenditure category in the appropriate HG file to ensure that it is the category for which you intend to generate an estimate.
 
 * Store an HG object in the environment and call that directly in `ce_prepdata()`.
@@ -246,6 +248,43 @@ Let's take a look at what the files are called.
 list.files(food_away_dir)
 ```
 
+I'm going to start by looking at the dictionary to ensure that the variables I want to subset by are there.
+
+First I'll take a look at the sheets in the dictionary.
+
+```{r show_dict_sheets}
+ce_dict_file_path <- file.path(food_away_dir, "ce-dict.xlsx")
+excel_sheets(ce_dict_file_path)
+```
+
+Now I'll see what variables contain anything about the number of household members. To do that I'll have to load the sheet from the dictionary containing the variable definitions. I also want to filter the variable data to only the FMLI where the "Last year" column is missing, i.e., the variable definition is still in use.
+```{r cu_size_vars}
+ce_variables <- read_excel(ce_dict_file_path, sheet = "Variables")
+
+ce_variables %>%
+  filter(
+    str_detect(File, "FMLI"),
+    str_detect(
+      tolower(`Variable description`), "number of members"
+    )
+  ) %>%
+  kable(booktabs = TRUE)
+```
+
+It looks like FAM_SIZE is the variable I want. I can see that this variable was used from 1980 through 1981 then was dropped and re-introduced in 1984 and has been in use since. So it looks like it's available for my 2 years of interest. Next I'll check whether the FAM_SIZE variable has any value codes associated with it. I'll have to pull in the "Codes" sheet. (Check your spelling here.)
+
+```{r fam_size_codes}
+ce_codes <- read_excel(ce_dict_file_path, sheet = "Codes ")
+
+ce_codes %>%
+  filter(File %in% "FMLI", Variable %in% "FAM_SIZE") %>%
+  kable(booktabs = TRUE)
+```
+
+It looks like FAM_SIZE is not a coded variable (no observations in the "Codes" sheet), so it must be numeric.
+
+Since I'm going to need 
+
 Next I want to see what the 2010 HG file looks like for 2010 for expenditures on "food away from home". First I'll download both HG files (2010 and 2020), then I'll find the correct title in the 2010 HG file for my category.
 
 ```{r convert_hg_files}
@@ -278,38 +317,9 @@ food_away_hg_20 <- ce_uccs(hg_20, food_away_title, uccs_only = FALSE)
 food_away_hg_10 %>% kable(booktabs = TRUE)
 ```
 
-Next I'll use the dictionary to find the variable for household size. First I'll take a look at the sheets in the dictionary.
+Next I'll use the dictionary to find the variable for household size. 
 
-```{r show_dict_sheets}
-ce_dict_file_path <- file.path(food_away_dir, "ce-dict.xlsx")
-excel_sheets(ce_dict_file_path)
-```
-
-Now I'll see what variables contain anything about the number of household members. To do that I'll have to load the sheet from the dictionary containing the variable definitions. I also want to filter the variable data to only the FMLI where the "Last year" column is missing, i.e., the variable definition is still in use.
-```{r cu_size_vars}
-ce_variables <- read_excel(ce_dict_file_path, sheet = "Variables")
-
-ce_variables %>%
-  filter(
-    str_detect(File, "FMLI"),
-    str_detect(
-      tolower(`Variable description`), "number of members"
-    )
-  ) %>%
-  kable(booktabs = TRUE)
-```
-
-It looks like FAM_SIZE is the variable I want. I can see that this variable was used from 1980 through 1981 then was dropped and re-introduced in 1984 and has been in use since. So it looks like it's available for my 2 years of interest. Next I'll check whether the FAM_SIZE variable has any value codes associated with it. I'll have to pull in the "Codes" sheet. (Check your spelling here.)
-
-```{r fam_size_codes}
-ce_codes <- read_excel(ce_dict_file_path, sheet = "Codes ")
-
-ce_codes %>%
-  filter(File %in% "FMLI", Variable %in% "FAM_SIZE") %>%
-  kable(booktabs = TRUE)
-```
-
-It looks like FAM_SIZE is not a coded variable (no observations in the "Codes" sheet), so it must be numeric. With all that, I'm ready to prepare my data.
+ With all that, I'm ready to prepare my data.
 The first thing I'll need are the UCCs for each of the two years in my analysis.
 
 ```{r show_uccs_10}
