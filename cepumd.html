@@ -295,13 +295,19 @@ cepumd functions</a></li>
 <li><a href="#example-workflows" id="toc-example-workflows">Example
 workflows</a>
 <ul>
-<li><a href="#simple-workflow" id="toc-simple-workflow">Simple
-workflow</a></li>
-<li><a href="#slightly-more-advanced-workflow"
-id="toc-slightly-more-advanced-workflow">Slightly more advanced
-workflow</a></li>
-<li><a href="#very-advanced-workflow"
-id="toc-very-advanced-workflow">Very advanced workflow</a></li>
+<li><a href="#simple-workflow-integrated-pet-expenditures"
+id="toc-simple-workflow-integrated-pet-expenditures">Simple workflow:
+Integrated Pet Expenditures</a></li>
+<li><a
+href="#slightly-more-advanced-workflow-used-car-truck-expenditures-by-urbanicity"
+id="toc-slightly-more-advanced-workflow-used-car-truck-expenditures-by-urbanicity">Slightly
+more advanced workflow: Used Car &amp; Truck Expenditures by
+Urbanicity</a></li>
+<li><a
+href="#very-advanced-workflow-inflation-adjusted-food-away-from-home-expenditures"
+id="toc-very-advanced-workflow-inflation-adjusted-food-away-from-home-expenditures">Very
+advanced workflow: Inflation adjusted food away from home
+expenditures</a></li>
 </ul></li>
 </ul>
 </div>
@@ -557,8 +563,9 @@ library(knitr)
 library(readxl)
 library(tidyverse)
 library(cepumd)</code></pre>
-<div id="simple-workflow" class="section level3">
-<h3>Simple workflow</h3>
+<div id="simple-workflow-integrated-pet-expenditures"
+class="section level3">
+<h3>Simple workflow: Integrated Pet Expenditures</h3>
 <p>The following is an example of how someone might go about using
 <code>cepumd</code> to calculate a 2021 annual, weighted estimate of
 mean expenditures on pets for all of the U.S. using CE integrated data
@@ -603,8 +610,11 @@ session’s temporary directory under a sub-directory named “ce-data”.</p>
 list.files(file.path(tempdir(), &quot;ce-data&quot;))
 #&gt; character(0)</code></pre>
 </div>
-<div id="slightly-more-advanced-workflow" class="section level3">
-<h3>Slightly more advanced workflow</h3>
+<div
+id="slightly-more-advanced-workflow-used-car-truck-expenditures-by-urbanicity"
+class="section level3">
+<h3>Slightly more advanced workflow: Used Car &amp; Truck Expenditures
+by Urbanicity</h3>
 <p>In this example I’ll calculate estimated annual expenditures on used
 cars and trucks by urbanicity also for 2021. Once the data are prepped
 with <code>ce_data()</code> I’ll just nest the data by urbanicity and
@@ -739,8 +749,11 @@ urbanicity.</p>
 </table>
 <pre class="r"><code>ce_cleanup()</code></pre>
 </div>
-<div id="very-advanced-workflow" class="section level3">
-<h3>Very advanced workflow</h3>
+<div
+id="very-advanced-workflow-inflation-adjusted-food-away-from-home-expenditures"
+class="section level3">
+<h3>Very advanced workflow: Inflation adjusted food away from home
+expenditures</h3>
 <p>In this last example I’m going to assume very little knowledge about
 the CE. I’d like to compare mean annual expenditures on food away from
 home between 2010 and 2020 by household size and I want to convert
