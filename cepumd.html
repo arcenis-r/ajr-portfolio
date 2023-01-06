@@ -274,29 +274,187 @@ $(document).ready(function () {
 </div>
 
 
-<div id="cepumd" class="section level1">
-<h1>cepumd</h1>
-<p><a href="https://github.com/arcenis-r/cepumd">cepumd</a> facilitates
-the calculation of Consumer Expenditure Survey (CE) annual, weighted,
-estimated mean expenditures using CE Public-Use Microdata (PUMD) by
-addressing some unique challenges that exist in working with CE PUMD.
-Some examples are:</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The purpose of is to make working with Consumer Expenditure Surveys
+(CE) Public-Use Microdata (PUMD) easier toward calculating mean,
+weighted, annual expenditures (henceforth “mean expenditures”). The
+challenges seeks to address deal primarily with pulling together the
+necessary data toward this end. Some of the overarching ideas underlying
+the package are as follows:</p>
 <ul>
-<li>Downloading CE PUMD from within R</li>
-<li>Converting hierarchical grouping (HG) files to data tables</li>
-<li>Accounting for the factor (annual vs. quarterly expenditure)</li>
-<li>Accounting for the “months in scope” of a given consumer unit
-(CU)</li>
-<li>Annualizing expenditures for either Diary or Interview
-expenditures</li>
-<li>Integrating Interview and Diary data as necessary</li>
-<li>Calculating weighted CE quantiles</li>
+<li>Use a <a href="https://www.tidyverse.org/">Tidyverse</a> framework
+for most operations and be (hopefully) generally <a
+href="https://www.tidyverse.org/">Tidyverse</a> friendly</li>
+<li>The best practice is to put all required data in one place, which
+<code>cepumd</code> does by default</li>
+<li>Balance the effort to make the end user’s experience with CE PUMD
+easier while being flexible enough to allow that user to perform any
+analysis with the data they wish</li>
+<li>Only designed to help users calculate mean
+<strong>expenditures</strong> on and of the consumer unit (CU), i.e.,
+not income, not assets, not liabilities, not gifts, at least for
+now</li>
 </ul>
-<p>For more information on the CE, please visit <a
-href="https://www.bls.gov/cex/"
-class="uri">https://www.bls.gov/cex/</a>.</p>
-<p>The workhorse of <a
-href="https://github.com/arcenis-r/cepumd">cepumd</a> is
+</div>
+<div id="history-of-ce" class="section level2">
+<h2>History of CE</h2>
+<p>First a little history… The first Consumer Expenditure Survey
+happened in 1888 (<a href="https://www.bls.gov/opub/hom/cex/history.htm"
+class="uri">https://www.bls.gov/opub/hom/cex/history.htm</a>), it was
+first used to revise CPI weights in 1972-1973, and it has been collected
+on a monthly basis since 1979. For a little bit more information on the
+detail on the history of the CE, check out the slide deck of a
+presentation delivered by Steve Henderson (former Chief of the Branch of
+Information and Analysis) and Adam Safir (current Division Chief of CE)
+called <a
+href="https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf">130
+Years of theConsumer Expenditure Surveys (CE): 1888 - 2018</a></p>
+</div>
+<div id="overview-of-ce-and-ce-pumd" class="section level2">
+<h2>Overview of CE and CE PUMD</h2>
+<p>From the CE home page:</p>
+<blockquote>
+<p>“The Consumer Expenditure Surveys (CE) program provides data on
+expenditures, income, and demographic characteristics of consumers in
+the United States. The CE program provides these data in tables, LABSTAT
+database, news releases, reports, and public use microdata files.</p>
+</blockquote>
+<blockquote>
+<p>CE data are collected by the Census Bureau for BLS in two surveys,
+the Interview Survey for major and/or recurring items and the Diary
+Survey for more minor or frequently purchased items. CE data are
+primarily used to revise the relative importance of goods and services
+in the market basket of the Consumer Price Index. The CE is the only
+Federal household survey to provide information on the complete range of
+consumers’ expenditures and incomes. Here is an overview of the CE
+program and its methods.”</p>
+</blockquote>
+<p>Some important things to note are that expenditure data are collected
+through two different survey instruments (Diary and Interview),
+expenditure categories are organized hierarchichally, and data are
+stored across thousands of files to which the CE provides access through
+their website. Also, given the length of the program, it would be
+difficult to harmonize data across all those years and files, so there
+are some inconsistencies in the way data are stored, which seeks to
+address (more on this further down).</p>
+<p>Please visit the following pages to learn more about the CE program
+overall and CE PUMD more specifically.</p>
+<ul>
+<li>CE homepage: (<a href="https://www.bls.gov/cex/"
+class="uri">https://www.bls.gov/cex/</a>)</li>
+<li>CE PUMD page: (<a href="https://www.bls.gov/cex/pumd.htm"
+class="uri">https://www.bls.gov/cex/pumd.htm</a>)</li>
+<li>CE PUMD Getting Started Guide: <a
+href="https://www.bls.gov/cex/pumd-getting-started-guide.htm"
+class="uri">https://www.bls.gov/cex/pumd-getting-started-guide.htm</a></li>
+<li>CE Dictionary for Interview and Diary Surveys (XLSX download) (<a
+href="https://www.bls.gov/cex/pumd/ce_pumd_interview_diary_dictionary.xlsx"
+class="uri">https://www.bls.gov/cex/pumd/ce_pumd_interview_diary_dictionary.xlsx</a>)</li>
+<li>CE PUMD published tables: (<a
+href="https://www.bls.gov/cex/tables.htm"
+class="uri">https://www.bls.gov/cex/tables.htm</a>)</li>
+<li>CE PUMD Handbook of Methods: <a
+href="https://www.bls.gov/opub/hom/cex/"
+class="uri">https://www.bls.gov/opub/hom/cex/</a></li>
+<li>CE Frequently Asked Questions: <a
+href="https://www.bls.gov/cex/csxfaqs.htm"
+class="uri">https://www.bls.gov/cex/csxfaqs.htm</a></li>
+</ul>
+</div>
+<div id="challenges-addressed-by-cepumd" class="section level2">
+<h2>Challenges addressed by {cepumd}</h2>
+<p>seeks to address challenges in three categories: data
+gathering/organization; managing data inconsistencies; and calculating
+weighted, annual metrics.</p>
+<ul>
+<li><strong>Data gathering/organization</strong>
+<ul>
+<li>Facilitate data and metadata downloads with
+<code>ce_download()</code>, <code>store_ce_hg()</code>, and
+<code>store_ce_dict()</code></li>
+<li>Convert hierarchical grouping (HG) files to data tables using
+<code>ce_hg()</code></li>
+<li>Help the user identify the Universal Classification Codes (UCCs)
+related to their analysis using a combination of <code>ce_hg()</code>
+and <code>ce_uccs()</code></li>
+<li>Combine all required files and variables using
+<code>ce_prepdata()</code></li>
+</ul></li>
+<li><strong>Managing data inconsistencies</strong>
+<ul>
+<li>Provide the ability to recode variable categories using the CE
+Dictionary for Interview and Diary Surveys</li>
+<li>Resolve some inconsistencies such as differences code definitions
+between the Interview and Diary (check the definitions of the “FAM_TYPE”
+variable categories in 2015 for an example)</li>
+<li>Provide useful errors or warnings when there are multiple categories
+of something the user is trying to access, e.g., some titles in the
+hierarchical grouping files (“stub” or “HG” files) repeat and requires
+more careful selection of UCCs</li>
+</ul></li>
+<li><strong>Calculating weighted, annual metrics</strong>
+<ul>
+<li>Calculate a mean expenditure with <code>ce_mean()</code> or
+expenditure quantile with <code>ce_quantile()</code></li>
+<li>Account for the factor (annual vs. quarterly expenditure)</li>
+<li>Account for the “months in scope” of a given consumer unit (CU)</li>
+<li>Annualize expenditures for either Diary or Interview
+expenditures</li>
+<li>Integrate Interview and Diary data as necessary</li>
+</ul></li>
+</ul>
+<p>Source code and other package information is available at <a
+href="https://github.com/arcenis-r/cepumd"
+class="uri">https://github.com/arcenis-r/cepumd</a></p>
+</div>
+<div id="cautions-and-recommendations" class="section level2">
+<h2>Cautions and Recommendations</h2>
+<ul>
+<li><p>Estimates produced using PUMD, which is topcoded by the CE and
+has some records suppressed to protect respondent confidentiality, will
+not match the published estimates released by the CE in most cases. The
+CE’s published estimates are based on confidential data that are not
+topcoded nor have records suppressed. You can learn more at <a
+href="https://www.bls.gov/cex/pumd_disclosure.htm">CE Protection of
+Respondent Confidentiality</a>.</p></li>
+<li><p>When calculating estimates for sub-samples or crosss-sections of
+data it is best to stick to the combinations of variables that the CE
+uses in it’s publication tables, e.g., income, geography, composition of
+CU, size of CU. This is because CE data are collected using a <a
+href="https://www.bls.gov/opub/hom/cex/design.htm">stratified, random
+sample</a> (a.k.a., “representative sample”) and only analyses conducted
+using the stratification variables are statistically valid. Using other
+variables can be helpful to understand spending across different groups,
+but unweighted estimates are likely more useful for this.
+<code>cepumd</code> currently does not support unweighted estimates, but
+data for such an analysis can be prepared using
+<code>ce_prepdata()</code>.</p></li>
+<li><p>Quantiles should only be generated using data from 1 survey
+instrument as the samples for the Interview and Diary are
+different.</p></li>
+<li><p>Check the expenditure category in the appropriate HG file to
+ensure that it is the category for which you intend to generate an
+estimate.</p></li>
+<li><p>Store an HG object in the environment and call that directly in
+<code>ce_prepdata()</code>.</p></li>
+</ul>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the development version of <code>cepumd</code> from
+<a href="https://github.com">GitHub</a>, but you’ll first need the
+<code>devtools</code> package:</p>
+<pre class="r"><code>if (!&quot;devtools&quot; %in% installed.packages()[, &quot;Package&quot;]) {
+  install.packages(&quot;devtools&quot;, dependencies = TRUE)
+}
+
+devtools::install_github(&quot;arcenis-r/cepumd&quot;)</code></pre>
+</div>
+<div id="key-cepumd-functions" class="section level2">
+<h2>Key cepumd functions</h2>
+<ul>
+<li><p>The workhorse of <code>cepumd</code> is
 <code>ce_prepdata()</code>. It merges the household characteristics file
 (FMLI/-D) with the corresponding expenditure tabulation file (MTBI/EXPD)
 for a specified year, adjusts weights for months-in-scope and the number
@@ -305,21 +463,29 @@ factor (some cost categories are represented as annual figures and
 others as quarterly). With the recent update it only requires the first
 3 arguments to function: the year, the survey type, and one or more
 valid UCCs. <code>ce_prepdata()</code> now creates all of the other
-necessary objects within the function if not provided.</p>
-<p>There are three other functions that help the user download and
-wrangle the data and necessary documentation, such as the HG files:</p>
+necessary objects within the function if not provided.</p></li>
+<li><p>There are three functions for downloading the data and necessary
+documentation:</p>
 <ul>
 <li><code>ce_download()</code> downloads zip files for a given year and
 survey instrument directly from the CE website</li>
+<li><code>store_ce_hg()</code> downloads the zip file containing all HG
+files maintained by the CE to the specified location.</li>
+<li><code>store_ce_dict()</code> downloades the CE PUMD dictionary from
+CE’s website to the specified location.</li>
+</ul></li>
+<li><p>There are two functions for wrangling hierarchical grouping data
+into more useable formats:</p>
+<ul>
 <li><code>ce_hg()</code> pulls the requested type of HG file (Interview,
 Diary, or Integrated) for a specified year.</li>
 <li><code>ce_uccs()</code> filters the HG file for the specified
 expenditure category and returns either a data frame with only that
 section of the HG file or the Universal Classification Codes (UCCs) that
 make up that expenditure category.</li>
-</ul>
-<p>There are two functions that the user can use to calculate CE summary
-statistics:</p>
+</ul></li>
+<li><p>There are two functions that the user can use to calculate CE
+summary statistics:</p>
 <ul>
 <li><code>ce_mean()</code> calculates a mean expenditure, standard error
 of the mean, coefficient of variation, and an aggregate
@@ -328,16 +494,8 @@ expenditure.</li>
 quantiles. It is important to note that calculating medians for
 integrated expenditures is not recommended because the calculation
 involves using weights from both the Diary and Survey instruments.</li>
-</ul>
-<p>There are two functions that allow the user to download metadata that
-can be useful in preparing data:</p>
-<ul>
-<li><code>store_ce_hg()</code> downloads the zip file containing all HG
-files maintained by the CE to the specified location.</li>
-<li><code>store_ce_dict()</code> downloades the CE PUMD dictionary from
-CE’s website to the specified location.</li>
-</ul>
-<p>Finally, there are two utility functions to make the workflow a bit
+</ul></li>
+<li><p>There are two utility functions to make the workflow a bit
 easier:</p>
 <ul>
 <li><code>ce_pumd_years()</code> scrapes the main PUMD website to get a
@@ -345,53 +503,17 @@ vector of years for which PUMD are available. The vector is limited to
 the years for which there are also HG files available.</li>
 <li><code>ce_cleanup()</code> deletes a file containing CE data that may
 only be necessary temporarily.</li>
+</ul></li>
 </ul>
-<div id="updates" class="section level2">
-<h2>Updates</h2>
-<p>Due to changes in the way CE PUMD stores their data starting with the
-2020 PUMD I revisited the way that the main functions of <a
-href="https://github.com/arcenis-r/cepumd">cepumd</a> stores and
-accesses files locally. The most important change is that all files are
-expected to be stored in one directory. To that end, if a directory is
-not provided to the functions, one will be created in the local
-temporary directory. Also, most of the functions used for downloading or
-preparing data now take a <code>ce_dir</code> argument to help with
-this. The major benefit of this change is that all files are now in one
-place and can be quickly cleaned up. An ancillary benefit is that it can
-make the workflow much simpler for quickly getting an expenditure
-estimate.</p>
 </div>
-<div id="word-of-caution" class="section level2">
-<h2>Word of caution</h2>
-<p>The CE PUMD is a wonderfully rich data set that can provide all
-manner of insight into how Americans spend money, but there are some
-strict limitations with respect to the types of analyses that can be
-done with this data. One of the more common violations of sound
-statistical methodology that I’m aware of is trying to calculate annual
-expenditure means for subgroups that are defined by variables that were
-not used in the sample design, i.e., the weights. The best advice that I
-can give is that users of this package (or anyone using CE PUMD to
-estimate annual expenditures) is to stick to the same classifications
-used by the CE in their <a
-href="https://www.bls.gov/cex/tables.htm">published tables</a>. I’ll
-also point users of this package to the <a
-href="https://www.bls.gov/cex/tables.htm">CE PUMD Getting Started
-Guide</a>.</p>
-</div>
-<div id="installation" class="section level2">
-<h2>Installation</h2>
-<p>You can install the development version of <a
-href="https://github.com/arcenis-r/cepumd">cepumd</a> from <a
-href="https://github.com">GitHub</a> with:</p>
-<pre class="r"><code>devtools::install_github(&quot;arcenis-r/cepumd&quot;)</code></pre>
-</div>
-<div id="prep-work" class="section level2">
-<h2>Prep work</h2>
-<p>The first step is to load the necessary packages into the
-environment.</p>
+<div id="example-workflows" class="section level2">
+<h2>Example workflows</h2>
+<p>The following are a few sample workflows that show how can be used.
+Before jumping into those I’ll first install and load the necessary
+pacakges.</p>
 <pre class="r"><code>
 # Store a vector of names of additional packages to be used
-pkgs &lt;- c(&quot;tidyverse&quot;, &quot;devtools&quot;, &quot;rlang&quot;, &quot;readxl&quot;, &quot;knitr&quot;)
+pkgs &lt;- c(&quot;tidyverse&quot;, &quot;devtools&quot;, &quot;readxl&quot;, &quot;knitr&quot;, &quot;blsR&quot;)
 
 # Install packages from CRAN
 invisible(
@@ -404,64 +526,129 @@ library(knitr)
 library(readxl)
 library(tidyverse)
 library(cepumd)</code></pre>
-</div>
-<div id="example-workflow-1" class="section level2">
-<h2>Example Workflow 1</h2>
-<p>The following is an example of how someone might go about using <a
-href="https://github.com/arcenis-r/cepumd">cepumd</a> to calculate a
-2021 annual, weighted estimate of mean expenditures on pets for all of
-the U.S. using CE integrated data without creating a separate directory
-for the data. This is just a quick and easy calculation.</p>
-<pre class="r"><code>ex1 &lt;- ce_prepdata(
+<div id="simple-workflow" class="section level3">
+<h3>Simple workflow</h3>
+<p>The following is an example of how someone might go about using to
+calculate a 2021 annual, weighted estimate of mean expenditures on pets
+for all of the U.S. using CE integrated data without creating a separate
+directory for the data. This is just a quick and easy calculation.</p>
+<pre class="r"><code>ce_prepdata(
   2021,
   integrated,
   uccs = ce_hg(2021, integrated) %&gt;% ce_uccs(&quot;Pets&quot;)
 ) %&gt;%
   ce_mean() %&gt;%
-  kable(booktabs = TRUE)</code></pre>
+  kable(booktabs = TRUE)
+#&gt; [1] 2</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">agg_exp</th>
+<th align="right">mean_exp</th>
+<th align="right">se</th>
+<th align="right">cv</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">101537912995</td>
+<td align="right">761.1465</td>
+<td align="right">50.24688</td>
+<td align="right">6.601473</td>
+</tr>
+</tbody>
+</table>
 <p>Yup… that’s all it takes. I simply ran <code>ce_prepdata()</code>
 with the year, the survey type, and the uccs I needed and piped that
 directly into <code>ce_mean()</code>.</p>
 <p>But where are all the files? Zip files, etc.? They’re in my R
 session’s temporary directory under a sub-directory named “ce-data”.</p>
 <pre class="r"><code>list.files(file.path(tempdir(), &quot;ce-data&quot;))
-#&gt; [1] &quot;ce-stubs.zip&quot; &quot;diary21&quot;      &quot;diary21.zip&quot;  &quot;intrvw20&quot;     &quot;intrvw20.zip&quot;
-#&gt; [6] &quot;intrvw21&quot;     &quot;intrvw21.zip&quot;</code></pre>
+#&gt; character(0)</code></pre>
 <p>I’ll go ahead and clean those files up really quickly.</p>
 <pre class="r"><code>ce_cleanup()
+#&gt; [1] &quot;Nothing to clean up.&quot;
 list.files(file.path(tempdir(), &quot;ce-data&quot;))
 #&gt; character(0)</code></pre>
-<p>This works because if <code>ce_cleanup()</code> isn’t given a
-directory to clean up it looks R’s temporary directory for a
-sub-directory called “ce-data”. If it doesn’t find that AND it gets no
-other directory to look in, it returns a message saying there’s nothing
-to clean up.</p>
 </div>
-<div id="example-workflow-2" class="section level2">
-<h2>Example Workflow 2</h2>
+<div id="slightly-more-advanced-workflow" class="section level3">
+<h3>Slightly more advanced workflow</h3>
 <p>In this example I’ll calculate estimated annual expenditures on used
-cars and trucks by urbanicity also for 2021. I already know that the UCC
-for used cars is 460110 for and the UCC for used trucks is 460901. I
-also know that all of these data are collected through the interview
-survey, so I’ll use the interview data only. Now here’s a wrinkle:
-because I’m going to add a grouping variable (“BLS_URBN”), I do need to
-specify all of the other named arguments. This is due to the developer’s
-inexperience with using missing arguments (if anyone can help me out
-with this, I would greatly appreciate it). Once the data are prepped
+cars and trucks by urbanicity also for 2021. Once the data are prepped
 with <code>ce_data()</code> I’ll just nest the data by urbanicity and
-run <code>ce_means()</code> on the nested datasets.</p>
-<pre class="r"><code>ce_prepdata(
+run <code>ce_means()</code> and <code>ce_quantiles()</code> on the
+nested datasets.</p>
+<p>First, I’ll get the portion of the stub file pertaining to used cars
+and trucks to ensure that I get the correct UCCs.</p>
+<pre class="r"><code>stub_2021 &lt;- ce_hg(2021, integrated)
+
+stub_2021 %&gt;%
+  filter(str_detect(title, &quot;[C|c]ars&quot;)) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">level</th>
+<th align="left">title</th>
+<th align="left">ucc</th>
+<th align="left">survey</th>
+<th align="left">factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Cars and trucks, new</td>
+<td align="left">NEWCARS</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">New cars</td>
+<td align="left">450110</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">Cars and trucks, used</td>
+<td align="left">USEDCARS</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">Used cars</td>
+<td align="left">460110</td>
+<td align="left">I</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<p>It looks like the expenditure category I want is “Cars and trucks,
+used”.</p>
+<pre class="r"><code>ce_uccs(stub_2021, &quot;Cars and trucks, used&quot;, uccs_only = FALSE)
+#&gt; # A tibble: 3 × 5
+#&gt;   level title                 ucc      survey factor
+#&gt;   &lt;chr&gt; &lt;chr&gt;                 &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; 
+#&gt; 1 4     Cars and trucks, used USEDCARS G      1     
+#&gt; 2 5     Used cars             460110   I      1     
+#&gt; 3 5     Used trucks           460901   I      1</code></pre>
+<p>I notice from the “survey” column that all of the UCCs associated
+with used cars and trucks come from the Interview survey (as indicated
+by the “I”). So when I prepare my data I’ll only need data from the
+Interview.</p>
+<pre class="r"><code>cars_trucks &lt;- ce_prepdata(
   2021,
   interview,
-  uccs = c(&quot;460110&quot;, &quot;460901&quot;),
+  uccs = ce_uccs(stub_2021, &quot;Cars and trucks, used&quot;, uccs_only = TRUE),
+  bls_urbn,
   recode_variables = TRUE,
-  ce_dir = NULL,
-  dict_path = NULL,
-  int_zp = NULL,
-  dia_zp = NULL,
-  hg = NULL,
-  bls_urbn
-) %&gt;%
+  hg = stub_2021
+)
+
+cars_trucks %&gt;%
   nest(data = -bls_urbn) %&gt;%
   mutate(ce_mn_df = map(data, ce_mean)) %&gt;% 
   select(-data) %&gt;% 
@@ -482,32 +669,24 @@ run <code>ce_means()</code> on the nested datasets.</p>
 <td align="left">Urban</td>
 <td align="right">310383802180</td>
 <td align="right">2472.104</td>
-<td align="right">49.69722</td>
-<td align="right">2.010321</td>
+<td align="right">152.2238</td>
+<td align="right">6.157661</td>
 </tr>
 <tr class="even">
 <td align="left">Rural</td>
 <td align="right">30912654497</td>
 <td align="right">3844.600</td>
-<td align="right">61.73577</td>
-<td align="right">1.605779</td>
+<td align="right">683.8189</td>
+<td align="right">17.786476</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>
-ce_cleanup()</code></pre>
-<p>There have been 2 examples of calculated a mean estimate in the last
-2 examples, but getting the annual, weighted estimate of the median
-would be just as easy. Since I’m using interview data only here, this
-would be a good example. I’ll calculate the overall median rather than
-breaking it down by urbanicity.</p>
-<pre class="r"><code>ce_prepdata(
-  2021,
-  interview,
-  uccs = c(&quot;460110&quot;, &quot;460901&quot;)
-) %&gt;%
-  ce_quantiles() %&gt;%
-  kable(booktabs = TRUE)</code></pre>
+<p>Getting the annual, weighted estimate of the median (or another
+quantile) would be just as easy. Since I’m using interview data only
+here, this would be a good example. I’ll calculate the median and 99th
+percentiles for the overall sample rather than breaking it down by
+urbanicity.</p>
+<pre class="r"><code>ce_quantiles(cars_trucks, probs = c(0.5, 0.99)) %&gt;% kable(booktabs = TRUE)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -520,17 +699,21 @@ breaking it down by urbanicity.</p>
 <td align="left">50%</td>
 <td align="right">0</td>
 </tr>
+<tr class="even">
+<td align="left">99%</td>
+<td align="right">20000</td>
+</tr>
 </tbody>
 </table>
-<pre class="r"><code>
-ce_cleanup()</code></pre>
+<pre class="r"><code>ce_cleanup()</code></pre>
 </div>
-<div id="example-workflow-3" class="section level2">
-<h2>Example Workflow 3</h2>
+<div id="very-advanced-workflow" class="section level3">
+<h3>Very advanced workflow</h3>
 <p>In this last example I’m going to assume very little knowledge about
 the CE. I’d like to compare mean annual expenditures on food away from
-home between 2010 and 2020 by household size. Also, I’m going to set up
-a directory on my local machine to put all the data and metadata files
+home between 2010 and 2020 by household size and I want to convert
+expenditures to 2022 dollars using the CPI. Also, I’m going to set up a
+directory on my local machine to put all the data and metadata files
 into.</p>
 <p>First, I’ll set up that directory. I’ll put the directory path in a
 variable called “food_away_dir” for simplicity.</p>
@@ -552,29 +735,75 @@ store_ce_dict(food_away_dir)</code></pre>
 <p>Next I want to see what the 2010 HG file looks like for 2010 for
 expenditures on “food away from home”. First I’ll download both HG files
 (2010 and 2020), then I’ll find the correct title in the 2010 HG file
-for my category. I’m going to cheat a little by magically knowing that
-the title is the same in 2020.</p>
+for my category.</p>
 <pre class="r"><code>hg_10 &lt;- ce_hg(2010, integrated, food_away_dir)
-hg_20 &lt;- ce_hg(2020, integrated, food_away_dir)</code></pre>
+hg_20 &lt;- ce_hg(2020, integrated, food_away_dir)
+
+hg_10 %&gt;%
+  filter(str_detect(title, &quot;[F|f]ood [A|a]way&quot;)) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">level</th>
+<th align="left">title</th>
+<th align="left">ucc</th>
+<th align="left">survey</th>
+<th align="left">factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Food away from home</td>
+<td align="left">FOODAWAY</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>
+hg_20 %&gt;%
+  filter(str_detect(title, &quot;[F|f]ood [A|a]way&quot;)) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">level</th>
+<th align="left">title</th>
+<th align="left">ucc</th>
+<th align="left">survey</th>
+<th align="left">factor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Food away from home</td>
+<td align="left">FOODAW</td>
+<td align="left">G</td>
+<td align="left">1</td>
+</tr>
+</tbody>
+</table>
+<p>It looks like the title is the same in both years, so I’ll store the
+title in a variable to use downstream.</p>
 <pre class="r"><code>food_away_title &lt;- hg_10 %&gt;%
   filter(str_detect(title, &quot;[F|f]ood [A|a]way&quot;)) %&gt;%
-  pull(title)
-
-food_away_title
-#&gt; [1] &quot;Food away from home&quot;</code></pre>
+  pull(title)</code></pre>
 <p>Now I’ll use that title to get the UCCs and see the entire table with
-“food away from home” expenditures for 2010</p>
+“food away from home” expenditures (only for 2010 as a sample).</p>
 <pre class="r"><code>food_away_hg_10 &lt;- ce_uccs(hg_10, food_away_title, uccs_only = FALSE)
 food_away_hg_20 &lt;- ce_uccs(hg_20, food_away_title, uccs_only = FALSE)
 
 food_away_hg_10 %&gt;% kable(booktabs = TRUE)</code></pre>
-<table style="width:100%;">
+<table>
 <colgroup>
-<col width="4%" />
-<col width="77%" />
-<col width="6%" />
+<col width="3%" />
+<col width="83%" />
 <col width="5%" />
-<col width="5%" />
+<col width="3%" />
+<col width="3%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -610,7 +839,8 @@ food_away_hg_10 %&gt;% kable(booktabs = TRUE)</code></pre>
 <tr class="even">
 <td align="left">6</td>
 <td align="left">Lunch at fast food, take-out, delivery, concession
-stands, buffet and cafeteria (other than employer</td>
+stands, buffet and cafeteria (other than employer and school
+cafeteria)</td>
 <td align="left">190111</td>
 <td align="left">D</td>
 <td align="left">1</td>
@@ -646,7 +876,8 @@ stands, buffet and cafeteria (other than employer</td>
 <tr class="odd">
 <td align="left">6</td>
 <td align="left">Dinner at fast food, take-out, delivery, concession
-stands, buffet and cafeteria (other than employer</td>
+stands, buffet and cafeteria (other than employer and school
+cafeteria)</td>
 <td align="left">190211</td>
 <td align="left">D</td>
 <td align="left">1</td>
@@ -682,7 +913,8 @@ stands, buffet and cafeteria (other than employer</td>
 <tr class="even">
 <td align="left">6</td>
 <td align="left">Snacks and nonalcoholic beverages at fast food,
-take-out, delivery, concession stands, buffet and</td>
+take-out, delivery, concession stands, buffet and cafeteria (other than
+employer and school cafeteria)</td>
 <td align="left">190311</td>
 <td align="left">D</td>
 <td align="left">1</td>
@@ -721,7 +953,8 @@ school cafeterias</td>
 <tr class="odd">
 <td align="left">6</td>
 <td align="left">Breakfast and brunch at fast food, take-out, delivery,
-concession stands, buffet and cafeteria</td>
+concession stands, buffet and cafeteria (other than employer and school
+cafeteria)</td>
 <td align="left">190321</td>
 <td align="left">D</td>
 <td align="left">1</td>
@@ -784,28 +1017,26 @@ cafeterias</td>
 <td align="left">I</td>
 <td align="left">1</td>
 </tr>
-<tr class="even">
-<td align="left">2</td>
-<td align="left">Alcoholic beverages</td>
-<td align="left">ALCBEVG</td>
-<td align="left">G</td>
-<td align="left">1</td>
-</tr>
 </tbody>
 </table>
 <p>Next I’ll use the dictionary to find the variable for household size.
-First I’ll take a look at the sheets in the dictionary.</p>
+It’s important to remember that the dictionary is stored as an “XLSX”
+file. I’ll use functions from the <code>readxl</code> package to work
+with the dictionary.</p>
+<p>First I’ll take a look at the sheets in the dictionary.</p>
 <pre class="r"><code>ce_dict_file_path &lt;- file.path(food_away_dir, &quot;ce-dict.xlsx&quot;)
 excel_sheets(ce_dict_file_path)
 #&gt; [1] &quot;Cover&quot;     &quot;Variables&quot; &quot;Codes &quot;</code></pre>
 <p>Now I’ll see what variables contain anything about the number of
 household members. To do that I’ll have to load the sheet from the
-dictionary containing the variable definitions</p>
+dictionary containing the variable definitions. I also want to filter
+the variable data to only the FMLI where the “Last year” column is
+missing, i.e., the variable definition is still in use.</p>
 <pre class="r"><code>ce_variables &lt;- read_excel(ce_dict_file_path, sheet = &quot;Variables&quot;)
 
 ce_variables %&gt;%
   filter(
-    str_detect(File, &quot;FMLI&quot;), is.na(`Last year`),
+    str_detect(File, &quot;FMLI&quot;),
     str_detect(
       tolower(`Variable description`), &quot;number of members&quot;
     )
@@ -867,6 +1098,23 @@ expenditures.</td>
 <tr class="even">
 <td align="left">INTERVIEW</td>
 <td align="left">FMLI</td>
+<td align="left">AS_COMP5</td>
+<td align="left">Number of members under age 2 in CU</td>
+<td align="left">NA</td>
+<td align="left">AS_C_MP5</td>
+<td align="left">NA</td>
+<td align="left">CU characteristics, income, weights, and summary level
+expenditures.</td>
+<td align="left">NA</td>
+<td align="right">1980</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">1981</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">INTERVIEW</td>
+<td align="left">FMLI</td>
 <td align="left">FAM_SIZE</td>
 <td align="left">Number of Members in CU</td>
 <td align="left">NA</td>
@@ -881,11 +1129,31 @@ expenditures.</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
 </tr>
+<tr class="even">
+<td align="left">INTERVIEW</td>
+<td align="left">FMLI</td>
+<td align="left">FAM_SIZE</td>
+<td align="left">Number of Members in CU</td>
+<td align="left">NA</td>
+<td align="left">FAM__IZE</td>
+<td align="left">NA</td>
+<td align="left">CU characteristics, income, weights, and summary level
+expenditures.</td>
+<td align="left">NA</td>
+<td align="right">1980</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">1981</td>
+<td align="left">NA</td>
+</tr>
 </tbody>
 </table>
-<p>It looks like FAM_SIZE is the variable I want. Next I’ll check
-whether the FAM_SIZE variable has any value codes associated with it.
-I’ll have to pull in the “Codes” sheet. (Check your spelling here.)</p>
+<p>It looks like FAM_SIZE is the variable I want. I can see that this
+variable was used from 1980 through 1981 then was dropped and
+re-introduced in 1984 and has been in use since. So it looks like it’s
+available for my 2 years of interest. Next I’ll check whether the
+FAM_SIZE variable has any value codes associated with it. I’ll have to
+pull in the “Codes” sheet. (Check your spelling here.)</p>
 <pre class="r"><code>ce_codes &lt;- read_excel(ce_dict_file_path, sheet = &quot;Codes &quot;)
 
 ce_codes %&gt;%
@@ -934,67 +1202,552 @@ food_away_uccs_10
 #&gt;  [1] &quot;190111&quot; &quot;190112&quot; &quot;190113&quot; &quot;190114&quot; &quot;190211&quot; &quot;190212&quot; &quot;190213&quot; &quot;190214&quot;
 #&gt;  [9] &quot;190311&quot; &quot;190312&quot; &quot;190313&quot; &quot;190314&quot; &quot;190321&quot; &quot;190322&quot; &quot;190323&quot; &quot;190324&quot;
 #&gt; [17] &quot;190901&quot; &quot;190902&quot; &quot;190903&quot; &quot;790430&quot; &quot;800700&quot;</code></pre>
+<pre class="r"><code>food_away_uccs_20
+#&gt;  [1] &quot;190111&quot; &quot;190112&quot; &quot;190113&quot; &quot;190114&quot; &quot;190211&quot; &quot;190212&quot; &quot;190213&quot; &quot;190214&quot;
+#&gt;  [9] &quot;190311&quot; &quot;190312&quot; &quot;190313&quot; &quot;190314&quot; &quot;190321&quot; &quot;190322&quot; &quot;190323&quot; &quot;190324&quot;
+#&gt; [17] &quot;190901&quot; &quot;190902&quot; &quot;190903&quot; &quot;790430&quot; &quot;800700&quot;</code></pre>
+<p>The lists of UCCs look identical, but I’ll keep both just to be
+cautious.</p>
 <p>Next I’ll prepare the 2010 data and get a summary of the FAM_SIZE
 variable since it is a continuous variable.</p>
 <pre class="r"><code>food_away_data_10 &lt;- ce_prepdata(
   2010,
   integrated,
   food_away_uccs_10,
-  recode_variables = FALSE,
   ce_dir = food_away_dir,
-  dict_path = &quot;ce-dict.xslx&quot;,
-  int_zp = NULL,
-  dia_zp = NULL,
   hg = food_away_hg_10,
   fam_size
 )
 
 summary(food_away_data_10$fam_size)
 #&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#&gt;   1.000   1.000   2.000   2.592   4.000  14.000</code></pre>
+#&gt;   1.000   1.000   2.000   2.667   4.000  14.000</code></pre>
 <p>Since some households have as many as 14 people, I’ll create a
-FAM_SIZE label with any number greater than 4 taking on the value “5+”
-later on. Next, I’ll prepare the 2020 data and rowbind it with the 2010
-data as well as create the “fam_size_label” variable. I’ll also go ahead
-and get weighted, annual estimated means in one go.</p>
+FAM_SIZE label with any number greater than 4 taking on the value “5+”.
+Next, I’ll prepare the 2020 data and rowbind it with the 2010 data as
+well as create the “fam_size_label” variable. I’m also going to convert
+“ref_mo” and “ref_yr” to character to make it compatible with the CPI
+data that I’ll get later. I’ll also take a look at just a snippet of the
+data.</p>
 <pre class="r"><code>food_away_data_20 &lt;- ce_prepdata(
   2020,
   integrated,
   food_away_uccs_20,
-  recode_variables = FALSE,
   ce_dir = food_away_dir,
-  dict_path = &quot;ce-dict.xslx&quot;,
-  int_zp = NULL,
-  dia_zp = NULL,
   hg = food_away_hg_20,
   fam_size
 )
 
 food_away_comp_data &lt;- food_away_data_10 %&gt;%
-  mutate(year = 2010) %&gt;%
-  bind_rows(food_away_data_20 %&gt;% mutate(year = 2020)) %&gt;%
+  mutate(year = &quot;2010&quot;) %&gt;%
+  bind_rows(food_away_data_20 %&gt;% mutate(year = &quot;2020&quot;)) %&gt;%
   mutate(
     fam_size_label = if_else(fam_size &gt; 4, &quot;5+&quot;, as.character(fam_size)),
-    year = factor(year)
+    ref_yr = as.character(ref_yr)
+  )
+
+food_away_comp_data %&gt;%
+  select(survey, year, newid, finlwt21, cost, ucc, ref_yr, ref_mo) %&gt;%
+  filter(!is.na(ucc)) %&gt;%
+  group_by(year, survey) %&gt;%
+  slice_sample(n = 3) %&gt;%
+  ungroup() %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">survey</th>
+<th align="left">year</th>
+<th align="left">newid</th>
+<th align="right">finlwt21</th>
+<th align="right">cost</th>
+<th align="left">ucc</th>
+<th align="left">ref_yr</th>
+<th align="right">ref_mo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2010</td>
+<td align="left">01077271</td>
+<td align="right">36400.79</td>
+<td align="right">58.5000</td>
+<td align="left">190114</td>
+<td align="left">2010</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">2010</td>
+<td align="left">01113982</td>
+<td align="right">20848.16</td>
+<td align="right">14.3000</td>
+<td align="left">190113</td>
+<td align="left">2010</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2010</td>
+<td align="left">01072932</td>
+<td align="right">30438.06</td>
+<td align="right">234.0000</td>
+<td align="left">190114</td>
+<td align="left">2010</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02185554</td>
+<td align="right">15130.05</td>
+<td align="right">104.0000</td>
+<td align="left">790430</td>
+<td align="left">2010</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02293872</td>
+<td align="right">17276.10</td>
+<td align="right">60.0000</td>
+<td align="left">190903</td>
+<td align="left">2010</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02334032</td>
+<td align="right">24310.86</td>
+<td align="right">233.3333</td>
+<td align="left">800700</td>
+<td align="left">2010</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04374641</td>
+<td align="right">51933.91</td>
+<td align="right">319.8000</td>
+<td align="left">190321</td>
+<td align="left">2020</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04450382</td>
+<td align="right">55277.16</td>
+<td align="right">64.8700</td>
+<td align="left">190311</td>
+<td align="left">2020</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04362691</td>
+<td align="right">42724.20</td>
+<td align="right">76.4400</td>
+<td align="left">190321</td>
+<td align="left">2020</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2020</td>
+<td align="left">04324332</td>
+<td align="right">30819.70</td>
+<td align="right">200.0000</td>
+<td align="left">190903</td>
+<td align="left">2020</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">I</td>
+<td align="left">2020</td>
+<td align="left">04506691</td>
+<td align="right">21062.71</td>
+<td align="right">35.0000</td>
+<td align="left">190903</td>
+<td align="left">2020</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2020</td>
+<td align="left">04419663</td>
+<td align="right">31004.50</td>
+<td align="right">200.0000</td>
+<td align="left">190903</td>
+<td align="left">2020</td>
+<td align="right">11</td>
+</tr>
+</tbody>
+</table>
+<p>Since I’m going to adjust for inflation, I also want to see the years
+in which expenditures were made just as an extra check.</p>
+<pre class="r"><code>food_away_comp_data %&gt;%
+  drop_na(ref_yr) %&gt;%
+  distinct(ref_yr) %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">ref_yr</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2010</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+</tr>
+</tbody>
+</table>
+<p>This means I’ll need CPI data for the above years as well as 2022.
+Next I’ll use the <code>blsR</code> package (<a
+href="https://github.com/groditi/blsR"
+class="uri">https://github.com/groditi/blsR</a>) to get CPI data. I’m
+going to use the “All Urban Consumers (Current Series)” series, which
+has series ID “CUUR0000SA0”.</p>
+<p>N.B., the <code>blsR</code> package does have functions for tyding
+data, but I’ve discovered that in this case at the time of this writing,
+the <code>data_as_table()</code> and <code>data_as_tidy_table()</code>
+were erroring out, so I’m using some <code>purrr</code> functions to do
+the wrangling.</p>
+<pre class="r"><code>cpi_data &lt;- blsR::get_series(
+  &quot;CUUR0000SA0&quot;,
+  start_year = 2010,
+  end_year = 2022
+) %&gt;%
+  pluck(&quot;data&quot;) %&gt;%
+  map(
+    ~ list_flatten(.x) %&gt;%
+      enframe() %&gt;%
+      filter(!name %in% &quot;footnotes&quot;) %&gt;%
+      unnest(value) %&gt;%
+      pivot_wider(everything(), values_from = &quot;value&quot;, names_from = &quot;name&quot;)
   ) %&gt;%
+  list_rbind() %&gt;%
+  rename(cpi = &quot;value&quot;) %&gt;%
+  mutate(month = match(periodName, month.name))
+
+cpi_base &lt;- cpi_data %&gt;% filter(latest %in% &quot;true&quot;)
+
+cpi_data &lt;- cpi_data %&gt;% filter(year %in% c(&quot;2010&quot;, &quot;2020&quot;))
+
+cpi_data %&gt;% slice(1:10) %&gt;% kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">year</th>
+<th align="left">period</th>
+<th align="left">periodName</th>
+<th align="left">latest</th>
+<th align="left">cpi</th>
+<th align="right">month</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">M12</td>
+<td align="left">December</td>
+<td align="left">NA</td>
+<td align="left">260.474</td>
+<td align="right">12</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">M11</td>
+<td align="left">November</td>
+<td align="left">NA</td>
+<td align="left">260.229</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">M10</td>
+<td align="left">October</td>
+<td align="left">NA</td>
+<td align="left">260.388</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">M09</td>
+<td align="left">September</td>
+<td align="left">NA</td>
+<td align="left">260.280</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">M08</td>
+<td align="left">August</td>
+<td align="left">NA</td>
+<td align="left">259.918</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">M07</td>
+<td align="left">July</td>
+<td align="left">NA</td>
+<td align="left">259.101</td>
+<td align="right">7</td>
+</tr>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">M06</td>
+<td align="left">June</td>
+<td align="left">NA</td>
+<td align="left">257.797</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">M05</td>
+<td align="left">May</td>
+<td align="left">NA</td>
+<td align="left">256.394</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">2020</td>
+<td align="left">M04</td>
+<td align="left">April</td>
+<td align="left">NA</td>
+<td align="left">256.389</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">2020</td>
+<td align="left">M03</td>
+<td align="left">March</td>
+<td align="left">NA</td>
+<td align="left">258.115</td>
+<td align="right">3</td>
+</tr>
+</tbody>
+</table>
+<p>The base that I’m going to covert to is November 2022.</p>
+<pre class="r"><code>cpi_base %&gt;% kable(booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">year</th>
+<th align="left">period</th>
+<th align="left">periodName</th>
+<th align="left">latest</th>
+<th align="left">cpi</th>
+<th align="right">month</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2022</td>
+<td align="left">M11</td>
+<td align="left">November</td>
+<td align="left">true</td>
+<td align="left">297.711</td>
+<td align="right">11</td>
+</tr>
+</tbody>
+</table>
+<p>Next I’m going to join the CPI data to the CE data and adjust the
+“cost” variable for inflation. Note that I replace resulting missing
+values in the “cost” variable with “0”. Missing values will result when
+I multiply a cost of “0” by an adjustment factor and
+<code>ce_mean()</code> will not function with missing values.</p>
+<pre class="r"><code>food_away_comp_data &lt;- food_away_comp_data %&gt;%
+  left_join(
+    select(cpi_data, year, month, cpi),
+    by = c(&quot;ref_yr&quot; = &quot;year&quot;, &quot;ref_mo&quot; = &quot;month&quot;)
+  ) %&gt;%
+  mutate(
+    base_cpi = pull(cpi_base, cpi),
+    across(c(base_cpi, cpi), as.numeric),
+    cost = cost * (base_cpi / cpi) %&gt;% replace_na(0)
+  )
+
+food_away_comp_data %&gt;%
+  select(survey, year, newid, finlwt21, cost, ucc, ref_yr, ref_mo) %&gt;%
+  filter(!is.na(ucc)) %&gt;%
+  group_by(year, survey) %&gt;%
+  slice_sample(n = 3) %&gt;%
+  ungroup() %&gt;%
+  kable(booktabs = TRUE)</code></pre>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="7%" />
+<col width="14%" />
+<col width="17%" />
+<col width="17%" />
+<col width="10%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">survey</th>
+<th align="left">year</th>
+<th align="left">newid</th>
+<th align="right">finlwt21</th>
+<th align="right">cost</th>
+<th align="left">ucc</th>
+<th align="left">ref_yr</th>
+<th align="right">ref_mo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2010</td>
+<td align="left">01153501</td>
+<td align="right">33879.965</td>
+<td align="right">277.70558</td>
+<td align="left">190211</td>
+<td align="left">2010</td>
+<td align="right">11</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">2010</td>
+<td align="left">01071752</td>
+<td align="right">27920.376</td>
+<td align="right">105.00903</td>
+<td align="left">190111</td>
+<td align="left">2010</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2010</td>
+<td align="left">01152282</td>
+<td align="right">34111.184</td>
+<td align="right">40.83493</td>
+<td align="left">190321</td>
+<td align="left">2010</td>
+<td align="right">11</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02313852</td>
+<td align="right">13074.800</td>
+<td align="right">109.03218</td>
+<td align="left">190903</td>
+<td align="left">2010</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02244223</td>
+<td align="right">18729.821</td>
+<td align="right">13.64533</td>
+<td align="left">190903</td>
+<td align="left">2010</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02252092</td>
+<td align="right">11552.995</td>
+<td align="right">68.22663</td>
+<td align="left">190903</td>
+<td align="left">2010</td>
+<td align="right">5</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04473832</td>
+<td align="right">126457.798</td>
+<td align="right">103.40211</td>
+<td align="left">190321</td>
+<td align="left">2020</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04678152</td>
+<td align="right">114644.168</td>
+<td align="right">2185.67974</td>
+<td align="left">190322</td>
+<td align="left">2020</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04444432</td>
+<td align="right">6478.887</td>
+<td align="right">246.11872</td>
+<td align="left">190111</td>
+<td align="left">2020</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2020</td>
+<td align="left">04430893</td>
+<td align="right">33312.490</td>
+<td align="right">731.73510</td>
+<td align="left">190903</td>
+<td align="left">2020</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="left">I</td>
+<td align="left">2020</td>
+<td align="left">04618351</td>
+<td align="right">17644.390</td>
+<td align="right">365.86755</td>
+<td align="left">190903</td>
+<td align="left">2020</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">I</td>
+<td align="left">2020</td>
+<td align="left">04286004</td>
+<td align="right">18755.279</td>
+<td align="right">103.41137</td>
+<td align="left">190903</td>
+<td align="left">2020</td>
+<td align="right">7</td>
+</tr>
+</tbody>
+</table>
+<p>The next step is to calculate means, for which I’ll use some more
+Tidyverse functions.</p>
+<pre class="r"><code>food_away_means &lt;- food_away_comp_data %&gt;%
   nest(data = -c(year, fam_size_label)) %&gt;%
   mutate(ce_mn_df = map(data, ce_mean)) %&gt;% 
   ungroup() %&gt;%
   select(-data) %&gt;% 
   unnest(ce_mn_df) %&gt;%
-  mutate(
-    lower = mean_exp - (qnorm(0.975) * se),
-    upper = mean_exp + (qnorm(0.975) * se)
-  )
+  mutate(lower = mean_exp - cv, upper = mean_exp + cv)
 
-food_away_comp_data %&gt;% kable(booktabs = TRUE)</code></pre>
-<table>
+food_away_means %&gt;% kable(booktabs = TRUE)</code></pre>
+<table style="width:100%;">
 <colgroup>
 <col width="6%" />
-<col width="19%" />
+<col width="18%" />
 <col width="16%" />
 <col width="11%" />
-<col width="11%" />
+<col width="12%" />
 <col width="11%" />
 <col width="11%" />
 <col width="11%" />
@@ -1015,107 +1768,107 @@ food_away_comp_data %&gt;% kable(booktabs = TRUE)</code></pre>
 <tr class="odd">
 <td align="left">2010</td>
 <td align="left">2</td>
-<td align="right">97933894378</td>
-<td align="right">2477.569</td>
-<td align="right">49.74981</td>
-<td align="right">2.008009</td>
-<td align="right">2380.061</td>
-<td align="right">2575.077</td>
+<td align="right">130420221196</td>
+<td align="right">3299.820</td>
+<td align="right">98.42922</td>
+<td align="right">2.982866</td>
+<td align="right">3296.838</td>
+<td align="right">3302.803</td>
 </tr>
 <tr class="even">
 <td align="left">2010</td>
 <td align="left">3</td>
-<td align="right">50395554564</td>
-<td align="right">2865.902</td>
-<td align="right">53.62464</td>
-<td align="right">1.871126</td>
-<td align="right">2760.799</td>
-<td align="right">2971.004</td>
+<td align="right">67021069687</td>
+<td align="right">3810.955</td>
+<td align="right">183.66110</td>
+<td align="right">4.819293</td>
+<td align="right">3806.136</td>
+<td align="right">3815.774</td>
 </tr>
 <tr class="odd">
 <td align="left">2010</td>
 <td align="left">1</td>
-<td align="right">55083803458</td>
-<td align="right">1572.640</td>
-<td align="right">39.59669</td>
-<td align="right">2.517848</td>
-<td align="right">1495.032</td>
-<td align="right">1650.248</td>
+<td align="right">72428285424</td>
+<td align="right">2067.680</td>
+<td align="right">85.10479</td>
+<td align="right">4.115956</td>
+<td align="right">2063.564</td>
+<td align="right">2071.796</td>
 </tr>
 <tr class="even">
 <td align="left">2010</td>
 <td align="left">5+</td>
-<td align="right">43444179130</td>
-<td align="right">3337.577</td>
-<td align="right">57.81740</td>
-<td align="right">1.732317</td>
-<td align="right">3224.257</td>
-<td align="right">3450.897</td>
+<td align="right">57318822679</td>
+<td align="right">4404.588</td>
+<td align="right">257.43849</td>
+<td align="right">5.844780</td>
+<td align="right">4398.743</td>
+<td align="right">4410.433</td>
 </tr>
 <tr class="odd">
 <td align="left">2010</td>
 <td align="left">4</td>
-<td align="right">56019572596</td>
-<td align="right">3558.723</td>
-<td align="right">59.76521</td>
-<td align="right">1.679400</td>
-<td align="right">3441.585</td>
-<td align="right">3675.861</td>
+<td align="right">74679749487</td>
+<td align="right">4742.988</td>
+<td align="right">202.09679</td>
+<td align="right">4.260960</td>
+<td align="right">4738.727</td>
+<td align="right">4747.248</td>
 </tr>
 <tr class="even">
 <td align="left">2020</td>
 <td align="left">1</td>
-<td align="right">56785595827</td>
-<td align="right">1448.125</td>
-<td align="right">37.83664</td>
-<td align="right">2.612801</td>
-<td align="right">1373.967</td>
-<td align="right">1522.284</td>
+<td align="right">64576900272</td>
+<td align="right">1646.821</td>
+<td align="right">81.17216</td>
+<td align="right">4.929022</td>
+<td align="right">1641.892</td>
+<td align="right">1651.750</td>
 </tr>
 <tr class="odd">
 <td align="left">2020</td>
 <td align="left">2</td>
-<td align="right">103761786275</td>
-<td align="right">2387.793</td>
-<td align="right">48.86163</td>
-<td align="right">2.046310</td>
-<td align="right">2292.026</td>
-<td align="right">2483.560</td>
+<td align="right">118826976839</td>
+<td align="right">2734.484</td>
+<td align="right">127.43499</td>
+<td align="right">4.660295</td>
+<td align="right">2729.823</td>
+<td align="right">2739.144</td>
 </tr>
 <tr class="even">
 <td align="left">2020</td>
 <td align="left">4</td>
-<td align="right">58215175414</td>
-<td align="right">3555.463</td>
-<td align="right">59.70768</td>
-<td align="right">1.679322</td>
-<td align="right">3438.438</td>
-<td align="right">3672.488</td>
+<td align="right">66450879297</td>
+<td align="right">4058.404</td>
+<td align="right">255.44176</td>
+<td align="right">6.294144</td>
+<td align="right">4052.110</td>
+<td align="right">4064.698</td>
 </tr>
 <tr class="odd">
 <td align="left">2020</td>
 <td align="left">3</td>
-<td align="right">51769500538</td>
-<td align="right">2682.933</td>
-<td align="right">51.89517</td>
-<td align="right">1.934270</td>
-<td align="right">2581.220</td>
-<td align="right">2784.645</td>
+<td align="right">59005969584</td>
+<td align="right">3058.002</td>
+<td align="right">197.12332</td>
+<td align="right">6.446147</td>
+<td align="right">3051.556</td>
+<td align="right">3064.448</td>
 </tr>
 <tr class="even">
 <td align="left">2020</td>
 <td align="left">5+</td>
-<td align="right">41476737207</td>
-<td align="right">3178.722</td>
-<td align="right">56.67492</td>
-<td align="right">1.782947</td>
-<td align="right">3067.641</td>
-<td align="right">3289.802</td>
+<td align="right">47067346009</td>
+<td align="right">3607.071</td>
+<td align="right">318.43740</td>
+<td align="right">8.828144</td>
+<td align="right">3598.243</td>
+<td align="right">3615.899</td>
 </tr>
 </tbody>
 </table>
 <p>Plotting these data would be pretty straightforward, as well.</p>
-<pre class="r"><code>food_away_comp_data %&gt;%
+<pre class="r"><code>food_away_means %&gt;%
   ggplot(aes(x = fam_size_label, y = mean_exp, fill = year, group = year)) +
   geom_bar(stat = &quot;identity&quot;, position = &quot;dodge&quot;, width = 0.8) +
   geom_errorbar(
@@ -1134,33 +1887,40 @@ food_away_comp_data %&gt;% kable(booktabs = TRUE)</code></pre>
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;)</code></pre>
 <p><img src="cepumd_files/figure-html/cepumd-ex-3-group-means-plot-1.png" width="100%" /></p>
-<p>And that’s it. This analysis would give me the weighted, annual
-estimated mean expenditures on food away from home by family size in
-2010 and 2020.</p>
-<p>Now for a very quick analysis, I’ll generate a plot of the
-expenditures at each weighted, annual, estimated quantile (from 0.01
-through 0.99, by 0.01) for the same years, but only using Diary data,
-since most of the UCCs (16 out of 21) in the “food away from home”
-category come from the Diary. This analysis involves re-running
-everything in one call to <code>map2_df()</code> giving it the 2 years
-of interest and the Diary zip files as arguments then performing all of
-the steps for aggregation by year.</p>
-<pre class="r"><code>food_away_comp_quantiles &lt;- map2_df(
+<p>Here we can see that on an inflation-adjusted basis, households of
+all sizes had higher expenditures on food away from home in 2010 than
+they did in 2020.</p>
+<p>Now I’ll generate a plot of the expenditures at each weighted,
+annual, estimated quantile (from 0.01 through 0.99, by 0.01) for the
+same years, but only using Diary data, since most of the UCCs (16 out of
+21) in the “food away from home” category come from the Diary. I’ll also
+make sure that the Diary files are in my data directory first.</p>
+<pre class="r"><code>ce_download(2010, diary, food_away_dir)
+ce_download(2020, diary, food_away_dir)
+
+food_away_comp_quantiles &lt;- map2(
   c(2010, 2020),
   c(&quot;diary10.zip&quot;, &quot;diary20.zip&quot;),
   ~ ce_prepdata(
     .x,
     diary,
     ce_hg(.x, diary) %&gt;% ce_uccs(food_away_title),
-    recode_variables = FALSE,
     ce_dir = food_away_dir,
-    dict_path = &quot;ce-dict.xslx&quot;,
-    int_zp = NULL,
     dia_zp = .y,
     hg = ce_hg(.x, diary)
   ) %&gt;%
-    mutate(year = .x)
+    mutate(year = .x, ref_yr = as.character(ref_yr))
 ) %&gt;%
+  list_rbind() %&gt;%
+  left_join(
+    select(cpi_data, year, month, cpi),
+    by = c(&quot;ref_yr&quot; = &quot;year&quot;, &quot;ref_mo&quot; = &quot;month&quot;)
+  ) %&gt;%
+  mutate(
+    base_cpi = pull(cpi_base, cpi),
+    across(c(base_cpi, cpi), as.numeric),
+    cost = cost * (base_cpi / cpi) %&gt;% replace_na(0)
+  ) %&gt;%
   mutate(year = factor(year)) %&gt;%
   nest(data = -year) %&gt;%
   mutate(
@@ -1184,20 +1944,22 @@ food_away_comp_quantiles %&gt;%
   ) +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="cepumd_files/figure-html/cepumd-ex-3-group-qtile-plot-1.png" width="100%" /></p>
-<pre class="r"><code>
-ce_cleanup(food_away_dir)</code></pre>
+<p><img src="cepumd_files/figure-html/cepumd-plot_food_away_quantiles-1.png" width="100%" /></p>
+<pre class="r"><code>ce_cleanup(food_away_dir)</code></pre>
 <p>Interestingly the expenditures don’t appear to have changed much
-between 2010 and 2020 across the different quantiles. There are a lot of
-0-value reported expenditures, though, in the CE on food away from home.
-Unfortunately, I can’t perform an analysis using only respondents that
-did have expenditures in this category, i.e., dropping the 0’s, because
-whether someone had an expenditure on food away from home is not one of
-the variables used for generating the survey weights. In other words,
-the analysis can be done, but it would not be statistically valid and I
-definitely wouldn’t be able to make any inferences from it. This is my
-cautionary note to anyone using this package who might use it in a way
-that is not statistically sound. Please visit the <a
+between 2010 and 2020 across quantiles on an inflation-adjusted basis,
+but we can see that across all quantiles, CU’s spent less in 2020 than
+they did in 2010 on food away from home, which is consistent with the
+means that we calculated above. There are a lot of 0-value reported
+expenditures, though, in the CE on food away from home. Unfortunately, I
+can’t perform an analysis using only respondents that did have
+expenditures in this category, i.e., dropping the 0’s, because whether
+someone had an expenditure on food away from home is not one of the
+variables used for generating the survey weights. In other words, the
+analysis can be done, but it would not be statistically valid and I
+definitely wouldn’t be able to infer from it. This is my cautionary note
+to anyone using this package who might use it in a way that is not
+statistically sound. Please visit the <a
 href="https://www.bls.gov/cex/">CE’s website</a> and read the <a
 href="https://www.bls.gov/cex/tables.htm">CE PUMD Getting Started
 Guide</a> for more information.</p>
