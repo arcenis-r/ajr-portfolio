@@ -1,4 +1,10 @@
-
+---
+title: "cepumd"
+output:
+  html_document:
+    toc: true
+author: Arcenis Rojas
+---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -22,7 +28,7 @@ The purpose of `cepumd`  is to make working with Consumer Expenditure Surveys (C
 
 ## History of CE
 First a little history...
-The first Consumer Expenditure Survey happened in 1888 (https://www.bls.gov/opub/hom/cex/history.htm), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more information on the detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called [130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)
+The first Consumer Expenditure Survey happened in 1888 (https://www.bls.gov/opub/hom/cex/history.htm), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called [130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)
 
 
 ## Overview of CE and CE PUMD
@@ -133,7 +139,7 @@ library(tidyverse)
 library(cepumd)
 ```
 
-### Simple workflow
+### Simple workflow: Integrated Pet Expenditures
 The following is an example of how someone might go about using `cepumd` to calculate a 2021 annual, weighted estimate of mean expenditures on pets for all of the U.S. using CE integrated data without creating a separate directory for the data. This is just a quick and easy calculation.
 
 ```{r simple_wflow, cache=TRUE}
@@ -161,7 +167,7 @@ ce_cleanup()
 list.files(file.path(tempdir(), "ce-data"))
 ```
 
-### Slightly more advanced workflow
+### Slightly more advanced workflow: Used Car & Truck Expenditures by Urbanicity
 
 In this example I'll calculate estimated annual expenditures on used cars and trucks by urbanicity also for 2021. Once the data are prepped with `ce_data()` I'll just nest the data by urbanicity and run `ce_means()` and `ce_quantiles()` on the nested datasets. 
 
@@ -212,7 +218,7 @@ ce_cleanup()
 ```
 
 
-### Very advanced workflow
+### Very advanced workflow: Inflation adjusted food away from home expenditures
 
 In this last example I'm going to assume very little knowledge about the CE. I'd like to compare mean annual expenditures on food away from home between 2010 and 2020 by household size and I want to convert expenditures to 2022 dollars using the CPI. Also, I'm going to set up a directory on my local machine to put all the data and metadata files into.
 
