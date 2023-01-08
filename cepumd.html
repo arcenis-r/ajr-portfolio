@@ -553,7 +553,7 @@ only be necessary temporarily.</li>
 install and load the necessary pacakges.</p>
 <pre class="r"><code>
 # Store a vector of names of additional packages to be used
-pkgs &lt;- c(&quot;tidyverse&quot;, &quot;devtools&quot;, &quot;readxl&quot;, &quot;knitr&quot;, &quot;blsR&quot;)
+pkgs &lt;- c(&quot;tidyverse&quot;, &quot;devtools&quot;, &quot;readxl&quot;, &quot;knitr&quot;, &quot;blsR&quot;, &quot;janitor&quot;)
 
 # Install packages from CRAN
 invisible(
@@ -1924,11 +1924,12 @@ food_away_means %&gt;% kable(booktabs = TRUE)</code></pre>
     position = position_dodge(0.75)
   ) +
   scale_fill_manual(values = c(&quot;red&quot;, &quot;blue&quot;)) +
+  scale_y_continuous(labels = scales::dollar) +
   labs(
     title =
       &quot;Estimated annual mean food away from home expenditures by CU size&quot;,
     x = &quot;CU size&quot;,
-    y = &quot;Estimated, weighted, annual mean expenditure ($)&quot;,
+    y = &quot;Estimated, weighted, annual mean expenditure&quot;,
     fill = &quot;Year&quot;
   ) +
   theme_bw() +
@@ -1982,11 +1983,12 @@ food_away_comp_quantiles %&gt;%
   geom_line() +
   scale_color_manual(values = c(&quot;red&quot;, &quot;blue&quot;)) +
   scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::dollar) +
   labs(
     title =
       &quot;Estimated, annual food away from home expenditure quantiles&quot;,
     x = &quot;Quantile&quot;,
-    y = &quot;Estimated, weighted, annual expenditure ($)&quot;,
+    y = &quot;Estimated, weighted, annual expenditure&quot;,
     color = &quot;Year&quot;
   ) +
   theme_bw() +
@@ -2706,9 +2708,10 @@ fam_type_utilities %&gt;% arrange(fam_type) %&gt;% kable(booktabs = TRUE)</code>
   geom_segment(aes(x = 0, xend = mean_exp, yend = fam_type)) +
   geom_point(color = &quot;red&quot;, size = 5) +
   scale_y_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  scale_x_continuous(labels = scales::dollar) +
   labs(
     y = &quot;CU composition (FAM_TYPE)&quot;,
-    x = &quot;Estimated, weighted, annual mean expenditure ($)&quot;,
+    x = &quot;Estimated, weighted, annual mean expenditure&quot;,
     title =
       &quot;Estimated annual mean utilities expenditures by CU composition&quot;
   ) +

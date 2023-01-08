@@ -124,7 +124,7 @@ The following are a few sample workflows that show how `cepumd` can be used. Bef
 ```{r, load_pkgs}
 
 # Store a vector of names of additional packages to be used
-pkgs <- c("tidyverse", "devtools", "readxl", "knitr", "blsR")
+pkgs <- c("tidyverse", "devtools", "readxl", "knitr", "blsR", "janitor")
 
 # Install packages from CRAN
 invisible(
@@ -466,11 +466,12 @@ food_away_means %>%
     position = position_dodge(0.75)
   ) +
   scale_fill_manual(values = c("red", "blue")) +
+  scale_y_continuous(labels = scales::dollar) +
   labs(
     title =
       "Estimated annual mean food away from home expenditures by CU size",
     x = "CU size",
-    y = "Estimated, weighted, annual mean expenditure ($)",
+    y = "Estimated, weighted, annual mean expenditure",
     fill = "Year"
   ) +
   theme_bw() +
@@ -522,11 +523,12 @@ food_away_comp_quantiles %>%
   geom_line() +
   scale_color_manual(values = c("red", "blue")) +
   scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::dollar) +
   labs(
     title =
       "Estimated, annual food away from home expenditure quantiles",
     x = "Quantile",
-    y = "Estimated, weighted, annual expenditure ($)",
+    y = "Estimated, weighted, annual expenditure",
     color = "Year"
   ) +
   theme_bw() +
@@ -666,9 +668,10 @@ fam_type_utilities %>%
   geom_segment(aes(x = 0, xend = mean_exp, yend = fam_type)) +
   geom_point(color = "red", size = 5) +
   scale_y_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  scale_x_continuous(labels = scales::dollar) +
   labs(
     y = "CU composition (FAM_TYPE)",
-    x = "Estimated, weighted, annual mean expenditure ($)",
+    x = "Estimated, weighted, annual mean expenditure",
     title =
       "Estimated annual mean utilities expenditures by CU composition"
   ) +
