@@ -441,181 +441,153 @@ dbl (1): Year Awarded
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"lda_mod"</span>, <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">matrix =</span> <span class="st">"gamma"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>document) <span class="sc">%&gt;%</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">data =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">slice_max</span>(.x, gamma, <span class="at">n =</span> <span class="dv">1</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(data) <span class="sc">%&gt;%</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    jh_clean <span class="sc">%&gt;%</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span>project_number <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"1R61HL156248-01"</span>, <span class="st">"3U24TR001609-04S1"</span>)</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">document =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(document, project_title),</span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"document"</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(topic) <span class="sc">%&gt;%</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gamma =</span> <span class="fu">round</span>(gamma, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(topic, gamma) <span class="sc">%&gt;%</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">booktabs =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">slice_max</span>(.x, gamma, <span class="at">n =</span> <span class="dv">1</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)),</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">project_number =</span> <span class="fu">rownames</span>(jh_sparse)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(data) <span class="sc">%&gt;%</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    jh_clean <span class="sc">%&gt;%</span> <span class="fu">select</span>(project_number, project_title),</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"project_number"</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(topic, project_title, gamma) <span class="sc">%&gt;%</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gamma =</span> <span class="fu">round</span>(gamma, <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(topic, gamma) <span class="sc">%&gt;%</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">booktabs =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <colgroup>
 <col style="width: 3%">
-<col style="width: 5%">
+<col style="width: 92%">
 <col style="width: 3%">
-<col style="width: 88%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: right;">topic</th>
-<th style="text-align: right;">document</th>
-<th style="text-align: right;">gamma</th>
 <th style="text-align: left;">project_title</th>
+<th style="text-align: right;">gamma</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">0.987</td>
-<td style="text-align: left;">Quantifying and Treating Myofascial Dysfunction in Post Stroke Shoulder Pain</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">0.993</td>
-<td style="text-align: left;">Development of MRGPRX1 positive allosteric modulators as non-addictive therapies for neuropathic pain</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.687</td>
-<td style="text-align: left;">Implementing and Evaluating the Impact of Novel Mobile Harm Reduction Services on Overdose Among Women who use Drugs: The SHOUT Study</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0.992</td>
 <td style="text-align: left;">The Short and Long-Term Dynamics of Opioid/Stimulant Use: Mixed Methods to Inform Overdose Prevention and Treatment Related to Polysubstance Use</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">0.994</td>
-<td style="text-align: left;">Validation of peripheral CGRP signaling as a target for the treatment of pain in chronic pancreatitis</td>
+<td style="text-align: right;">0.987</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0.996</td>
-<td style="text-align: left;">7/24 Healthy Brain and Child Development National Consortium</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">0.996</td>
-<td style="text-align: left;">Subchondral Bone Cavities in Osteoarthritis Pain</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;">0.997</td>
-<td style="text-align: left;">Sympathetic-mediated sensory neuron cluster firing as a novel therapeutic target for neuropathic pain</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">21</td>
-<td style="text-align: right;">0.997</td>
-<td style="text-align: left;">DC Research Infrastructure Building &amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">0.998</td>
-<td style="text-align: left;">Increasing Participant Diversity in a ’Sequenced-Strategy to Improve Outcomes in People with Knee Osteoarthritis Pain (SKOAP)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">16</td>
-<td style="text-align: right;">0.998</td>
-<td style="text-align: left;">DC Research Infrastructure Building &amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">0.990</td>
-<td style="text-align: left;">Mentorship of Junior Investigators on HEAL-SKOAP</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">24</td>
-<td style="text-align: right;">0.991</td>
-<td style="text-align: left;">ETHNIC DIFFERENCES IN ENDOGENOUS PAIN REGULATION: PET IMAGING OF OPIOID RECEPTORS</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">22</td>
-<td style="text-align: right;">0.992</td>
-<td style="text-align: left;">Evaluating Suvorexant for Sleep Disturbance in Opioid Use Disorder</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">23</td>
-<td style="text-align: right;">0.992</td>
-<td style="text-align: left;">UNDERSTANDING THE INTERSECTION BETWEEN OPIOIDS AND SUICIDE THROUGH THE SOUTHWEST HUB</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">0.994</td>
-<td style="text-align: left;">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">18</td>
-<td style="text-align: right;">0.994</td>
-<td style="text-align: left;">Effects of experimental sleep disruption and fragmentation on cerebral Mu-opioid receptor function, Mu-opioid receptor agonist analgesia, and abuse liability.</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0.992</td>
-<td style="text-align: left;">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Development of MRGPRX1 positive allosteric modulators as non-addictive therapies for neuropathic pain</td>
 <td style="text-align: right;">0.993</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Mentorship of Junior Investigators on HEAL-SKOAP</td>
+<td style="text-align: right;">0.687</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Implementing and Evaluating the Impact of Novel Mobile Harm Reduction Services on Overdose Among Women who use Drugs: The SHOUT Study</td>
+<td style="text-align: right;">0.992</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Evaluating Suvorexant for Sleep Disturbance in Opioid Use Disorder</td>
+<td style="text-align: right;">0.994</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Sympathetic-mediated sensory neuron cluster firing as a novel therapeutic target for neuropathic pain</td>
+<td style="text-align: right;">0.996</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">7/24 Healthy Brain and Child Development National Consortium</td>
+<td style="text-align: right;">0.996</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">DC Research Infrastructure Building &amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
+<td style="text-align: right;">0.997</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">DC Research Infrastructure Building &amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
+<td style="text-align: right;">0.997</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">HEALthy ORCHARD: Developing plans for a Baltimore site of the HEALthy BCD study</td>
+<td style="text-align: right;">0.998</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">DEVELOPMENT &amp; MALLEABILITY FROM CHILDHOOD TO ADULTHOOD</td>
+<td style="text-align: right;">0.998</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Subchondral Bone Cavities in Osteoarthritis Pain</td>
+<td style="text-align: right;">0.990</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
 <td style="text-align: left;">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
+<td style="text-align: right;">0.991</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
+<td style="text-align: right;">0.992</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Increasing Participant Diversity in a ’Sequenced-Strategy to Improve Outcomes in People with Knee Osteoarthritis Pain (SKOAP)</td>
+<td style="text-align: right;">0.992</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
+<td style="text-align: right;">0.994</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Social Networks among Native American caregivers participating in an evidence-based and culturally informed intergenerational intervention</td>
+<td style="text-align: right;">0.994</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">14</td>
-<td style="text-align: right;">0.994</td>
-<td style="text-align: left;">HEALthy ORCHARD: Developing plans for a Baltimore site of the HEALthy BCD study</td>
+<td style="text-align: left;">Quantifying and Treating Myofascial Dysfunction in Post Stroke Shoulder Pain</td>
+<td style="text-align: right;">0.992</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">0.980</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Validation of peripheral CGRP signaling as a target for the treatment of pain in chronic pancreatitis</td>
+<td style="text-align: right;">0.993</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
 <td style="text-align: left;">Home-based transcutaneous electrical acustimulation for abdominal pain</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">19</td>
 <td style="text-align: right;">0.994</td>
-<td style="text-align: left;">DEVELOPMENT &amp; MALLEABILITY FROM CHILDHOOD TO ADULTHOOD</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">6</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">0.995</td>
-<td style="text-align: left;">Social Networks among Native American caregivers participating in an evidence-based and culturally informed intergenerational intervention</td>
+<td style="text-align: left;">Evaluating the Role of the Orexin System in Circadian Rhythms of Sleep and Stress in Persons on Medication-Assisted Treatments for Opioid Use Disorder</td>
+<td style="text-align: right;">0.980</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">6</td>
-<td style="text-align: right;">17</td>
+<td style="text-align: left;">UNDERSTANDING THE INTERSECTION BETWEEN OPIOIDS AND SUICIDE THROUGH THE SOUTHWEST HUB</td>
+<td style="text-align: right;">0.994</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Effects of experimental sleep disruption and fragmentation on cerebral Mu-opioid receptor function, Mu-opioid receptor agonist analgesia, and abuse liability.</td>
 <td style="text-align: right;">0.995</td>
-<td style="text-align: left;">Evaluating the Role of the Orexin System in Circadian Rhythms of Sleep and Stress in Persons on Medication-Assisted Treatments for Opioid Use Disorder</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">ETHNIC DIFFERENCES IN ENDOGENOUS PAIN REGULATION: PET IMAGING OF OPIOID RECEPTORS</td>
+<td style="text-align: right;">0.995</td>
 </tr>
 </tbody>
 </table>

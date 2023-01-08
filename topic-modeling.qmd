@@ -251,18 +251,16 @@ jh_tune_models %>%
   pluck("lda_mod", 1) %>%
   tidy(matrix = "gamma") %>%
   nest(data = -document) %>%
-  mutate(data = map(data, ~ slice_max(.x, gamma, n = 1, with_ties = FALSE))) %>%
+  mutate(
+    data = map(data, ~ slice_max(.x, gamma, n = 1, with_ties = FALSE)),
+    project_number = rownames(jh_sparse)
+  ) %>%
   unnest(data) %>%
   left_join(
-    jh_clean %>%
-      filter(
-        !project_number %in% c("1R61HL156248-01", "3U24TR001609-04S1")
-      ) %>%
-      mutate(document = row_number()) %>%
-      select(document, project_title),
-    by = "document"
+    jh_clean %>% select(project_number, project_title),
+    by = "project_number"
   ) %>%
-  relocate(topic) %>%
+  select(topic, project_title, gamma) %>%
   mutate(gamma = round(gamma, 3)) %>%
   arrange(topic, gamma) %>%
   kable(booktabs = TRUE)
