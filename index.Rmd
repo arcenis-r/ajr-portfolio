@@ -22,7 +22,11 @@ The following three links are and R package and two R Shiny applications that I 
 Most recently I have been exploring various machine learning methods. Below is a link to a small project that I completed based on a real-life problem that I faced on a project.
 <ul>
   <li>[Opening the ML 'Black Box' with Shapley Values - A Tidy Approach](https://arcenis-r.github.io/ajr-portfolio/tidy-ml-evaluation.html)</li>
+<<<<<<< HEAD
   <li>[Topic Modling with R](https://arcenis-r.github.io/ajr-portfolio/topic-modeling.html)</li>
+=======
+  <li>[Topic Modling with R](https://arcenis-r.github.io/ajr-portfolio/topic-modeling.html)
+>>>>>>> c25c5b8396787cf53f97dbd1b8ddba1588054496
 </ul>
 
 ### Medicare's Hospital Readmission Rate Reduction Program (HRRP):
