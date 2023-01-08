@@ -338,7 +338,7 @@ dbl (1): Year Awarded
 </section>
 <section id="choosing-a-number-of-topics" class="level2">
 <h2 class="anchored" data-anchor-id="choosing-a-number-of-topics">Choosing a number of topics</h2>
-<p>First I’m going to build a set of LDA models with values of K (number of topics) ranging from 2 to 15. I’m also going to create a holdout dataset to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.</p>
+<p>First I’m going to build a set of LDA models with values of K (number of topics) ranging from 2 to 24. I’m also going to create a holdout dataset to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.</p>
 <div class="cell" data-hash="topic-modeling_cache/html/tune-models_ae2f2385410a727074611470885b0711">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">k =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">24</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>

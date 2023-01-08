@@ -141,7 +141,7 @@ Next I'll see if there's a better number of topics to separate these documents i
 
 ## Choosing a number of topics
 
-First I'm going to build a set of LDA models with values of K (number of topics) ranging from 2 to 15. I'm also going to create a holdout dataset to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.
+First I'm going to build a set of LDA models with values of K (number of topics) ranging from 2 to 24. I'm also going to create a holdout dataset to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.
 
 ```{r tune-models}
 #| output: false
