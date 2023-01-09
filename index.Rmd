@@ -25,8 +25,7 @@ Most recently I have been exploring various machine learning methods. Below is a
 <<<<<<< HEAD
   <li>[Topic Modling with R](https://arcenis-r.github.io/ajr-portfolio/topic-modeling.html)</li>
 =======
-  <li>[Topic Modling with R](https://arcenis-r.github.io/ajr-portfolio/topic-modeling.html)
->>>>>>> c25c5b8396787cf53f97dbd1b8ddba1588054496
+  <li>[Topic Modling with R](https://arcenis-r.github.io/ajr-portfolio/topic-modeling.html)</li>
 </ul>
 
 ### Medicare's Hospital Readmission Rate Reduction Program (HRRP):
