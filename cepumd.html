@@ -1256,6 +1256,12 @@ food_away_uccs_10
 #&gt; [17] &quot;190901&quot; &quot;190902&quot; &quot;190903&quot; &quot;790430&quot; &quot;800700&quot;</code></pre>
 <p>The lists of UCCs look identical, but I’ll keep both just to be
 cautious.</p>
+<p>Now I’ll download the Intervew and Diary files for both 2010 and
+2020.</p>
+<pre class="r"><code>ce_download(2010, diary, food_away_dir)
+ce_download(2010, interview, food_away_dir)
+ce_download(2020, diary, food_away_dir)
+ce_download(2020, interview, food_away_dir)</code></pre>
 <p>Next I’ll prepare the 2010 data and get a summary of the FAM_SIZE
 variable since it is a continuous variable.</p>
 <pre class="r"><code>food_away_data_10 &lt;- ce_prepdata(
@@ -1263,6 +1269,8 @@ variable since it is a continuous variable.</p>
   integrated,
   food_away_uccs_10,
   ce_dir = food_away_dir,
+  int_zp = &quot;intrvw10.zip&quot;,
+  dia_zp = &quot;diary10.zip&quot;,
   hg = food_away_hg_10,
   fam_size
 )
@@ -1282,6 +1290,8 @@ data.</p>
   integrated,
   food_away_uccs_20,
   ce_dir = food_away_dir,
+  int_zp = c(&quot;intrvw19.zip&quot;, &quot;intrvw20.zip&quot;),
+  dia_zp = &quot;diary20.zip&quot;,
   hg = food_away_hg_20,
   fam_size
 )
@@ -1318,120 +1328,120 @@ food_away_comp_data %&gt;%
 <tr class="odd">
 <td align="left">D</td>
 <td align="left">2010</td>
-<td align="left">01077271</td>
-<td align="right">36400.79</td>
-<td align="right">58.5000</td>
-<td align="left">190114</td>
+<td align="left">01077341</td>
+<td align="right">36068.39</td>
+<td align="right">117.5200</td>
+<td align="left">190311</td>
 <td align="left">2010</td>
 <td align="right">4</td>
 </tr>
 <tr class="even">
 <td align="left">D</td>
 <td align="left">2010</td>
-<td align="left">01113982</td>
-<td align="right">20848.16</td>
-<td align="right">14.3000</td>
-<td align="left">190113</td>
+<td align="left">01144792</td>
+<td align="right">42790.41</td>
+<td align="right">181.2200</td>
+<td align="left">190114</td>
 <td align="left">2010</td>
-<td align="right">9</td>
+<td align="right">10</td>
 </tr>
 <tr class="odd">
 <td align="left">D</td>
 <td align="left">2010</td>
-<td align="left">01072932</td>
-<td align="right">30438.06</td>
-<td align="right">234.0000</td>
-<td align="left">190114</td>
+<td align="left">01163761</td>
+<td align="right">19436.48</td>
+<td align="right">133.2500</td>
+<td align="left">190111</td>
 <td align="left">2010</td>
-<td align="right">5</td>
+<td align="right">12</td>
 </tr>
 <tr class="even">
 <td align="left">I</td>
 <td align="left">2010</td>
-<td align="left">02185554</td>
-<td align="right">15130.05</td>
-<td align="right">104.0000</td>
-<td align="left">790430</td>
+<td align="left">02321072</td>
+<td align="right">19012.87</td>
+<td align="right">150.0000</td>
+<td align="left">190903</td>
 <td align="left">2010</td>
-<td align="right">3</td>
+<td align="right">10</td>
 </tr>
 <tr class="odd">
 <td align="left">I</td>
 <td align="left">2010</td>
-<td align="left">02293872</td>
-<td align="right">17276.10</td>
-<td align="right">60.0000</td>
-<td align="left">190903</td>
-<td align="left">2010</td>
-<td align="right">3</td>
-</tr>
-<tr class="even">
-<td align="left">I</td>
-<td align="left">2010</td>
-<td align="left">02334032</td>
-<td align="right">24310.86</td>
-<td align="right">233.3333</td>
+<td align="left">02337342</td>
+<td align="right">25338.36</td>
+<td align="right">433.3333</td>
 <td align="left">800700</td>
 <td align="left">2010</td>
 <td align="right">9</td>
 </tr>
-<tr class="odd">
-<td align="left">D</td>
-<td align="left">2020</td>
-<td align="left">04374641</td>
-<td align="right">51933.91</td>
-<td align="right">319.8000</td>
-<td align="left">190321</td>
-<td align="left">2020</td>
-<td align="right">1</td>
-</tr>
 <tr class="even">
-<td align="left">D</td>
-<td align="left">2020</td>
-<td align="left">04450382</td>
-<td align="right">55277.16</td>
-<td align="right">64.8700</td>
-<td align="left">190311</td>
-<td align="left">2020</td>
-<td align="right">3</td>
+<td align="left">I</td>
+<td align="left">2010</td>
+<td align="left">02341162</td>
+<td align="right">20419.26</td>
+<td align="right">300.0000</td>
+<td align="left">190903</td>
+<td align="left">2010</td>
+<td align="right">9</td>
 </tr>
 <tr class="odd">
 <td align="left">D</td>
 <td align="left">2020</td>
-<td align="left">04362691</td>
-<td align="right">42724.20</td>
-<td align="right">76.4400</td>
-<td align="left">190321</td>
+<td align="left">04434761</td>
+<td align="right">15628.64</td>
+<td align="right">104.0000</td>
+<td align="left">190111</td>
 <td align="left">2020</td>
-<td align="right">1</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04363342</td>
+<td align="right">57862.57</td>
+<td align="right">1248.0000</td>
+<td align="left">190212</td>
+<td align="left">2020</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="left">2020</td>
+<td align="left">04623581</td>
+<td align="right">40192.54</td>
+<td align="right">236.8600</td>
+<td align="left">190112</td>
+<td align="left">2020</td>
+<td align="right">11</td>
 </tr>
 <tr class="even">
 <td align="left">I</td>
 <td align="left">2020</td>
-<td align="left">04324332</td>
-<td align="right">30819.70</td>
-<td align="right">200.0000</td>
+<td align="left">04351083</td>
+<td align="right">23819.65</td>
+<td align="right">500.0000</td>
 <td align="left">190903</td>
 <td align="left">2020</td>
-<td align="right">4</td>
+<td align="right">7</td>
 </tr>
 <tr class="odd">
 <td align="left">I</td>
 <td align="left">2020</td>
-<td align="left">04506691</td>
-<td align="right">21062.71</td>
-<td align="right">35.0000</td>
+<td align="left">04382192</td>
+<td align="right">22057.03</td>
+<td align="right">25.0000</td>
 <td align="left">190903</td>
 <td align="left">2020</td>
-<td align="right">8</td>
+<td align="right">6</td>
 </tr>
 <tr class="even">
 <td align="left">I</td>
 <td align="left">2020</td>
-<td align="left">04419663</td>
-<td align="right">31004.50</td>
-<td align="right">200.0000</td>
-<td align="left">190903</td>
+<td align="left">04505402</td>
+<td align="right">26153.82</td>
+<td align="right">333.3333</td>
+<td align="left">790430</td>
 <td align="left">2020</td>
 <td align="right">11</td>
 </tr>
@@ -1943,10 +1953,7 @@ annual, estimated quantile (from 0.01 through 0.99, by 0.01) for the
 same years, but only using Diary data, since most of the UCCs (16 out of
 21) in the “food away from home” category come from the Diary. I’ll also
 make sure that the Diary files are in my data directory first.</p>
-<pre class="r"><code>ce_download(2010, diary, food_away_dir)
-ce_download(2020, diary, food_away_dir)
-
-food_away_comp_quantiles &lt;- map2(
+<pre class="r"><code>food_away_comp_quantiles &lt;- map2(
   c(2010, 2020),
   c(&quot;diary10.zip&quot;, &quot;diary20.zip&quot;),
   ~ ce_prepdata(

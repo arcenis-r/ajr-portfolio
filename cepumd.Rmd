@@ -329,6 +329,15 @@ food_away_uccs_20
 
 The lists of UCCs look identical, but I'll keep both just to be cautious.
 
+Now I'll download the Intervew and Diary files for both 2010 and 2020.
+
+```{r dl_survey_data}
+ce_download(2010, diary, food_away_dir)
+ce_download(2010, interview, food_away_dir)
+ce_download(2020, diary, food_away_dir)
+ce_download(2020, interview, food_away_dir)
+```
+
 Next I'll prepare the 2010 data and get a summary of the FAM_SIZE variable since it is a continuous variable.
 
 ```{r prep_data_10, cache=TRUE}
@@ -337,6 +346,8 @@ food_away_data_10 <- ce_prepdata(
   integrated,
   food_away_uccs_10,
   ce_dir = food_away_dir,
+  int_zp = "intrvw10.zip",
+  dia_zp = "diary10.zip",
   hg = food_away_hg_10,
   fam_size
 )
@@ -352,6 +363,8 @@ food_away_data_20 <- ce_prepdata(
   integrated,
   food_away_uccs_20,
   ce_dir = food_away_dir,
+  int_zp = c("intrvw19.zip", "intrvw20.zip"),
+  dia_zp = "diary20.zip",
   hg = food_away_hg_20,
   fam_size
 )
@@ -483,9 +496,6 @@ Here we can see that on an inflation-adjusted basis, households of all sizes had
 Now I'll generate a plot of the expenditures at each weighted, annual, estimated quantile (from 0.01 through 0.99, by 0.01) for the same years, but only using Diary data, since most of the UCCs (16 out of 21) in the "food away from home" category come from the Diary. I'll also make sure that the Diary files are in my data directory first.
 
 ```{r plot_food_away_quantiles, cache=TRUE}
-ce_download(2010, diary, food_away_dir)
-ce_download(2020, diary, food_away_dir)
-
 food_away_comp_quantiles <- map2(
   c(2010, 2020),
   c("diary10.zip", "diary20.zip"),
