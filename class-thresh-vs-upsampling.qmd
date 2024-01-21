@@ -6,6 +6,12 @@ format:
     link-external-newwindow: true
     toc: true
     toc_float: true
+    navbar:
+      background: primary
+      search: true
+      left:
+        - text: "Arcenis Rojas"
+          file: index.html
 editor: visual
 execute:
   warning: false
@@ -28,6 +34,8 @@ library(themis)
 library(finetune)
 library(probably)
 library(skimr)
+library(knitr)
+library(kableExtra)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("select", "dplyr")
@@ -56,6 +64,8 @@ For the analysis I'll also be relying heavily on the following packages:
 -   `colino`[@colino]: for the maximum Relevancy Minimum Redundancy (mRMR) supervised feature selection pre-processing step
 
 -   `skimr`[@skimr]: for summarizing data
+
+-   `knitr` [@knitr]: for table formatting
 
 ## Data Exploration
 
@@ -240,7 +250,9 @@ eval_base |>
       extract_fit_engine() |>
       tidy() |>
       select(upsample = term)
-  )
+  ) |>
+  kable(booktabs = TRUE) |> 
+  kable_styling("striped")
 ```
 
 The above table shows that both models ended up with the same sets of variables. Next we'll find the optimal threshold cut-offs for each set of predictions on the test data using Youden's J-Index.
@@ -281,7 +293,10 @@ Each table of predictions currently has 3 columns showing the actual class for a
 
 ```{r}
 #| label: show-base-preds
-base_preds
+base_preds |>
+  slice_head(n = 10) |>
+  kable(booktabs = TRUE) |>
+  kable_styling("striped")
 ```
 
 Now I'd like to add to each of these tables another column containing the predicted class based on the optimal probability threshold for each respective table. The below table shows a few cases for which the predicted class using a 0.5 probability threshold does not match the predicted class using the optimal probability threshold of `r opt_thresh_upsample` .
@@ -307,7 +322,9 @@ upsample_preds <- upsample_preds |>
 
 upsample_preds |> 
   filter(opt_pred_class != pred_class) |>
-  slice_head(n = 6)
+  slice_head(n = 10) |>
+  kable(booktabs = TRUE) |>
+  kable_styling("striped")
 ```
 
 Next I'll plot confusion matrices for each set of predictions.
@@ -351,7 +368,9 @@ conf_mats |>
       select(-.estimator) |>
       set_names("metric", str_replace(y, "_", " ") |> str_to_title())
   ) |>
-  reduce(left_join, by = "metric")
+  reduce(left_join, by = "metric") |>
+  kable(booktabs = TRUE) |>
+  kable_styling("striped")
 ```
 
 The first thing that one might notices from the above is how high the accuracy is for the base model. It's important to remember, though, that when a data set is so unbalanced all a model has to do is predict the majority class all the time and it will have high accuracy. That model, though, has a very low sensitivity and high specificity. The high specificity, again, is due to the fact that the actual data has an overwhelming proportion of the majority class. Looking across at the metrics for the other models one sees drops in both accuracy and specificity, but much more significant increases in sensitivity from the base model. It's also useful to note that other metrics like balanced accuraca, kappa, mcc, and f_measure also improve. This is further evidence of the effect that the imbalance in classes has on the base model.
