@@ -1,0 +1,28 @@
+---
+title: "Publications"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+    toc_float: true
+editor: visual
+bibliography: ./references/arcenis-publications.bib
+---
+
+## Papers
+
+Green, D., Melzer, B. T., Parker, J. A., & Rojas, A. (2020). Accelerator or Brake? Cash for Clunkers, Household Liquidity, and Aggregate Demand. *American Economic Journal: Economic Policy*, *12*(4), 178–211. <https://www.aeaweb.org/articles?id=10.1257/pol.20170122>
+
+Hubener, E., Rojas, A., & Tseng, N. (2018). Tradeoffs in the expenditure patterns of families with children. *Beyond the Numbers: Prices & Spending (U.S. Bureau of Labor Statistics)*, 7(11). <https://www.bls.gov/opub/btn/volume-7/tradeoffs-in-the-expenditure-patterns-of-families-with-children.htm>
+
+Foster, A.C., Rojas, A. (2018). Program participation and spending patterns of families receiving government means-tested assistance. *Monthly Labor Review (U.S. Bureau of Labor Statistics).* <https://doi.org/10.21916/mlr.2018.3>
+
+## Presentations
+
+Paulin, G., Rojas, A., Taylor, W. (2018). Expenditures with Policy Implications: Results from the Consumer Expenditure Surveys on Housing, Alcohol, Tobacco, and Gambling. *American Council on Consumer Interests*. <https://www.consumerinterests.org/assets/docs/CIA/CIA2018/Paulin%281%29CIA2018.pdf>
+
+Tan, L., Rojas, A. (2019). Exploring the Application of Machine Learning Techniques to Construct R-indicators. *American Association for Public Opinion Research Conference*. <https://www.bls.gov/cex/research_papers/pdf/rojas-r-indicators-aapor-presentation.pdf>
+
+Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). Documenting the Consumer Expenditure Surveys with DDI and Colectica – An Update. *North American Data Documentation Initiative*. <https://doi.org/10.5281/zenodo.556223>
+
+Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). A Complex Use Case - Documenting the Consumer Expenditure Survey at BLS. *North American Data Documentation Initiative*. <https://doi.org/10.5281/zenodo.556223>

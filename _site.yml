@@ -1,6 +1,0 @@
-name: "Arcenis Rojas"
-output_dir: "."
-output:
-  html_document:
-    theme: paper
-    css: 'styles.css'

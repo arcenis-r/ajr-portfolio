@@ -48,10 +48,10 @@ get_var_imp <- function(wflow) {
 # Get a matrix of SHAP values for each variable for each observation
 get_shap <- function(wflow) {
   fastshap::explain(
-    pull_workflow_fit(wflow),
-    X = pull_workflow_mold(wflow) %>% pluck("predictors") %>% as.matrix(),
-    feature_names = pull_workflow_mold(wflow) %>% 
-      pluck("predictors") %>% 
+    extract_fit_parsnip(wflow),
+    X = extract_mold(wflow) |> pluck("predictors") |> as.matrix(),
+    feature_names = extract_mold(wflow) |> 
+      pluck("predictors") |>
       colnames(),
     pred_wrapper = tidy_pred,
     nsim = 10
@@ -60,13 +60,14 @@ get_shap <- function(wflow) {
 
 # Calculate SHAP variable importance
 get_shap_imp <- function(shap_obj) {
-  shap_obj %>% 
-    summarise(across(everything(), ~ mean(abs(.x)))) %>%
+  shap_obj |>
+    as_tibble() |>
+    summarise(across(everything(), \(x) mean(abs(x)))) |>
     pivot_longer(
       everything(), 
       names_to = "Variable", 
       values_to = "Importance"
-    ) %>%
+    ) |>
     arrange(desc(Importance))
 }
 
@@ -129,26 +130,16 @@ plot_shap_summary <- function(shap_summary_df, algorithm) {
 # Generate a partial dependence plot
 plot_pdp <- function(wflow, pred_var, algorithm) {
   pred_var <- enquo(pred_var)
-  mod <- pull_workflow_fit(wflow)
-  train_dat <- pull_workflow_mold(wflow) |> pluck("predictors")
+  mod <- extract_fit_parsnip(wflow)
+  train_dat <- extract_mold(wflow) |> pluck("predictors")
   
   pdp::partial(
     mod,
     pred.var = quo_name(pred_var),
     train = train_dat,
-    pred.fun = tidy_pred,
     type = "regression"
   ) |>
     data.frame() |> 
-    group_by(yhat.id) |> 
-    mutate(rnum = row_number()) |> 
-    group_by(rnum) |> 
-    summarise(
-      !!pred_var := mean(!!pred_var, na.rm = TRUE),
-      yhat = mean(yhat, na.rm = TRUE),
-      .groups = "drop"
-    ) |> 
-    select(-rnum) |>
     ggplot(aes(!!pred_var, yhat)) +
     geom_line() +
     stat_smooth(method = "loess", formula = y ~ x) +
@@ -164,20 +155,19 @@ plot_pdp <- function(wflow, pred_var, algorithm) {
 # and accompanying contribution plot
 get_contributions <- function(shap_df, algorithm, rnum, nfeat) {
   contrib_df <- shap_df |>
-    as_tibble() |>
+    as_tibble() |> 
+    mutate(across(everything(), as.numeric)) |>
     dplyr::slice(rnum) |>
-    pivot_longer(everything(), names_to = "variable", values_to = "shap") |>
-    arrange(desc(abs(shap))) |>
-    dplyr::slice(1:nfeat)
+    pivot_longer(everything(), names_to = "variable", values_to = "shap")
   
-  contrib_plot <- autoplot(
-    shap_df, 
-    type = "contribution", 
-    row_num = 2049 , 
-    num_features = nfeat
-  ) + 
-    ggtitle(
-      str_glue(
+  contrib_plot <- contrib_df |>
+    slice_max(abs(shap), n = nfeat, with_ties = FALSE) |>
+    ggplot(aes(x = shap, y = fct_reorder(variable, abs(shap)), fill = shap)) +
+    geom_col(show.legend = FALSE) +
+    labs(
+      y = NULL,
+      x = "Shapley value",
+      title = str_glue(
         "Top {nfeat} SHAP Contributions for Observation {rnum} ({algorithm})"
       )
     ) +

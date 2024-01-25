@@ -1,0 +1,370 @@
+---
+title: "Dealing with Unbalanced Data: Optimal Threshold vs. Upsampling"
+author: "Arcenis Rojas"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+    toc_float: true
+editor: visual
+execute:
+  warning: false
+  error: false
+bibliography: references/class-thresh-vs-upsampling-references.bib
+---
+
+## Introduction
+
+In any binary classification analysis it is common to have to deal with heavily unbalanced data, i.e., the frequency of the majority class in the dependent variable is overwhelmingly greater than that of the minority class. One of the main reasons this can be problematic is that many classificiation algorithms are biased toward the majority class. If 95% of the observations belong to the majority class in the training data and the algorithm always predicts the majority class, then it will have achieved 95% accuracy.
+
+There are many ways of dealing with unbalanced data including changing from a classification algorithm to an anomaly detection algorithm like an isoforest or a one-class SVM, using SMOTE to rebalance the data sets in pre-processing, up- or down-sampling, and changing the classification threshold. Here I will only deal with up-sampling and changing the classification threshold to see how it affects classification metrics by way of going through an exercise. I'll first create a base model then generate an up-sampled model. I'll then find the optimal threshold for each. Finally I'll show a comparison of their respective classification metrics.
+
+```{r}
+#| label: set-up
+library(tidyverse)
+library(tidymodels)
+library(colino)
+library(themis)
+library(finetune)
+library(probably)
+library(skimr)
+library(knitr)
+library(kableExtra)
+
+conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("select", "dplyr")
+tidymodels_prefer()
+options(yardstick.event_level = "second")
+```
+
+## Lending Club Data
+
+For this project I'll be using the `lending_club` data set from the `modeldata` [@modeldata] package. The data contain the `Class` variable which indicates whether a loan was "good" or bad". For the purposes of this analysis I also will consider the "bad" outcome as the event to predict.
+
+## Tidyverse and Other Packages
+
+For the analysis I'll also be relying heavily on the following packages:
+
+-   `tidyverse` [@tidyverse]: for data wrangling, visualization, and functional programming
+
+-   `tidymodels`[@tidymodels]: for data pre-processing, model specification, model tuning, model evaluation, and extracting information from model objects
+
+-   `probably`[@probably]: for selecting an optimal threshold
+
+-   `themis`[@themis]: for extra pre-processing functions as for upsampling
+
+-   `finetune`[@finetune]: for additional functions for model tuning
+
+-   `colino`[@colino]: for the maximum Relevancy Minimum Redundancy (mRMR) supervised feature selection pre-processing step
+
+-   `skimr`[@skimr]: for summarizing data
+
+-   `knitr` [@knitr]: for table formatting
+
+## Data Exploration
+
+The first step is to load and summarize the data.
+
+```{r}
+#| label: load-data
+
+data("lending_club", package = "modeldata")
+
+skim(lending_club) |> select(-complete_rate)
+```
+
+The above data summary shows some important things. First, there are 9,857 observations and 23 variables with no missing values. Also, the data has 6 factor variables and 17 numeric variables. It shows that most of the numeric variables are left skewed. The "sub_grade" and "addr_state" factor variables have 35 and 50 levels respectively. With so many unique values it's very likely that some of the classes in each of those variables become overwhelmed by majority classes. While there are feature engineering steps that I can take such as consolidating infrequent classes or splitting up `sub_grade` into constituent parts, I'll just allow the feature selection step to handle it. Finally, the "Class" factor variable (dependent variable) has two levels with the majority class – "good" – having 9,340 observations and the minority class – "bad" – having 517 observations.
+
+Here I'll just look at the proportions of the `Class` variable.
+
+```{r}
+#| label: outcome-frequencies
+
+lending_club |>
+  ggplot(aes(y = Class)) +
+  geom_bar(aes(x = (..count..) / sum(..count..))) +
+  scale_x_continuous(labels = scales::percent) +
+  labs(
+    x = "Proportion",
+    y = NULL,
+    title = "Frequency of loan outcome categories (Class)"
+  ) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Here we see a sever class unbalance with only about 5% of loans having a "bad" outcome.
+
+## Create Data Splits and Other Common Elements
+
+For the analysis I'll split the data into training (75%) and test (25%) sets stratified by the `Class` variable. I'll then create 100 bootstraps of the training data for model tuning, also stratified by the `Class` variable. Stratification will ensure that both cuts of the data and the bootstraps retain the class unbalance as close to the proportions of the original data.
+
+Here I also create a list of features to control the model tuning process.
+
+```{r}
+#| label: common-elements
+
+# Create training/test split
+set.seed(95)
+tt_split <- initial_split(lending_club, prop = 0.75, strata = Class)
+
+# Create the bootstrap object
+set.seed(386)
+bstraps <- bootstraps(training(tt_split), times = 100, strata = Class)
+
+# Create the model object for the workflows
+lr_mod <- logistic_reg(mode = "classification", engine = "glm")
+
+# Create a list of control options
+race_control <- control_race(
+  verbose = FALSE,
+  allow_par = FALSE,
+  burn_in = 3,
+  save_workflow = TRUE,
+  save_pred = TRUE
+)
+```
+
+## Train Base Model
+
+The base recipe will perform the following steps:
+
+1.  Remove variables with near-zero variance
+
+2.  Scale and center all numeric variables
+
+3.  Convert categorical variables to dummy variables
+
+4.  Select variables based on mRMR; the percentil threshold used to decide which variables to keep will be chosen through model tuning
+
+The base recipe will be combined with a logistic regression model specification to put into a workflow. This workflow then goes through a Bayesian hyperparameter tuning process to find the best mRMR threshold as mentioned above. "Best" is defined as the full model specification that yields the highest area under the receiver operator curve (ROC-AUC) because I'll be choosing the optimal probability threshold on the basis of this curve, even though it would be preferable to choose on the basis of the area under the precision-recall curve (PR-AUC) with unbalanced data. [@imbal_auprc]
+
+```{r}
+#| label: base-wflow
+#| cache: true
+
+# Create a base recipe
+base_rec <- recipe(Class ~ ., data = training(tt_split)) |>
+  step_nzv(all_predictors()) |>
+  step_normalize(all_numeric_predictors()) |>
+  step_dummy(all_nominal_predictors(), one_hot = FALSE) |>
+  step_select_mrmr(
+    all_predictors(),
+    threshold = tune(),
+    outcome = "Class"
+  )
+
+# First tune the base model to get the best set of variables with MRMR
+base_wflow <- workflow() |> add_recipe(base_rec) |> add_model(lr_mod)
+
+set.seed(40)
+base_tuned <- tune_race_win_loss(
+  base_wflow,
+  resamples = bstraps,
+  control = race_control,
+  grid = 10,
+  metrics = metric_set(pr_auc, roc_auc, accuracy)
+)
+
+# Get the workflow with the best MRMR threshold
+best_base <- select_best(base_tuned, "pr_auc")
+
+# Get the MRMR threshold from the best base model
+mrmr_threshold <- best_base |> pull(threshold)
+```
+
+The mRMR threshold associated with the best model is `r mrmr_threshold` .
+
+## Train Upsampled Model
+
+The upsampled model will only add the pre-processing step of upsampling the minority class to the same proportion as the majority class (or close to it) by resampling observations with a `Class` value from the minority class. To ensure that this is the only difference, I'll take the mRMR threshold that was tuned for the base model directly from the best base model and specify it as the threshold for the upsampling model.
+
+```{r}
+#| label: upsample-wflow
+#| cache: true
+
+# Build a recipe for upsampling by first updating the MRMR step from the base recipe with the threshold from the tuning process then adding upsampling
+upsample_rec <- base_rec
+select_mrmr_step <- tidy(upsample_rec) |>
+  filter(type %in% "select_mrmr") |>
+  pull(number)
+
+upsample_rec$steps[[select_mrmr_step]] <- update(
+  upsample_rec$steps[[select_mrmr_step]],
+  threshold = mrmr_threshold
+)
+
+upsample_rec <- upsample_rec |>
+  step_upsample(Class, over_ratio = tune())
+
+# Create the upsample workflow object
+upsample_wflow <- workflow() |> add_recipe(upsample_rec) |> add_model(lr_mod)
+
+# Tune the workflow containing the upsample recipe
+set.seed(40)
+upsample_tuned <- tune_race_win_loss(
+  upsample_wflow,
+  resamples = bstraps,
+  control = race_control,
+  grid = 10,
+  metrics = metric_set(pr_auc, roc_auc, accuracy)
+)
+
+# Get the workflow with the best MRMR threshold
+best_upsample <- select_best(upsample_tuned, "pr_auc")
+```
+
+The best over-sampling ratio is `r best_upsample |> pull(over_ratio)` .
+
+## Compare Model Classification Metrics
+
+Now that I've run both models and gotten the best hyperparameters for each, I'll finalize both models and ensure that I have the same sets of variables in the models.
+
+```{r}
+#| label: finalize-models
+
+# Get evaluation datasets for both workflows
+set.seed(75)
+eval_base <- base_wflow |>
+  finalize_workflow(best_base) |>
+  last_fit(tt_split)
+
+# Build the evaluation tibble for the upsample case
+set.seed(212)
+eval_upsample <- upsample_wflow |>
+  finalize_workflow(select_best(upsample_tuned, "pr_auc")) |>
+  last_fit(tt_split)
+
+eval_base |>
+  extract_fit_engine() |>
+  tidy() |>
+  select(base = term) |>
+  bind_cols(
+    eval_upsample |>
+      extract_fit_engine() |>
+      tidy() |>
+      select(upsample = term)
+  ) |>
+  kable(booktabs = TRUE) |> 
+  kable_styling("striped")
+```
+
+The above table shows that both models ended up with the same sets of variables. Next we'll find the optimal threshold cut-offs for each set of predictions on the test data using Youden's J-Index.
+
+```{r}
+#| label: find-opt-cutoffs
+
+base_preds <- tibble(
+  truth = collect_predictions(eval_base) |> pull(Class),
+  estimate = collect_predictions(eval_base) |> pull(.pred_bad),
+  pred_class = collect_predictions(eval_base) |> pull(.pred_class)
+)
+
+# Find the optimal classification threshold for the base model
+opt_thresh_base <- base_preds |>
+  threshold_perf(truth, estimate, seq(0, 1, length.out = 1000)) |>
+  filter(.metric %in% "j_index") |>
+  slice_max(.estimate, with_ties = FALSE) |>
+  pull(.threshold)
+
+upsample_preds <- tibble(
+  truth = collect_predictions(eval_upsample) |> pull(Class),
+  estimate = collect_predictions(eval_upsample) |> pull(.pred_bad),
+  pred_class = collect_predictions(eval_upsample) |> pull(.pred_class)
+)
+
+# Find the optimal classification threshold for the upsample model
+opt_thresh_upsample <- upsample_preds |>
+  threshold_perf(truth, estimate, seq(0, 1, length.out = 1000))|>
+  filter(.metric %in% "j_index") |>
+  slice_max(.estimate, with_ties = FALSE) |>
+  pull(.threshold)
+```
+
+The optimal probability threshold for classifying a loan as bad with the base model is `r opt_thresh_base` and that for the upsampling model is `r opt_thresh_upsample`
+
+Each table of predictions currently has 3 columns showing the actual class for a given observation (truth), the prediction probability associated with that observation being a bad loan (estimate), and a predicted class based on a probability threshold of 0.5 (pred_class). The table below shows the first few predictions from the base model.
+
+```{r}
+#| label: show-base-preds
+base_preds |>
+  slice_head(n = 10) |>
+  kable(booktabs = TRUE) |>
+  kable_styling("striped")
+```
+
+Now I'd like to add to each of these tables another column containing the predicted class based on the optimal probability threshold for each respective table. The below table shows a few cases for which the predicted class using a 0.5 probability threshold does not match the predicted class using the optimal probability threshold of `r opt_thresh_upsample` .
+
+```{r}
+#| label: add-opt-thresh-class
+
+base_preds <- base_preds |>
+  mutate(
+    opt_pred_class = if_else(estimate >= opt_thresh_base, "bad", "good") |>
+      factor(levels = c("bad", "good"))
+  )
+
+upsample_preds <- upsample_preds |>
+  mutate(
+    opt_pred_class = if_else(
+      estimate >= opt_thresh_upsample,
+      "bad",
+      "good"
+    ) |>
+      factor(levels = c("bad", "good"))
+  )
+
+upsample_preds |> 
+  filter(opt_pred_class != pred_class) |>
+  slice_head(n = 10) |>
+  kable(booktabs = TRUE) |>
+  kable_styling("striped")
+```
+
+Next I'll plot confusion matrices for each set of predictions.
+
+```{r}
+#| label: plot-conf-mats
+
+conf_mats <- list(base = base_preds, upsample = upsample_preds) |>
+  map(
+    \(x) list(
+      conf_mat(x, truth = truth, estimate = pred_class),
+      conf_mat(x, truth = truth, estimate = opt_pred_class)
+    ) |>
+      set_names("standard", "optimal")
+  ) |>
+  list_flatten()
+
+conf_mat_plots <- conf_mats |>
+  imap(
+    \(x, y) {
+      plot_title <- str_replace(y, "_", " ") |>
+        str_to_title()
+      
+      autoplot(x, type = "heatmap") +
+        ggtitle(plot_title) +
+        theme(plot.title = element_text(hjust = 0.5))
+    }
+  )
+
+cowplot::plot_grid(plotlist = conf_mat_plots)
+```
+
+The above confusion matrices show that both changing the probability threshold for classification as a bad loan and upsampling have a significant impact on the number of positive predictions ("bad" loan), even though most of those are predicted incorrectly with this model. It's also interesting to note that doing both – changing the probability threshold and upsampling – shows very little improvement over doing just one or the other. Below are some classification metrics for each model specification.
+
+```{r}
+#| label: compare-metrics
+
+conf_mats |>
+  imap(
+    \(x, y) summary(x) |>
+      select(-.estimator) |>
+      set_names("metric", str_replace(y, "_", " ") |> str_to_title())
+  ) |>
+  reduce(left_join, by = "metric") |>
+  kable(booktabs = TRUE) |>
+  kable_styling("striped")
+```
+
+The first thing that one might notices from the above is how high the accuracy is for the base model. It's important to remember, though, that when a data set is so unbalanced all a model has to do is predict the majority class all the time and it will have high accuracy. That model, though, has a very low sensitivity and high specificity. The high specificity, again, is due to the fact that the actual data has an overwhelming proportion of the majority class. Looking across at the metrics for the other models one sees drops in both accuracy and specificity, but much more significant increases in sensitivity from the base model. It's also useful to note that other metrics like balanced accuraca, kappa, mcc, and f_measure also improve. This is further evidence of the effect that the imbalance in classes has on the base model.

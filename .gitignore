@@ -2,7 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+.git
+archive/
 tidy-ml-evaluation_cache/
 project-ideas.txt
 check.Rmd
 check.html
+/.quarto/

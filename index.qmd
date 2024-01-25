@@ -1,0 +1,20 @@
+---
+title: "Welcome"
+format:
+  html:
+    link-external-icon: true
+    link-external-newwindow: true
+editor: visual
+---
+
+::: {layout="[35, 65]"}
+![](images/profile-pic-20201207.jpg){style="margin-right: 20px; margin-bottom: 20px" fig-align="left" width="25%"}
+
+I'm an economist turned consultant/data scientist with strong interests in the divergence between inferential modeling and predictive modeling. Over the last few years I've started to really enjoy programming in the Tidyverse style and have even begun to work quite a bit with Tidymodels.\
+\
+I hold a B.S. in Applied Economics from [Ithaca College](https://www.ithaca.edu) and an M.S. in Economics from the [City University of New York - City College](https://www.ccny.cuny.edu/). I enjoy projects that allow me to learn and implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.
+:::
+
+One of the most fun personal projects of mine has been to create the `cepumd` package. You can read more about it here: [cepumd-intro.qmd](cepumd-intro.qmd "Introduction to cepumd package").
+
+I also enjoy tutoring econometrics, data science, R, and statistics on Wyzant. [Check out my profile!](https://is.gd/6xUixC)

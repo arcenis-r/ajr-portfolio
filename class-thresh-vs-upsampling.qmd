@@ -1,29 +1,24 @@
 ---
-title: "Dealing with Unbalanced Data: Optimal Threshold vs. Upsampling"
+title: "Dealing with Unbalanced Data"
+subtitle: "Optimal Threshold vs. Upsampling"
 author: "Arcenis Rojas"
 format: 
   html:
     link-external-newwindow: true
     toc: true
     toc_float: true
-    navbar:
-      background: primary
-      search: true
-      left:
-        - text: "Arcenis Rojas"
-          file: index.html
 editor: visual
 execute:
   warning: false
   error: false
-bibliography: class-thresh-vs-upsampling-references.bib
+bibliography: references/class-thresh-vs-upsampling-references.bib
 ---
 
 ## Introduction
 
-In any binary classification analysis it is common to have to deal with heavily unbalanced data, i.e., the frequency of the majority class in the dependent variable is overwhelmingly greater than that of the minority class. One of the main reasons this can be problematic is that many classificiation algorithms are biased toward the majority class. If 95% of the observations belong to the majority class in the training data and the algorithm always predicts the majority class, then it will have achieved 95% accuracy.
+In any binary classification analysis it is common to have to deal with heavily unbalanced data, i.e., the frequency of the majority class in the dependent variable is overwhelmingly greater than that of the minority class. One of the main reasons this can be problematic is that many classification algorithms are biased toward the majority class. If 95% of the observations belong to the majority class in the training data and the algorithm always predicts the majority class, then it will have achieved 95% accuracy.
 
-There are many ways of dealing with unbalanced data including changing from a classification algorithm to an anomaly detection algorithm like an isoforest or a one-class SVM, using SMOTE to rebalance the data sets in pre-processing, up- or down-sampling, and changing the classification threshold. Here I will only deal with up-sampling and changing the classification threshold to see how it affects classification metrics by way of going through an exercise. I'll first create a base model then generate an up-sampled model. I'll then find the optimal threshold for each. Finally I'll show a comparison of their respective classification metrics.
+There are many ways of dealing with unbalanced data including changing from a classification algorithm to an anomaly detection algorithm like an isoforest or a one-class SVM, using SMOTE to re-balance the data sets in pre-processing, up- or down-sampling, and changing the classification threshold. Here I will only deal with up-sampling and changing the classification threshold to see how it affects classification metrics by way of going through an exercise. I'll first create and tune a base model then do the same for an up-sampled model using Tidymodels [@tidymodels]. Hyperparameter tuning will be done with the `finetune` package [@finetune]. I'll then find the optimal threshold for each using the `probably` package [@probably]. Finally I'll show a comparison of their respective classification metrics.
 
 ```{r}
 #| label: set-up
@@ -40,36 +35,15 @@ library(kableExtra)
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("select", "dplyr")
 tidymodels_prefer()
-options(yardstick.event_level = "second")
 ```
 
 ## Lending Club Data
 
 For this project I'll be using the `lending_club` data set from the `modeldata` [@modeldata] package. The data contain the `Class` variable which indicates whether a loan was "good" or bad". For the purposes of this analysis I also will consider the "bad" outcome as the event to predict.
 
-## Tidyverse and Other Packages
-
-For the analysis I'll also be relying heavily on the following packages:
-
--   `tidyverse` [@tidyverse]: for data wrangling, visualization, and functional programming
-
--   `tidymodels`[@tidymodels]: for data pre-processing, model specification, model tuning, model evaluation, and extracting information from model objects
-
--   `probably`[@probably]: for selecting an optimal threshold
-
--   `themis`[@themis]: for extra pre-processing functions as for upsampling
-
--   `finetune`[@finetune]: for additional functions for model tuning
-
--   `colino`[@colino]: for the maximum Relevancy Minimum Redundancy (mRMR) supervised feature selection pre-processing step
-
--   `skimr`[@skimr]: for summarizing data
-
--   `knitr` [@knitr]: for table formatting
-
 ## Data Exploration
 
-The first step is to load and summarize the data.
+The first step is to load the data using the `readr` package from the Tidyverse [@tidyverse] and summarize it using the `skimr` package [@skimr].
 
 ```{r}
 #| label: load-data
@@ -141,7 +115,7 @@ The base recipe will perform the following steps:
 
 3.  Convert categorical variables to dummy variables
 
-4.  Select variables based on mRMR; the percentil threshold used to decide which variables to keep will be chosen through model tuning
+4.  Select variables based on mRMR using the `colino` package [@colino]; the percentile threshold used to decide which variables to keep will be chosen through model tuning
 
 The base recipe will be combined with a logistic regression model specification to put into a workflow. This workflow then goes through a Bayesian hyperparameter tuning process to find the best mRMR threshold as mentioned above. "Best" is defined as the full model specification that yields the highest area under the receiver operator curve (ROC-AUC) because I'll be choosing the optimal probability threshold on the basis of this curve, even though it would be preferable to choose on the basis of the area under the precision-recall curve (PR-AUC) with unbalanced data. [@imbal_auprc]
 
@@ -173,7 +147,7 @@ base_tuned <- tune_race_win_loss(
 )
 
 # Get the workflow with the best MRMR threshold
-best_base <- select_best(base_tuned, "pr_auc")
+best_base <- select_best(base_tuned, "roc_auc")
 
 # Get the MRMR threshold from the best base model
 mrmr_threshold <- best_base |> pull(threshold)
@@ -183,7 +157,7 @@ The mRMR threshold associated with the best model is `r mrmr_threshold` .
 
 ## Train Upsampled Model
 
-The upsampled model will only add the pre-processing step of upsampling the minority class to the same proportion as the majority class (or close to it) by resampling observations with a `Class` value from the minority class. To ensure that this is the only difference, I'll take the mRMR threshold that was tuned for the base model directly from the best base model and specify it as the threshold for the upsampling model.
+The upsampled model will only add the pre-processing step of upsampling the minority class to the same proportion as the majority class (or close to it) by resampling observations with a `Class` value from the minority class using the `themis` package [@themis]. To ensure that this is the only difference, I'll take the mRMR threshold that was tuned for the base model directly from the best base model and specify it as the threshold for the upsampling model.
 
 ```{r}
 #| label: upsample-wflow
@@ -217,7 +191,7 @@ upsample_tuned <- tune_race_win_loss(
 )
 
 # Get the workflow with the best MRMR threshold
-best_upsample <- select_best(upsample_tuned, "pr_auc")
+best_upsample <- select_best(upsample_tuned, "roc_auc")
 ```
 
 The best over-sampling ratio is `r best_upsample |> pull(over_ratio)` .
@@ -238,7 +212,7 @@ eval_base <- base_wflow |>
 # Build the evaluation tibble for the upsample case
 set.seed(212)
 eval_upsample <- upsample_wflow |>
-  finalize_workflow(select_best(upsample_tuned, "pr_auc")) |>
+  finalize_workflow(select_best(upsample_tuned, "roc_auc")) |>
   last_fit(tt_split)
 
 eval_base |>
@@ -373,4 +347,4 @@ conf_mats |>
   kable_styling("striped")
 ```
 
-The first thing that one might notices from the above is how high the accuracy is for the base model. It's important to remember, though, that when a data set is so unbalanced all a model has to do is predict the majority class all the time and it will have high accuracy. That model, though, has a very low sensitivity and high specificity. The high specificity, again, is due to the fact that the actual data has an overwhelming proportion of the majority class. Looking across at the metrics for the other models one sees drops in both accuracy and specificity, but much more significant increases in sensitivity from the base model. It's also useful to note that other metrics like balanced accuraca, kappa, mcc, and f_measure also improve. This is further evidence of the effect that the imbalance in classes has on the base model.
+The first thing that one might notices from the above is how high the accuracy is for the base model. It's important to remember, though, that when a data set is so unbalanced all a model has to do is predict the majority class all the time and it will have high accuracy. That model, though, has a very low sensitivity and high specificity. The high specificity, again, is due to the fact that the actual data has an overwhelming proportion of the majority class. Looking across at the metrics for the other models one sees drops in both accuracy and specificity, but much more significant increases in sensitivity from the base model. It's also useful to note that other metrics like balanced accuracy, kappa, mcc, and f_measure also improve. This is further evidence of the effect that the imbalance in classes has on the base model.
