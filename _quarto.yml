@@ -1,6 +1,5 @@
 project:
   type: website
-  output-dir: docs
 
 website:
   title: "Arcenis Rojas"
@@ -36,4 +35,7 @@ format:
     toc: true
 
 editor: visual
+
+execute: 
+  freeze: auto
 
