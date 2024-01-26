@@ -23,7 +23,7 @@ pacman::p_load(tidyverse, tidytext, stm, knitr, gt)
 
 ## Downloading the abstract data
 
-I'll first download the data from the [NIH's Funded Projects page]("https://heal.nih.gov/funding/awarded/export?combine=johns%20hopkins&_format=csv") and filter for John's Hopkins. The code for this is below, though, I will not run it because the data change as proposals are submitted. Instead I'll download the filtered data to my hard drive and the ensuing analysis will be based on the data available as of this writing (January 25, 2024).
+I'll first download the data from the [NIH's Funded Projects page](%22https://heal.nih.gov/funding/awarded/export?combine=johns%20hopkins&_format=csv%22) and filter for John's Hopkins. The code for this is below, though, I will not run it because the data change as proposals are submitted. Instead I'll download the filtered data to my hard drive and the ensuing analysis will be based on the data available as of this writing (January 25, 2024).
 
 ```{r}
 #| label: declare-data-dir

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -24,7 +24,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -81,7 +81,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -90,6 +96,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -104,9 +111,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Arcenis Rojas</span>
     </a>
@@ -118,52 +125,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Data Science Projects</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-data-science-projects">    
         <li>
-    <a class="dropdown-item" href="./open-blackbox-tidy.html" rel="" target="">
+    <a class="dropdown-item" href="./open-blackbox-tidy.html">
  <span class="dropdown-text">Opening the ML ‘Black Box’: A Tidy Approach</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./class-thresh-vs-upsampling.html" rel="" target="">
+    <a class="dropdown-item" href="./class-thresh-vs-upsampling.html">
  <span class="dropdown-text">Unbalanced Data: Optimal Threshold vs.&nbsp;Upsampling</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./topic-modeling.html" rel="" target="">
+    <a class="dropdown-item" href="./topic-modeling.html">
  <span class="dropdown-text">Topic Modeling with R</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./cepumd-intro.html" rel="" target="">
+    <a class="dropdown-item" href="./cepumd-intro.html">
  <span class="dropdown-text">Introduction to cepumd (R package)</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./ce-dashboards.html" rel="" target="">
- <span class="menu-text">CE Dashboards</span></a>
+    <a class="nav-link" href="./ce-dashboards.html"> 
+<span class="menu-text">CE Dashboards</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./publications.html" rel="" target="">
- <span class="menu-text">Publications</span></a>
+    <a class="nav-link" href="./publications.html"> 
+<span class="menu-text">Publications</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://linkedin.com/in/arcenisrojas" rel="" target="_blank"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="https://linkedin.com/in/arcenisrojas" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/arcenis-r" rel="" target="_blank"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/arcenis-r" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -224,7 +231,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <section id="motivation" class="level2">
 <h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
@@ -330,7 +339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="simple-workflow-integrated-pet-expenditures" class="level3">
 <h3 class="anchored" data-anchor-id="simple-workflow-integrated-pet-expenditures">Simple workflow: Integrated pet expenditures</h3>
 <p>The following is an example of how someone might go about using <code>cepumd</code> to calculate a 2021 annual, weighted estimate of mean expenditures on pets for all of the U.S. using CE integrated data. This is just a quick and easy calculation.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/simple-wflow_e4320f29722afa85c2ee3c90120256e7">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>integ21_hg <span class="ot">&lt;-</span> <span class="fu">ce_hg</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2021</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  integrated,</span>
@@ -432,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>So there’s one UCC for “New cars” and one for “Used cars”. I’ll use the code above to grab those UCCs and prepare my data.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/cars-trucks-means_854e85088263d05b889c7e3710cb2dc5">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>car_data <span class="ot">&lt;-</span> <span class="fu">ce_prepdata</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2021</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  interview,</span>
@@ -486,7 +495,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Getting the annual, weighted estimate of the median (or another quantile) would be just as easy. Since I’m using interview data only here (it would be bad practice to try to calculate quantiles with integrated data), this would be a good example. I’ll calculate the first percentile and the median along with the 0.991 through 0.999 quantiles for the overall sample rather than breaking it down by urbanicity.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/cars-trucks-quantiles_df118f8f51abe240e197f7f805248875">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ce_quantiles</span>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  car_data,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.5</span>, <span class="fl">0.95</span>, <span class="fu">seq</span>(<span class="fl">0.99</span>, <span class="fl">0.999</span>, <span class="at">by =</span> <span class="fl">0.001</span>))</span>
@@ -832,7 +841,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>It looks like FAM_SIZE is not a coded variable (no observations in the “Codes” sheet), so it must be numeric. With all that, I’m ready to prepare my data. I’ll start by preparing the 2010 data and getting a summary of the FAM_SIZE variable since it is a continuous variable.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/prep-data10_a8f26f611ce36a6715fb334b756ce59d">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>food_away_data_10 <span class="ot">&lt;-</span> <span class="fu">ce_prepdata</span>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2010</span>,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  integrated,</span>
@@ -850,7 +859,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Since some households have as many as 14 people, I’ll create a FAM_SIZE label with any number greater than 4 taking on the value “5+”. Next, I’ll prepare the 2020 data and rowbind it with the 2010 data as well as create the “fam_size_label” variable. I’m also going to convert “ref_mo” and “ref_yr” to character to make it compatible with the CPI data that I’ll get later. I’ll also take a look at just a snippet of the data.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/prep-data20_645b9f15d0a27d1ff393f53ec7ceff4c">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>food_away_data_20 <span class="ot">&lt;-</span> <span class="fu">ce_prepdata</span>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2020</span>,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  integrated,</span>
@@ -897,129 +906,129 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">01077131</td>
-<td style="text-align: right;">30223.681</td>
-<td style="text-align: right;">99.5800</td>
-<td style="text-align: left;">190111</td>
+<td style="text-align: left;">01047471</td>
+<td style="text-align: right;">43881.11</td>
+<td style="text-align: right;">2.30971</td>
+<td style="text-align: left;">190321</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">01064582</td>
-<td style="text-align: right;">32967.621</td>
-<td style="text-align: right;">585.0000</td>
-<td style="text-align: left;">190312</td>
+<td style="text-align: left;">01077871</td>
+<td style="text-align: right;">24204.65</td>
+<td style="text-align: right;">66.30000</td>
+<td style="text-align: left;">190111</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">01101342</td>
-<td style="text-align: right;">3212.632</td>
-<td style="text-align: right;">156.0000</td>
-<td style="text-align: left;">190113</td>
+<td style="text-align: left;">01116361</td>
+<td style="text-align: right;">62846.94</td>
+<td style="text-align: right;">18.33000</td>
+<td style="text-align: left;">190313</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">I</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: left;">02265533</td>
+<td style="text-align: right;">12788.96</td>
+<td style="text-align: right;">144.00000</td>
+<td style="text-align: left;">790430</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">I</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: left;">02309802</td>
+<td style="text-align: right;">22657.97</td>
+<td style="text-align: right;">33.33333</td>
+<td style="text-align: left;">790430</td>
 <td style="text-align: left;">2010</td>
 <td style="text-align: right;">7</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">02033974</td>
-<td style="text-align: right;">31851.886</td>
-<td style="text-align: right;">115.0000</td>
-<td style="text-align: left;">190902</td>
+<td style="text-align: left;">02247652</td>
+<td style="text-align: right;">15588.84</td>
+<td style="text-align: right;">52.00000</td>
+<td style="text-align: left;">790430</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">I</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: left;">02202594</td>
-<td style="text-align: right;">16407.329</td>
-<td style="text-align: right;">100.0000</td>
-<td style="text-align: left;">190903</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: right;">4</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">I</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: left;">02273203</td>
-<td style="text-align: right;">15055.666</td>
-<td style="text-align: right;">80.0000</td>
-<td style="text-align: left;">190903</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: right;">9</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">D</td>
-<td style="text-align: left;">2020</td>
-<td style="text-align: left;">04457441</td>
-<td style="text-align: right;">49062.106</td>
-<td style="text-align: right;">162.8900</td>
-<td style="text-align: left;">190111</td>
-<td style="text-align: left;">2020</td>
 <td style="text-align: right;">3</td>
 </tr>
-<tr class="even">
-<td style="text-align: left;">D</td>
-<td style="text-align: left;">2020</td>
-<td style="text-align: left;">04368522</td>
-<td style="text-align: right;">19837.453</td>
-<td style="text-align: right;">355.6381</td>
-<td style="text-align: left;">190312</td>
-<td style="text-align: left;">2020</td>
-<td style="text-align: right;">2</td>
-</tr>
 <tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04371472</td>
-<td style="text-align: right;">67164.988</td>
-<td style="text-align: right;">116.8700</td>
-<td style="text-align: left;">190313</td>
+<td style="text-align: left;">04630171</td>
+<td style="text-align: right;">33468.71</td>
+<td style="text-align: right;">523.51000</td>
+<td style="text-align: left;">190211</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">11</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">I</td>
+<td style="text-align: left;">D</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04419662</td>
-<td style="text-align: right;">28994.808</td>
-<td style="text-align: right;">250.0000</td>
-<td style="text-align: left;">190903</td>
+<td style="text-align: left;">04591042</td>
+<td style="text-align: right;">60503.51</td>
+<td style="text-align: right;">137.67000</td>
+<td style="text-align: left;">190311</td>
 <td style="text-align: left;">2020</td>
 <td style="text-align: right;">8</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: left;">04436801</td>
+<td style="text-align: right;">49119.67</td>
+<td style="text-align: right;">156.00000</td>
+<td style="text-align: left;">190112</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04234723</td>
-<td style="text-align: right;">30158.950</td>
-<td style="text-align: right;">10.0000</td>
-<td style="text-align: left;">190903</td>
+<td style="text-align: left;">04316443</td>
+<td style="text-align: right;">16358.45</td>
+<td style="text-align: right;">52.00000</td>
+<td style="text-align: left;">800700</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">I</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: left;">04227663</td>
+<td style="text-align: right;">27787.28</td>
+<td style="text-align: right;">100.00000</td>
+<td style="text-align: left;">190901</td>
 <td style="text-align: left;">2020</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04392893</td>
-<td style="text-align: right;">39264.329</td>
-<td style="text-align: right;">240.0000</td>
-<td style="text-align: left;">190903</td>
+<td style="text-align: left;">04234823</td>
+<td style="text-align: right;">28645.27</td>
+<td style="text-align: right;">92.00000</td>
+<td style="text-align: left;">790430</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: right;">10</td>
+<td style="text-align: right;">1</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>I’ll now get CPI data for the years in the analysis and for 2023 to set as a base using the <code>blsR</code> package (<a href="https://github.com/groditi/blsR" class="uri">https://github.com/groditi/blsR</a>). I’m going to use the “All Urban Consumers (Current Series)” series, which has series ID “CUUR0000SA0”.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/get-cpi-data_7a2ceb05bdca68772cf17faf2dc1235c">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cpi_data <span class="ot">&lt;-</span> blsR<span class="sc">::</span><span class="fu">get_series</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CUUR0000SA0"</span>,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_year =</span> <span class="dv">2010</span>,</span>
@@ -1192,122 +1201,122 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">01056592</td>
-<td style="text-align: right;">29120.603</td>
-<td style="text-align: right;">2707.22021</td>
-<td style="text-align: left;">190212</td>
+<td style="text-align: left;">01062182</td>
+<td style="text-align: right;">31911.373</td>
+<td style="text-align: right;">632.33499</td>
+<td style="text-align: left;">190111</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">01106842</td>
-<td style="text-align: right;">40769.742</td>
-<td style="text-align: right;">415.55265</td>
-<td style="text-align: left;">190311</td>
+<td style="text-align: left;">01132291</td>
+<td style="text-align: right;">42762.166</td>
+<td style="text-align: right;">75.39493</td>
+<td style="text-align: left;">190312</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: right;">8</td>
+<td style="text-align: right;">9</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">01067682</td>
-<td style="text-align: right;">25803.616</td>
-<td style="text-align: right;">458.08019</td>
-<td style="text-align: left;">190212</td>
+<td style="text-align: left;">01151261</td>
+<td style="text-align: right;">34508.670</td>
+<td style="text-align: right;">71.78432</td>
+<td style="text-align: left;">190321</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">11</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2010</td>
-<td style="text-align: left;">02171745</td>
-<td style="text-align: right;">12427.410</td>
-<td style="text-align: right;">351.75519</td>
+<td style="text-align: left;">02222433</td>
+<td style="text-align: right;">3456.019</td>
+<td style="text-align: right;">33.02286</td>
+<td style="text-align: left;">790430</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">I</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: left;">02202583</td>
+<td style="text-align: right;">14948.874</td>
+<td style="text-align: right;">233.51876</td>
+<td style="text-align: left;">190903</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">I</td>
+<td style="text-align: left;">2010</td>
+<td style="text-align: left;">02183355</td>
+<td style="text-align: right;">15016.399</td>
+<td style="text-align: right;">703.51037</td>
 <td style="text-align: left;">190903</td>
 <td style="text-align: left;">2010</td>
 <td style="text-align: right;">7</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">I</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: left;">02201685</td>
-<td style="text-align: right;">15472.987</td>
-<td style="text-align: right;">140.50808</td>
-<td style="text-align: left;">190903</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: right;">8</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">I</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: left;">02295565</td>
-<td style="text-align: right;">13314.490</td>
-<td style="text-align: right;">93.30152</td>
-<td style="text-align: left;">790430</td>
-<td style="text-align: left;">2010</td>
-<td style="text-align: right;">12</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04517642</td>
-<td style="text-align: right;">27413.448</td>
-<td style="text-align: right;">456.92667</td>
-<td style="text-align: left;">190211</td>
-<td style="text-align: left;">2020</td>
-<td style="text-align: right;">6</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">D</td>
-<td style="text-align: left;">2020</td>
-<td style="text-align: left;">04440151</td>
-<td style="text-align: right;">43330.546</td>
-<td style="text-align: right;">289.04405</td>
+<td style="text-align: left;">04433811</td>
+<td style="text-align: right;">74006.452</td>
+<td style="text-align: right;">63.35846</td>
 <td style="text-align: left;">190311</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: left;">04438592</td>
+<td style="text-align: right;">32749.351</td>
+<td style="text-align: right;">64.59171</td>
+<td style="text-align: left;">190211</td>
 <td style="text-align: left;">2020</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">D</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04516122</td>
-<td style="text-align: right;">89157.335</td>
-<td style="text-align: right;">1185.06971</td>
-<td style="text-align: left;">190212</td>
+<td style="text-align: left;">04636492</td>
+<td style="text-align: right;">41910.471</td>
+<td style="text-align: right;">306.47607</td>
+<td style="text-align: left;">190211</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: right;">7</td>
+<td style="text-align: right;">11</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04267823</td>
-<td style="text-align: right;">20258.845</td>
-<td style="text-align: right;">24.97050</td>
-<td style="text-align: left;">790430</td>
+<td style="text-align: left;">04291913</td>
+<td style="text-align: right;">70403.081</td>
+<td style="text-align: right;">356.52248</td>
+<td style="text-align: left;">190903</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04416314</td>
-<td style="text-align: right;">9413.094</td>
-<td style="text-align: right;">235.52907</td>
-<td style="text-align: left;">190903</td>
+<td style="text-align: left;">04386872</td>
+<td style="text-align: right;">20595.360</td>
+<td style="text-align: right;">1181.86902</td>
+<td style="text-align: left;">800700</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: right;">12</td>
+<td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: left;">04386873</td>
-<td style="text-align: right;">15345.161</td>
-<td style="text-align: right;">1192.42055</td>
+<td style="text-align: left;">04683051</td>
+<td style="text-align: right;">33054.288</td>
+<td style="text-align: right;">280.67215</td>
 <td style="text-align: left;">800700</td>
 <td style="text-align: left;">2020</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">12</td>
 </tr>
 </tbody>
 </table>
@@ -1474,12 +1483,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>), <span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="cepumd-intro_files/figure-html/plot-food-away-means-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="cepumd-intro_files/figure-html/plot-food-away-means-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Here we can see that on an inflation-adjusted basis, households of all sizes had higher expenditures on food away from home in 2010 than they did in 2020.</p>
 <p>Now I’ll generate a plot of the expenditures at each weighted, annual, estimated quantile (from 0.01 through 0.99, by 0.01) for the same years, but only using Diary data, since most of the UCCs (16 out of 21) in the “food away from home” category come from the Diary.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/plot-food-away-quantiles_f053d8f4d6c78af436e093b04861a350">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>food_away_comp_quantiles <span class="ot">&lt;-</span> <span class="fu">map2</span>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">2020</span>),</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
@@ -1535,7 +1548,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
 <span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>), <span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="cepumd-intro_files/figure-html/plot-food-away-quantiles-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="cepumd-intro_files/figure-html/plot-food-away-quantiles-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Interestingly the expenditures don’t appear to have changed much between 2010 and 2020 across quantiles on an inflation-adjusted basis, but we can see that across all quantiles, CU’s spent less in 2020 than they did in 2010 on food away from home, which is consistent with the means that we calculated above. There are a lot of 0-value reported expenditures, though, in the CE on food away from home. Unfortunately, I can’t perform an analysis using only respondents that did have expenditures in this category, i.e., dropping the 0’s, because whether someone had an expenditure on food away from home is not one of the variables used for generating the survey weights. In other words, the analysis can be done, but it would not be statistically valid and I definitely wouldn’t be able to infer from it. This is just another cautionary note to anyone using this package who might use it in a way that does not follow statistically sound practices. Please visit the <a href="https://www.bls.gov/cex/">CE’s website</a> and read the <a href="https://www.bls.gov/cex/tables.htm">CE PUMD Getting Started Guide</a> for more information.</p>
@@ -1606,7 +1623,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The code descriptions for these 3 code values are different across instruments. To resolve this I’m going to create a table containing only codes from the Interview survey.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/create-own-codeset_e1a93cd6c32d723308347420294969b6">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fam_type_codes <span class="ot">&lt;-</span> ce_codes <span class="sc">|&gt;</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
@@ -2107,7 +2124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>It seems utlities expenditures are collected only through the Interview survey, so I’ll only need to use Interview data files to calculate estimates.</p>
-<div class="cell" data-hash="cepumd-intro_cache/html/fam-type-utilities_fd0bb2c2899323392d4646c41fee1303">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>fam_type_utilities <span class="ot">&lt;-</span> <span class="fu">ce_prepdata</span>(</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2015</span>,</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  interview,</span>
@@ -2229,7 +2246,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="cepumd-intro_files/figure-html/plot-fam-type-utilities-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="cepumd-intro_files/figure-html/plot-fam-type-utilities-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -2321,10 +2342,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/arcenis-r\.github\.io\/ajr-portfolio\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -2334,8 +2372,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -2348,6 +2395,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -2391,6 +2557,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -2416,6 +2583,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -2473,23 +2666,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp("https:\/\/arcenis-r\.github\.io\/ajr-portfolio\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

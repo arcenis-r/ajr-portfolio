@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<head>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
 
-<meta charset="utf-8" />
-<meta name="generator" content="quarto-1.3.450" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<meta name="author" content="Arcenis Rojas">
 
-<meta name="author" content="Arcenis Rojas" />
-
-<title>Arcenis Rojas – Topic Modeling with R</title>
+<title>Arcenis Rojas - Topic Modeling with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -59,14 +57,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-<!-- htmldependencies:E3FAD763 -->
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -75,6 +95,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -82,81 +103,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
-    <a class="navbar-brand" href="/index.html">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Arcenis Rojas</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-  aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"
-  onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Data Science Projects</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-data-science-projects">    
         <li>
-    <a class="dropdown-item" href="/open-blackbox-tidy.html" rel="" target="">
+    <a class="dropdown-item" href="./open-blackbox-tidy.html">
  <span class="dropdown-text">Opening the ML ‘Black Box’: A Tidy Approach</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/class-thresh-vs-upsampling.html" rel="" target="">
- <span class="dropdown-text">Unbalanced Data: Optimal Threshold vs. Upsampling</span></a>
+    <a class="dropdown-item" href="./class-thresh-vs-upsampling.html">
+ <span class="dropdown-text">Unbalanced Data: Optimal Threshold vs.&nbsp;Upsampling</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/topic-modeling.html" rel="" target="">
+    <a class="dropdown-item" href="./topic-modeling.html">
  <span class="dropdown-text">Topic Modeling with R</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="/cepumd-intro.html" rel="" target="">
+    <a class="dropdown-item" href="./cepumd-intro.html">
  <span class="dropdown-text">Introduction to cepumd (R package)</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="/ce-dashboards.html" rel="" target="">
- <span class="menu-text">CE Dashboards</span></a>
+    <a class="nav-link" href="./ce-dashboards.html"> 
+<span class="menu-text">CE Dashboards</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="/publications.html" rel="" target="">
- <span class="menu-text">Publications</span></a>
+    <a class="nav-link" href="./publications.html"> 
+<span class="menu-text">Publications</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://linkedin.com/in/arcenisrojas" rel="" target="_blank"><i 
-  class="bi bi-linkedin" 
-  role="img" 
->
+    <a class="nav-link" href="https://linkedin.com/in/arcenisrojas" target="_blank"> <i class="bi bi-linkedin" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/arcenis-r" rel="" target="_blank"><i 
-  class="bi bi-github" 
-  role="img" 
->
+    <a class="nav-link" href="https://github.com/arcenis-r" target="_blank"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -165,7 +178,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <div id="quarto-toc-target"></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#downloading-the-abstract-data" id="toc-downloading-the-abstract-data" class="nav-link" data-scroll-target="#downloading-the-abstract-data">Downloading the abstract data</a></li>
+  <li><a href="#tidy-the-data" id="toc-tidy-the-data" class="nav-link" data-scroll-target="#tidy-the-data">Tidy the data</a></li>
+  <li><a href="#modeling" id="toc-modeling" class="nav-link" data-scroll-target="#modeling">Modeling</a></li>
+  <li><a href="#choosing-a-number-of-topics" id="toc-choosing-a-number-of-topics" class="nav-link" data-scroll-target="#choosing-a-number-of-topics">Choosing a number of topics</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -191,80 +214,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
-<nav id="TOC" role="doc-toc">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction">Introduction</a></li>
-  <li><a href="#downloading-the-abstract-data" id="toc-downloading-the-abstract-data">Downloading the abstract data</a></li>
-  <li><a href="#tidy-the-data" id="toc-tidy-the-data">Tidy the data</a></li>
-  <li><a href="#modeling" id="toc-modeling">Modeling</a></li>
-  <li><a href="#choosing-a-number-of-topics" id="toc-choosing-a-number-of-topics">Choosing a number of topics</a></li>
-  </ul>
-</nav>
+
+
 <section id="introduction" class="level2">
-<h2>Introduction</h2>
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>For this project I’ll be following an example of performing topic modeling with R using the Tidytext format introduced by Julia Silge and David Robinson in their <a href="https://www.tidytextmining.com/index.html">“Text Mining with R! A Tidy Approach”</a>. And I’ll be using abstracts submitted by <a href="https://www.jhu.edu/">Johns Hopkins University</a> for funding to the <a href="https://heal.nih.gov/">NIH HEAL Initiative</a>. The list of funded projects can be found at <a href="https://heal.nih.gov/funding/awarded" class="uri">https://heal.nih.gov/funding/awarded</a>. A benefit of using this data is that it doesn’t require much cleaning as Twitter text might. For the purposes of this demonstration I won’t do any data cleaning. The objective will be to find the optimal number of topics to which to attribute the abstracts. I’ll be using the <code>tidyverse</code> and <code>tidytext</code> packages for wrangling, the <code>stm</code> package for modeling, the <code>janitor</code> package for cleaning column names (but I won’t load it because I’m only going to use it once), the <code>knitr</code> package for table formatting, and the <code>pacman</code> package to load my packages (also only used once).</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, tidytext, stm, knitr, gt)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, tidytext, stm, knitr, gt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="downloading-the-abstract-data" class="level2">
-<h2>Downloading the abstract data</h2>
-<p>I’ll first download the data from the <a href="%22https://heal.nih.gov/funding/awarded/export?combine=johns%20hopkins&amp;_format=csv%22">NIH’s Funded Projects page</a> and filter for John’s Hopkins. The code for this is below, though, I will not run it because the data change as proposals are submitted. Instead I’ll download the filtered data to my hard drive and the ensuing analysis will be based on the data available as of this writing (January 25, 2024).</p>
+<h2 class="anchored" data-anchor-id="downloading-the-abstract-data">Downloading the abstract data</h2>
+<p>I’ll first download the data from the <a href="&quot;https://heal.nih.gov/funding/awarded/export?combine=johns hopkins&amp;_format=csv&quot;">NIH’s Funded Projects page</a> and filter for John’s Hopkins. The code for this is below, though, I will not run it because the data change as proposals are submitted. Instead I’ll download the filtered data to my hard drive and the ensuing analysis will be based on the data available as of this writing (January 25, 2024).</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Not run</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Not run</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;https://heal.nih.gov/funding/awarded/export?combine=johns%20hopkins&amp;_format=csv&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://heal.nih.gov/funding/awarded/export?combine=johns%20hopkins&amp;_format=csv"</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;jh-data.csv&quot;</span>))</span></code></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">"jh-data.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now I’ll read that data in and just look at the column names to start familiarizing myself with the data</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>jh_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;jh-data.csv&quot;</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(jh_data)</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>jh_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">"jh-data.csv"</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(jh_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 30
 Columns: 10
-$ `Project #`           &lt;chr&gt; &quot;1RF1NS134549-01&quot;, &quot;1R01DA059473-01&quot;, &quot;5U54DA049…
-$ `Project Title`       &lt;chr&gt; &quot;Validation of a New Large-Pore Channel as a Nov…
-$ `Research Focus Area` &lt;chr&gt; &quot;Preclinical and Translational Research in Pain …
-$ `Research Program`    &lt;chr&gt; &quot;Discovery and Validation of Novel Targets for S…
-$ `Administering IC(s)` &lt;chr&gt; &quot;NINDS&quot;, &quot;NIDA&quot;, &quot;NIDA&quot;, &quot;NIAMS&quot;, &quot;NIDA&quot;, &quot;NIDA&quot;…
-$ `Institution(s)`      &lt;chr&gt; &quot;JOHNS HOPKINS UNIVERSITY&quot;, &quot;JOHNS HOPKINS UNIVE…
-$ `Investigator(s)`     &lt;chr&gt; &quot;QIU, ZHAOZHU (contact); GUAN, YUN&quot;, &quot;HUHN, ANDR…
-$ `Location(s)`         &lt;chr&gt; &quot;Baltimore, MD&quot;, &quot;Baltimore, MD&quot;, &quot;Baltimore, MD…
+$ `Project #`           &lt;chr&gt; "1R01DA059473-01", "1RF1NS134549-01", "5U54DA049…
+$ `Project Title`       &lt;chr&gt; "Sleep and Circadian Rhythm Phenotypes and Mecha…
+$ `Research Focus Area` &lt;chr&gt; "New Strategies to Prevent and Treat Opioid Addi…
+$ `Research Program`    &lt;chr&gt; "Sleep Dysfunction as a Core Feature of Opioid U…
+$ `Administering IC(s)` &lt;chr&gt; "NIDA", "NINDS", "NIDA", "NIAMS", "NIDA", "NIDA"…
+$ `Institution(s)`      &lt;chr&gt; "JOHNS HOPKINS UNIVERSITY", "JOHNS HOPKINS UNIVE…
+$ `Investigator(s)`     &lt;chr&gt; "HUHN, ANDREW S (contact); RABINOWITZ, JILL ALEX…
+$ `Location(s)`         &lt;chr&gt; "Baltimore, MD", "Baltimore, MD", "Baltimore, MD…
 $ `Year Awarded`        &lt;dbl&gt; 2023, 2023, 2023, 2023, 2022, 2022, 2022, 2022, …
-$ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia) in the c…</code></pre>
+$ Summary               &lt;chr&gt; "Chronic opioid use has well known effects on sl…</code></pre>
 </div>
 </div>
 <p>It looks like there are 30 columns in the data. I’m going to clean up the column names and select only the Project # (to use as an identifier), Project Title, and Summary.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>jh_clean <span class="ot">&lt;-</span> jh_data <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>jh_clean <span class="ot">&lt;-</span> jh_data <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(project_number, project_title, summary)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jh_clean, <span class="dv">3</span>) <span class="sc">|&gt;</span> gt<span class="sc">::</span><span class="fu">gt</span>() <span class="co"># kable(booktabs = TRUE)</span></span></code></pre></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jh_clean, <span class="dv">3</span>) <span class="sc">|&gt;</span> gt<span class="sc">::</span><span class="fu">gt</span>() <span class="co"># kable(booktabs = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
-<div id="vaeezeuawz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vaeezeuawz table {
+<div id="ixukylkwau" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ixukylkwau table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vaeezeuawz thead, #vaeezeuawz tbody, #vaeezeuawz tfoot, #vaeezeuawz tr, #vaeezeuawz td, #vaeezeuawz th {
+#ixukylkwau thead, #ixukylkwau tbody, #ixukylkwau tfoot, #ixukylkwau tr, #ixukylkwau td, #ixukylkwau th {
   border-style: none;
 }
 
-#vaeezeuawz p {
+#ixukylkwau p {
   margin: 0;
   padding: 0;
 }
 
-#vaeezeuawz .gt_table {
+#ixukylkwau .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -290,12 +304,12 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-left-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_caption {
+#ixukylkwau .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vaeezeuawz .gt_title {
+#ixukylkwau .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -307,7 +321,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-width: 0;
 }
 
-#vaeezeuawz .gt_subtitle {
+#ixukylkwau .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -319,7 +333,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-width: 0;
 }
 
-#vaeezeuawz .gt_heading {
+#ixukylkwau .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -331,13 +345,13 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_bottom_border {
+#ixukylkwau .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_col_headings {
+#ixukylkwau .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -352,7 +366,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_col_heading {
+#ixukylkwau .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -372,7 +386,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#vaeezeuawz .gt_column_spanner_outer {
+#ixukylkwau .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -384,15 +398,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 4px;
 }
 
-#vaeezeuawz .gt_column_spanner_outer:first-child {
+#ixukylkwau .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vaeezeuawz .gt_column_spanner_outer:last-child {
+#ixukylkwau .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vaeezeuawz .gt_column_spanner {
+#ixukylkwau .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -404,11 +418,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   width: 100%;
 }
 
-#vaeezeuawz .gt_spanner_row {
+#ixukylkwau .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vaeezeuawz .gt_group_heading {
+#ixukylkwau .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -434,7 +448,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   text-align: left;
 }
 
-#vaeezeuawz .gt_empty_group_heading {
+#ixukylkwau .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -449,15 +463,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: middle;
 }
 
-#vaeezeuawz .gt_from_md > :first-child {
+#ixukylkwau .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vaeezeuawz .gt_from_md > :last-child {
+#ixukylkwau .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vaeezeuawz .gt_row {
+#ixukylkwau .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -476,7 +490,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#vaeezeuawz .gt_stub {
+#ixukylkwau .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -489,7 +503,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vaeezeuawz .gt_stub_row_group {
+#ixukylkwau .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -503,15 +517,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: top;
 }
 
-#vaeezeuawz .gt_row_group_first td {
+#ixukylkwau .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vaeezeuawz .gt_row_group_first th {
+#ixukylkwau .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vaeezeuawz .gt_summary_row {
+#ixukylkwau .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -521,16 +535,16 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vaeezeuawz .gt_first_summary_row {
+#ixukylkwau .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_first_summary_row.thick {
+#ixukylkwau .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vaeezeuawz .gt_last_summary_row {
+#ixukylkwau .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -540,7 +554,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_grand_summary_row {
+#ixukylkwau .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -550,7 +564,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vaeezeuawz .gt_first_grand_summary_row {
+#ixukylkwau .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -560,7 +574,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_last_grand_summary_row_top {
+#ixukylkwau .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -570,11 +584,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_striped {
+#ixukylkwau .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vaeezeuawz .gt_table_body {
+#ixukylkwau .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -583,7 +597,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_footnotes {
+#ixukylkwau .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -597,7 +611,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_footnote {
+#ixukylkwau .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -606,7 +620,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vaeezeuawz .gt_sourcenotes {
+#ixukylkwau .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -620,7 +634,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vaeezeuawz .gt_sourcenote {
+#ixukylkwau .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -628,124 +642,129 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vaeezeuawz .gt_left {
+#ixukylkwau .gt_left {
   text-align: left;
 }
 
-#vaeezeuawz .gt_center {
+#ixukylkwau .gt_center {
   text-align: center;
 }
 
-#vaeezeuawz .gt_right {
+#ixukylkwau .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vaeezeuawz .gt_font_normal {
+#ixukylkwau .gt_font_normal {
   font-weight: normal;
 }
 
-#vaeezeuawz .gt_font_bold {
+#ixukylkwau .gt_font_bold {
   font-weight: bold;
 }
 
-#vaeezeuawz .gt_font_italic {
+#ixukylkwau .gt_font_italic {
   font-style: italic;
 }
 
-#vaeezeuawz .gt_super {
+#ixukylkwau .gt_super {
   font-size: 65%;
 }
 
-#vaeezeuawz .gt_footnote_marks {
+#ixukylkwau .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vaeezeuawz .gt_asterisk {
+#ixukylkwau .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vaeezeuawz .gt_indent_1 {
+#ixukylkwau .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vaeezeuawz .gt_indent_2 {
+#ixukylkwau .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vaeezeuawz .gt_indent_3 {
+#ixukylkwau .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vaeezeuawz .gt_indent_4 {
+#ixukylkwau .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vaeezeuawz .gt_indent_5 {
+#ixukylkwau .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="project_number">project_number</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="project_title">project_title</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="summary">summary</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="project_number" class="gt_row gt_left">1RF1NS134549-01</td>
-<td headers="project_title" class="gt_row gt_left">Validation of a New Large-Pore Channel as a Novel Target for Neuropathic Pain</td>
-<td headers="summary" class="gt_row gt_left">Activation of immune cells (microglia) in the central nervous system and neuroinflammation have emerged as key drivers of neuropathic pain. These processes can be triggered by release of ATP, the compound that provides energy to many biochemical reactions. The source and mechanism of ATP release are poorly understood but could be targets of novel treatment approaches for neuropathic pain. This project will use genetic, pharmacological, and electrophysiological approaches to determine whether a large pore channel called Swell 1 that spans the cell membrane is the source of ATP release and resulting neuropathic pain and thus could be a treatment target.</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R01DA059473-01</td>
-<td headers="project_title" class="gt_row gt_left">Sleep and Circadian Rhythm Phenotypes and Mechanisms Associated With Opioid Use Disorder Treatment Outcomes</td>
-<td headers="summary" class="gt_row gt_left">Chronic opioid use has well known effects on sleep quality, including disordered breathing during sleep and other abnormalities related to circadian rhythms. However, little is known about the relationship between sleep-related symptoms and non-medical opioid use among individuals being treated for opioid use disorder. This longitudinal study aims to identify biological pathways that may account for these associations. The research will first determine associations of sleep and proxy measures of circadian rhythms with non-medical opioid use. Second, they will investigate emotional processes associated with sleep/circadian symptoms and opioid treatment outcomes.</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">5U54DA049110-04</td>
-<td headers="project_title" class="gt_row gt_left">Data Center for Acute to Chronic Pain Biosignatures</td>
-<td headers="summary" class="gt_row gt_left">Understanding the mechanisms underlying the transition to chronic pain is key to mitigating the dual epidemics of chronic pain and opioid use in the United States. As part of the National Institutes of Health-funded Acute to Chronic Pain Signatures Program, the Data Integration and Resource Center aims to This project will support a post-doctoral trainee to develop the skills and knowledge needed to pursue a successful career in clinical pain research. The research will involve integrating imaging, physiology, -omics, behavioral, and clinical data to develop biosignatures for the transition from acute to chronic pain, toward understanding how the nervous and immune systems affect post-surgical pain and opioid use.</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="project_number" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">project_number</th>
+<th id="project_title" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">project_title</th>
+<th id="summary" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">summary</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R01DA059473-01</td>
+<td class="gt_row gt_left" headers="project_title">Sleep and Circadian Rhythm Phenotypes and Mechanisms Associated With Opioid Use Disorder Treatment Outcomes</td>
+<td class="gt_row gt_left" headers="summary">Chronic opioid use has well known effects on sleep quality, including disordered breathing during sleep and other abnormalities related to circadian rhythms. However, little is known about the relationship between sleep-related symptoms and non-medical opioid use among individuals being treated for opioid use disorder. This longitudinal study aims to identify biological pathways that may account for these associations. The research will first determine associations of sleep and proxy measures of circadian rhythms with non-medical opioid use. Second, they will investigate emotional processes associated with sleep/circadian symptoms and opioid treatment outcomes.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1RF1NS134549-01</td>
+<td class="gt_row gt_left" headers="project_title">Validation of a New Large-Pore Channel as a Novel Target for Neuropathic Pain</td>
+<td class="gt_row gt_left" headers="summary">Activation of immune cells (microglia) in the central nervous system and neuroinflammation have emerged as key drivers of neuropathic pain. These processes can be triggered by release of ATP, the compound that provides energy to many biochemical reactions. The source and mechanism of ATP release are poorly understood but could be targets of novel treatment approaches for neuropathic pain. This project will use genetic, pharmacological, and electrophysiological approaches to determine whether a large pore channel called Swell 1 that spans the cell membrane is the source of ATP release and resulting neuropathic pain and thus could be a treatment target.</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">5U54DA049110-04</td>
+<td class="gt_row gt_left" headers="project_title">Data Center for Acute to Chronic Pain Biosignatures</td>
+<td class="gt_row gt_left" headers="summary">Understanding the mechanisms underlying the transition to chronic pain is key to mitigating the dual epidemics of chronic pain and opioid use in the United States. As part of the National Institutes of Health-funded Acute to Chronic Pain Signatures Program, the Data Integration and Resource Center aims to This project will support a post-doctoral trainee to develop the skills and knowledge needed to pursue a successful career in clinical pain research. The research will involve integrating imaging, physiology, -omics, behavioral, and clinical data to develop biosignatures for the transition from acute to chronic pain, toward understanding how the nervous and immune systems affect post-surgical pain and opioid use.</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 </section>
 <section id="tidy-the-data" class="level2">
-<h2>Tidy the data</h2>
+<h2 class="anchored" data-anchor-id="tidy-the-data">Tidy the data</h2>
 <p>In this next step I’m going to tidy the data and remove stop words. Then I’ll take a look at word frequencies and TF-IDF metrics to get an idea of what I might expect from my model.</p>
 <p>I’m first going to use the <code>tidytext::unnest_tokens()</code> function to tokenize the data by single word then remove stop words from the text. I’ll also get word frequencies in this one step. Also, I’m going to drop the project title for the time being, but I’ll bring it back later.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="ot">&lt;-</span> jh_clean <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">summary =</span> <span class="fu">str_c</span>(project_title, summary, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="ot">&lt;-</span> jh_clean <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">summary =</span> <span class="fu">str_c</span>(project_title, summary, <span class="at">sep =</span> <span class="st">" "</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>project_title) <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(word, summary, <span class="at">token =</span> <span class="st">&quot;words&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop_words, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(word, summary, <span class="at">token =</span> <span class="st">"words"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop_words, <span class="at">by =</span> <span class="st">"word"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(project_number, word)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="sc">-</span>n) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code></pre></div>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="sc">-</span>n) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
-<div id="xnifcshxzh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xnifcshxzh table {
+<div id="czzvkwwzci" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#czzvkwwzci table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xnifcshxzh thead, #xnifcshxzh tbody, #xnifcshxzh tfoot, #xnifcshxzh tr, #xnifcshxzh td, #xnifcshxzh th {
+#czzvkwwzci thead, #czzvkwwzci tbody, #czzvkwwzci tfoot, #czzvkwwzci tr, #czzvkwwzci td, #czzvkwwzci th {
   border-style: none;
 }
 
-#xnifcshxzh p {
+#czzvkwwzci p {
   margin: 0;
   padding: 0;
 }
 
-#xnifcshxzh .gt_table {
+#czzvkwwzci .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -771,12 +790,12 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-left-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_caption {
+#czzvkwwzci .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xnifcshxzh .gt_title {
+#czzvkwwzci .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -788,7 +807,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-width: 0;
 }
 
-#xnifcshxzh .gt_subtitle {
+#czzvkwwzci .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -800,7 +819,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-width: 0;
 }
 
-#xnifcshxzh .gt_heading {
+#czzvkwwzci .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -812,13 +831,13 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_bottom_border {
+#czzvkwwzci .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_col_headings {
+#czzvkwwzci .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -833,7 +852,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_col_heading {
+#czzvkwwzci .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -853,7 +872,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#xnifcshxzh .gt_column_spanner_outer {
+#czzvkwwzci .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -865,15 +884,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 4px;
 }
 
-#xnifcshxzh .gt_column_spanner_outer:first-child {
+#czzvkwwzci .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xnifcshxzh .gt_column_spanner_outer:last-child {
+#czzvkwwzci .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xnifcshxzh .gt_column_spanner {
+#czzvkwwzci .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -885,11 +904,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   width: 100%;
 }
 
-#xnifcshxzh .gt_spanner_row {
+#czzvkwwzci .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xnifcshxzh .gt_group_heading {
+#czzvkwwzci .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -915,7 +934,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   text-align: left;
 }
 
-#xnifcshxzh .gt_empty_group_heading {
+#czzvkwwzci .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -930,15 +949,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: middle;
 }
 
-#xnifcshxzh .gt_from_md > :first-child {
+#czzvkwwzci .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xnifcshxzh .gt_from_md > :last-child {
+#czzvkwwzci .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xnifcshxzh .gt_row {
+#czzvkwwzci .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -957,7 +976,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#xnifcshxzh .gt_stub {
+#czzvkwwzci .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -970,7 +989,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#xnifcshxzh .gt_stub_row_group {
+#czzvkwwzci .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -984,15 +1003,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: top;
 }
 
-#xnifcshxzh .gt_row_group_first td {
+#czzvkwwzci .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xnifcshxzh .gt_row_group_first th {
+#czzvkwwzci .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xnifcshxzh .gt_summary_row {
+#czzvkwwzci .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1002,16 +1021,16 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#xnifcshxzh .gt_first_summary_row {
+#czzvkwwzci .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_first_summary_row.thick {
+#czzvkwwzci .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xnifcshxzh .gt_last_summary_row {
+#czzvkwwzci .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1021,7 +1040,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_grand_summary_row {
+#czzvkwwzci .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1031,7 +1050,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#xnifcshxzh .gt_first_grand_summary_row {
+#czzvkwwzci .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1041,7 +1060,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_last_grand_summary_row_top {
+#czzvkwwzci .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1051,11 +1070,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_striped {
+#czzvkwwzci .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xnifcshxzh .gt_table_body {
+#czzvkwwzci .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1064,7 +1083,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_footnotes {
+#czzvkwwzci .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1078,7 +1097,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_footnote {
+#czzvkwwzci .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1087,7 +1106,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#xnifcshxzh .gt_sourcenotes {
+#czzvkwwzci .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1101,7 +1120,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#xnifcshxzh .gt_sourcenote {
+#czzvkwwzci .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1109,140 +1128,159 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#xnifcshxzh .gt_left {
+#czzvkwwzci .gt_left {
   text-align: left;
 }
 
-#xnifcshxzh .gt_center {
+#czzvkwwzci .gt_center {
   text-align: center;
 }
 
-#xnifcshxzh .gt_right {
+#czzvkwwzci .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xnifcshxzh .gt_font_normal {
+#czzvkwwzci .gt_font_normal {
   font-weight: normal;
 }
 
-#xnifcshxzh .gt_font_bold {
+#czzvkwwzci .gt_font_bold {
   font-weight: bold;
 }
 
-#xnifcshxzh .gt_font_italic {
+#czzvkwwzci .gt_font_italic {
   font-style: italic;
 }
 
-#xnifcshxzh .gt_super {
+#czzvkwwzci .gt_super {
   font-size: 65%;
 }
 
-#xnifcshxzh .gt_footnote_marks {
+#czzvkwwzci .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xnifcshxzh .gt_asterisk {
+#czzvkwwzci .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xnifcshxzh .gt_indent_1 {
+#czzvkwwzci .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xnifcshxzh .gt_indent_2 {
+#czzvkwwzci .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xnifcshxzh .gt_indent_3 {
+#czzvkwwzci .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xnifcshxzh .gt_indent_4 {
+#czzvkwwzci .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xnifcshxzh .gt_indent_5 {
+#czzvkwwzci .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="project_number">project_number</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="word">word</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="project_number" class="gt_row gt_left">1RF1NS113883-01</td>
-<td headers="word" class="gt_row gt_left">pain</td>
-<td headers="n" class="gt_row gt_right">9</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">3R01MD009063-05S1</td>
-<td headers="word" class="gt_row gt_left">pain</td>
-<td headers="n" class="gt_row gt_right">9</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1UG3NS115718-01</td>
-<td headers="word" class="gt_row gt_left">mrgprx1</td>
-<td headers="n" class="gt_row gt_right">8</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1U01HL150568-01</td>
-<td headers="word" class="gt_row gt_left">sleep</td>
-<td headers="n" class="gt_row gt_right">7</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1U01HL150835-01</td>
-<td headers="word" class="gt_row gt_left">sleep</td>
-<td headers="n" class="gt_row gt_right">7</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">5U54DA049110-04</td>
-<td headers="word" class="gt_row gt_left">pain</td>
-<td headers="n" class="gt_row gt_right">7</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R01DA059473-01</td>
-<td headers="word" class="gt_row gt_left">opioid</td>
-<td headers="n" class="gt_row gt_right">6</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R01DA059473-01</td>
-<td headers="word" class="gt_row gt_left">sleep</td>
-<td headers="n" class="gt_row gt_right">6</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61AT012279-01</td>
-<td headers="word" class="gt_row gt_left">shoulder</td>
-<td headers="n" class="gt_row gt_right">6</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1U01HL150835-01</td>
-<td headers="word" class="gt_row gt_left">stress</td>
-<td headers="n" class="gt_row gt_right">6</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="project_number" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">project_number</th>
+<th id="word" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">word</th>
+<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1RF1NS113883-01</td>
+<td class="gt_row gt_left" headers="word">pain</td>
+<td class="gt_row gt_right" headers="n">9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">3R01MD009063-05S1</td>
+<td class="gt_row gt_left" headers="word">pain</td>
+<td class="gt_row gt_right" headers="n">9</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1UG3NS115718-01</td>
+<td class="gt_row gt_left" headers="word">mrgprx1</td>
+<td class="gt_row gt_right" headers="n">8</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1U01HL150568-01</td>
+<td class="gt_row gt_left" headers="word">sleep</td>
+<td class="gt_row gt_right" headers="n">7</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1U01HL150835-01</td>
+<td class="gt_row gt_left" headers="word">sleep</td>
+<td class="gt_row gt_right" headers="n">7</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">5U54DA049110-04</td>
+<td class="gt_row gt_left" headers="word">pain</td>
+<td class="gt_row gt_right" headers="n">7</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R01DA059473-01</td>
+<td class="gt_row gt_left" headers="word">opioid</td>
+<td class="gt_row gt_right" headers="n">6</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1R01DA059473-01</td>
+<td class="gt_row gt_left" headers="word">sleep</td>
+<td class="gt_row gt_right" headers="n">6</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R61AT012279-01</td>
+<td class="gt_row gt_left" headers="word">shoulder</td>
+<td class="gt_row gt_right" headers="n">6</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1U01HL150835-01</td>
+<td class="gt_row gt_left" headers="word">stress</td>
+<td class="gt_row gt_right" headers="n">6</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>The words “pain” is one of the most frequently occurring word in documents 1RF1NS113883-01 and 5U54DA049110-04 while the words “pain” and “sleep” seem to be 2 of the most frequent across documents. Let’s see how these words do in terms of how important they are in distinguishing a document from other documents.</p>
 <p>I’m going to add TF-IDF metrics using the <code>tidytext::bind_tf_idf()</code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>jh_tfidf <span class="ot">&lt;-</span> jh_tidy <span class="sc">|&gt;</span> <span class="fu">bind_tf_idf</span>(word, project_number, n)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>jh_tfidf <span class="ot">&lt;-</span> jh_tidy <span class="sc">|&gt;</span> <span class="fu">bind_tf_idf</span>(word, project_number, n)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>jh_tfidf <span class="sc">|&gt;</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>tf_idf) <span class="sc">|&gt;</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">15</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code></pre></div>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
-<div id="qcnvpdnhya" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qcnvpdnhya table {
+<div id="zrjdihpzuc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zrjdihpzuc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#qcnvpdnhya thead, #qcnvpdnhya tbody, #qcnvpdnhya tfoot, #qcnvpdnhya tr, #qcnvpdnhya td, #qcnvpdnhya th {
+#zrjdihpzuc thead, #zrjdihpzuc tbody, #zrjdihpzuc tfoot, #zrjdihpzuc tr, #zrjdihpzuc td, #zrjdihpzuc th {
   border-style: none;
 }
 
-#qcnvpdnhya p {
+#zrjdihpzuc p {
   margin: 0;
   padding: 0;
 }
 
-#qcnvpdnhya .gt_table {
+#zrjdihpzuc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1268,12 +1306,12 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-left-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_caption {
+#zrjdihpzuc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#qcnvpdnhya .gt_title {
+#zrjdihpzuc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1285,7 +1323,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-width: 0;
 }
 
-#qcnvpdnhya .gt_subtitle {
+#zrjdihpzuc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1297,7 +1335,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-width: 0;
 }
 
-#qcnvpdnhya .gt_heading {
+#zrjdihpzuc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1309,13 +1347,13 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_bottom_border {
+#zrjdihpzuc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_col_headings {
+#zrjdihpzuc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1330,7 +1368,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_col_heading {
+#zrjdihpzuc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1350,7 +1388,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#qcnvpdnhya .gt_column_spanner_outer {
+#zrjdihpzuc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1362,15 +1400,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 4px;
 }
 
-#qcnvpdnhya .gt_column_spanner_outer:first-child {
+#zrjdihpzuc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qcnvpdnhya .gt_column_spanner_outer:last-child {
+#zrjdihpzuc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qcnvpdnhya .gt_column_spanner {
+#zrjdihpzuc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1382,11 +1420,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   width: 100%;
 }
 
-#qcnvpdnhya .gt_spanner_row {
+#zrjdihpzuc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#qcnvpdnhya .gt_group_heading {
+#zrjdihpzuc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1412,7 +1450,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   text-align: left;
 }
 
-#qcnvpdnhya .gt_empty_group_heading {
+#zrjdihpzuc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1427,15 +1465,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: middle;
 }
 
-#qcnvpdnhya .gt_from_md > :first-child {
+#zrjdihpzuc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qcnvpdnhya .gt_from_md > :last-child {
+#zrjdihpzuc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qcnvpdnhya .gt_row {
+#zrjdihpzuc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1454,7 +1492,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#qcnvpdnhya .gt_stub {
+#zrjdihpzuc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1467,7 +1505,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#qcnvpdnhya .gt_stub_row_group {
+#zrjdihpzuc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1481,15 +1519,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: top;
 }
 
-#qcnvpdnhya .gt_row_group_first td {
+#zrjdihpzuc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#qcnvpdnhya .gt_row_group_first th {
+#zrjdihpzuc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#qcnvpdnhya .gt_summary_row {
+#zrjdihpzuc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1499,16 +1537,16 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#qcnvpdnhya .gt_first_summary_row {
+#zrjdihpzuc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_first_summary_row.thick {
+#zrjdihpzuc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#qcnvpdnhya .gt_last_summary_row {
+#zrjdihpzuc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1518,7 +1556,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_grand_summary_row {
+#zrjdihpzuc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1528,7 +1566,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#qcnvpdnhya .gt_first_grand_summary_row {
+#zrjdihpzuc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1538,7 +1576,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_last_grand_summary_row_top {
+#zrjdihpzuc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1548,11 +1586,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_striped {
+#zrjdihpzuc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qcnvpdnhya .gt_table_body {
+#zrjdihpzuc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1561,7 +1599,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_footnotes {
+#zrjdihpzuc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1575,7 +1613,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_footnote {
+#zrjdihpzuc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1584,7 +1622,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#qcnvpdnhya .gt_sourcenotes {
+#zrjdihpzuc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1598,7 +1636,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#qcnvpdnhya .gt_sourcenote {
+#zrjdihpzuc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1606,202 +1644,231 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#qcnvpdnhya .gt_left {
+#zrjdihpzuc .gt_left {
   text-align: left;
 }
 
-#qcnvpdnhya .gt_center {
+#zrjdihpzuc .gt_center {
   text-align: center;
 }
 
-#qcnvpdnhya .gt_right {
+#zrjdihpzuc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qcnvpdnhya .gt_font_normal {
+#zrjdihpzuc .gt_font_normal {
   font-weight: normal;
 }
 
-#qcnvpdnhya .gt_font_bold {
+#zrjdihpzuc .gt_font_bold {
   font-weight: bold;
 }
 
-#qcnvpdnhya .gt_font_italic {
+#zrjdihpzuc .gt_font_italic {
   font-style: italic;
 }
 
-#qcnvpdnhya .gt_super {
+#zrjdihpzuc .gt_super {
   font-size: 65%;
 }
 
-#qcnvpdnhya .gt_footnote_marks {
+#zrjdihpzuc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#qcnvpdnhya .gt_asterisk {
+#zrjdihpzuc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#qcnvpdnhya .gt_indent_1 {
+#zrjdihpzuc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#qcnvpdnhya .gt_indent_2 {
+#zrjdihpzuc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#qcnvpdnhya .gt_indent_3 {
+#zrjdihpzuc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#qcnvpdnhya .gt_indent_4 {
+#zrjdihpzuc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#qcnvpdnhya .gt_indent_5 {
+#zrjdihpzuc .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="project_number">project_number</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="word">word</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="tf">tf</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="idf">idf</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="tf_idf">tf_idf</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="project_number" class="gt_row gt_left">3U24TR001609-04S1</td>
-<td headers="word" class="gt_row gt_left">tin</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.33333333</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">1.1337325</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">3U24TR001609-04S1</td>
-<td headers="word" class="gt_row gt_left">summary</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.33333333</td>
-<td headers="idf" class="gt_row gt_right">2.708050</td>
-<td headers="tf_idf" class="gt_row gt_right">0.9026834</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">3U24TR001609-04S1</td>
-<td headers="word" class="gt_row gt_left">supplement</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.33333333</td>
-<td headers="idf" class="gt_row gt_right">2.302585</td>
-<td headers="tf_idf" class="gt_row gt_right">0.7675284</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="word" class="gt_row gt_left">intranasal</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.12500000</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.4251497</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="word" class="gt_row gt_left">leptin</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.12500000</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.4251497</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="word" class="gt_row gt_left">induced</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.12500000</td>
-<td headers="idf" class="gt_row gt_right">2.708050</td>
-<td headers="tf_idf" class="gt_row gt_right">0.3385063</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="word" class="gt_row gt_left">respiratory</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.12500000</td>
-<td headers="idf" class="gt_row gt_right">2.708050</td>
-<td headers="tf_idf" class="gt_row gt_right">0.3385063</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="word" class="gt_row gt_left">summary</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.12500000</td>
-<td headers="idf" class="gt_row gt_right">2.708050</td>
-<td headers="tf_idf" class="gt_row gt_right">0.3385063</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="word" class="gt_row gt_left">depression</td>
-<td headers="n" class="gt_row gt_right">1</td>
-<td headers="tf" class="gt_row gt_right">0.12500000</td>
-<td headers="idf" class="gt_row gt_right">2.302585</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2878231</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R61AT012279-01</td>
-<td headers="word" class="gt_row gt_left">shoulder</td>
-<td headers="n" class="gt_row gt_right">6</td>
-<td headers="tf" class="gt_row gt_right">0.08333333</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2834331</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1RF1AG068997-01</td>
-<td headers="word" class="gt_row gt_left">bone</td>
-<td headers="n" class="gt_row gt_right">3</td>
-<td headers="tf" class="gt_row gt_right">0.06976744</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2372928</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R01DA057655-01</td>
-<td headers="word" class="gt_row gt_left">harm</td>
-<td headers="n" class="gt_row gt_right">4</td>
-<td headers="tf" class="gt_row gt_right">0.06666667</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2267465</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R01DA057655-01</td>
-<td headers="word" class="gt_row gt_left">reduction</td>
-<td headers="n" class="gt_row gt_right">4</td>
-<td headers="tf" class="gt_row gt_right">0.06666667</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2267465</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1UG3NS115718-01</td>
-<td headers="word" class="gt_row gt_left">mrgprx1</td>
-<td headers="n" class="gt_row gt_right">8</td>
-<td headers="tf" class="gt_row gt_right">0.06557377</td>
-<td headers="idf" class="gt_row gt_right">3.401197</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2230293</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">1R01DA059473-01</td>
-<td headers="word" class="gt_row gt_left">sleep</td>
-<td headers="n" class="gt_row gt_right">6</td>
-<td headers="tf" class="gt_row gt_right">0.10169492</td>
-<td headers="idf" class="gt_row gt_right">2.014903</td>
-<td headers="tf_idf" class="gt_row gt_right">0.2049054</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="project_number" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">project_number</th>
+<th id="word" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">word</th>
+<th id="n" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">n</th>
+<th id="tf" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tf</th>
+<th id="idf" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">idf</th>
+<th id="tf_idf" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tf_idf</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">3U24TR001609-04S1</td>
+<td class="gt_row gt_left" headers="word">tin</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.33333333</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">1.1337325</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">3U24TR001609-04S1</td>
+<td class="gt_row gt_left" headers="word">summary</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.33333333</td>
+<td class="gt_row gt_right" headers="idf">2.708050</td>
+<td class="gt_row gt_right" headers="tf_idf">0.9026834</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">3U24TR001609-04S1</td>
+<td class="gt_row gt_left" headers="word">supplement</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.33333333</td>
+<td class="gt_row gt_right" headers="idf">2.302585</td>
+<td class="gt_row gt_right" headers="tf_idf">0.7675284</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="word">intranasal</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.12500000</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.4251497</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="word">leptin</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.12500000</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.4251497</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="word">induced</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.12500000</td>
+<td class="gt_row gt_right" headers="idf">2.708050</td>
+<td class="gt_row gt_right" headers="tf_idf">0.3385063</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="word">respiratory</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.12500000</td>
+<td class="gt_row gt_right" headers="idf">2.708050</td>
+<td class="gt_row gt_right" headers="tf_idf">0.3385063</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="word">summary</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.12500000</td>
+<td class="gt_row gt_right" headers="idf">2.708050</td>
+<td class="gt_row gt_right" headers="tf_idf">0.3385063</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="word">depression</td>
+<td class="gt_row gt_right" headers="n">1</td>
+<td class="gt_row gt_right" headers="tf">0.12500000</td>
+<td class="gt_row gt_right" headers="idf">2.302585</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2878231</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1R61AT012279-01</td>
+<td class="gt_row gt_left" headers="word">shoulder</td>
+<td class="gt_row gt_right" headers="n">6</td>
+<td class="gt_row gt_right" headers="tf">0.08333333</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2834331</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1RF1AG068997-01</td>
+<td class="gt_row gt_left" headers="word">bone</td>
+<td class="gt_row gt_right" headers="n">3</td>
+<td class="gt_row gt_right" headers="tf">0.06976744</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2372928</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1R01DA057655-01</td>
+<td class="gt_row gt_left" headers="word">harm</td>
+<td class="gt_row gt_right" headers="n">4</td>
+<td class="gt_row gt_right" headers="tf">0.06666667</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2267465</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R01DA057655-01</td>
+<td class="gt_row gt_left" headers="word">reduction</td>
+<td class="gt_row gt_right" headers="n">4</td>
+<td class="gt_row gt_right" headers="tf">0.06666667</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2267465</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">1UG3NS115718-01</td>
+<td class="gt_row gt_left" headers="word">mrgprx1</td>
+<td class="gt_row gt_right" headers="n">8</td>
+<td class="gt_row gt_right" headers="tf">0.06557377</td>
+<td class="gt_row gt_right" headers="idf">3.401197</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2230293</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R01DA059473-01</td>
+<td class="gt_row gt_left" headers="word">sleep</td>
+<td class="gt_row gt_right" headers="n">6</td>
+<td class="gt_row gt_right" headers="tf">0.10169492</td>
+<td class="gt_row gt_right" headers="idf">2.014903</td>
+<td class="gt_row gt_right" headers="tf_idf">0.2049054</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>It’s very strange that 2 documents have the term “summary” as the only term in the summary. This is indicated by a term frequency (tf) of 1. Let’s take a look at the original text for these documents.</p>
 <div class="cell">
-<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>jh_clean <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>jh_clean <span class="sc">|&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    project_number <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;1R61HL156248-01&quot;</span>, <span class="st">&quot;3U24TR001609-04S1&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    project_number <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"1R61HL156248-01"</span>, <span class="st">"3U24TR001609-04S1"</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(project_number, summary) <span class="sc">|&gt;</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code></pre></div>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
-<div id="vdgvzlsfee" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vdgvzlsfee table {
+<div id="mnqvfyewap" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mnqvfyewap table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vdgvzlsfee thead, #vdgvzlsfee tbody, #vdgvzlsfee tfoot, #vdgvzlsfee tr, #vdgvzlsfee td, #vdgvzlsfee th {
+#mnqvfyewap thead, #mnqvfyewap tbody, #mnqvfyewap tfoot, #mnqvfyewap tr, #mnqvfyewap td, #mnqvfyewap th {
   border-style: none;
 }
 
-#vdgvzlsfee p {
+#mnqvfyewap p {
   margin: 0;
   padding: 0;
 }
 
-#vdgvzlsfee .gt_table {
+#mnqvfyewap .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1827,12 +1894,12 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-left-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_caption {
+#mnqvfyewap .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vdgvzlsfee .gt_title {
+#mnqvfyewap .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1844,7 +1911,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-width: 0;
 }
 
-#vdgvzlsfee .gt_subtitle {
+#mnqvfyewap .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1856,7 +1923,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-width: 0;
 }
 
-#vdgvzlsfee .gt_heading {
+#mnqvfyewap .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1868,13 +1935,13 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_bottom_border {
+#mnqvfyewap .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_col_headings {
+#mnqvfyewap .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1889,7 +1956,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_col_heading {
+#mnqvfyewap .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1909,7 +1976,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#vdgvzlsfee .gt_column_spanner_outer {
+#mnqvfyewap .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1921,15 +1988,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 4px;
 }
 
-#vdgvzlsfee .gt_column_spanner_outer:first-child {
+#mnqvfyewap .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vdgvzlsfee .gt_column_spanner_outer:last-child {
+#mnqvfyewap .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vdgvzlsfee .gt_column_spanner {
+#mnqvfyewap .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1941,11 +2008,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   width: 100%;
 }
 
-#vdgvzlsfee .gt_spanner_row {
+#mnqvfyewap .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vdgvzlsfee .gt_group_heading {
+#mnqvfyewap .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1971,7 +2038,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   text-align: left;
 }
 
-#vdgvzlsfee .gt_empty_group_heading {
+#mnqvfyewap .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1986,15 +2053,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: middle;
 }
 
-#vdgvzlsfee .gt_from_md > :first-child {
+#mnqvfyewap .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vdgvzlsfee .gt_from_md > :last-child {
+#mnqvfyewap .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vdgvzlsfee .gt_row {
+#mnqvfyewap .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2013,7 +2080,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   overflow-x: hidden;
 }
 
-#vdgvzlsfee .gt_stub {
+#mnqvfyewap .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2026,7 +2093,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vdgvzlsfee .gt_stub_row_group {
+#mnqvfyewap .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2040,15 +2107,15 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   vertical-align: top;
 }
 
-#vdgvzlsfee .gt_row_group_first td {
+#mnqvfyewap .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vdgvzlsfee .gt_row_group_first th {
+#mnqvfyewap .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vdgvzlsfee .gt_summary_row {
+#mnqvfyewap .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2058,16 +2125,16 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vdgvzlsfee .gt_first_summary_row {
+#mnqvfyewap .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_first_summary_row.thick {
+#mnqvfyewap .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vdgvzlsfee .gt_last_summary_row {
+#mnqvfyewap .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2077,7 +2144,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_grand_summary_row {
+#mnqvfyewap .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2087,7 +2154,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vdgvzlsfee .gt_first_grand_summary_row {
+#mnqvfyewap .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2097,7 +2164,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-top-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_last_grand_summary_row_top {
+#mnqvfyewap .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2107,11 +2174,11 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_striped {
+#mnqvfyewap .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vdgvzlsfee .gt_table_body {
+#mnqvfyewap .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2120,7 +2187,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-bottom-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_footnotes {
+#mnqvfyewap .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2134,7 +2201,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_footnote {
+#mnqvfyewap .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2143,7 +2210,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vdgvzlsfee .gt_sourcenotes {
+#mnqvfyewap .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2157,7 +2224,7 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   border-right-color: #D3D3D3;
 }
 
-#vdgvzlsfee .gt_sourcenote {
+#mnqvfyewap .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2165,112 +2232,116 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   padding-right: 5px;
 }
 
-#vdgvzlsfee .gt_left {
+#mnqvfyewap .gt_left {
   text-align: left;
 }
 
-#vdgvzlsfee .gt_center {
+#mnqvfyewap .gt_center {
   text-align: center;
 }
 
-#vdgvzlsfee .gt_right {
+#mnqvfyewap .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vdgvzlsfee .gt_font_normal {
+#mnqvfyewap .gt_font_normal {
   font-weight: normal;
 }
 
-#vdgvzlsfee .gt_font_bold {
+#mnqvfyewap .gt_font_bold {
   font-weight: bold;
 }
 
-#vdgvzlsfee .gt_font_italic {
+#mnqvfyewap .gt_font_italic {
   font-style: italic;
 }
 
-#vdgvzlsfee .gt_super {
+#mnqvfyewap .gt_super {
   font-size: 65%;
 }
 
-#vdgvzlsfee .gt_footnote_marks {
+#mnqvfyewap .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vdgvzlsfee .gt_asterisk {
+#mnqvfyewap .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vdgvzlsfee .gt_indent_1 {
+#mnqvfyewap .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vdgvzlsfee .gt_indent_2 {
+#mnqvfyewap .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vdgvzlsfee .gt_indent_3 {
+#mnqvfyewap .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vdgvzlsfee .gt_indent_4 {
+#mnqvfyewap .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vdgvzlsfee .gt_indent_5 {
+#mnqvfyewap .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="project_number">project_number</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="summary">summary</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="project_number" class="gt_row gt_left">1R61HL156248-01</td>
-<td headers="summary" class="gt_row gt_left">no summary</td></tr>
-    <tr><td headers="project_number" class="gt_row gt_left">3U24TR001609-04S1</td>
-<td headers="summary" class="gt_row gt_left">no summary</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="project_number" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">project_number</th>
+<th id="summary" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">summary</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="project_number">1R61HL156248-01</td>
+<td class="gt_row gt_left" headers="summary">no summary</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="project_number">3U24TR001609-04S1</td>
+<td class="gt_row gt_left" headers="summary">no summary</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
 <p>There was no summary for either of these documents! The word “summary” had a really high TF-IDF because it was the only word (“no” is a stopword and was dropped) in these documents and it likely isn’t used very frequently in other documents. This is one of the benefits of doing this kind of check before going into modeling. Interestingly, though, neither “pain” nor “stress” are in the terms with the top 15 TF-IDF values. I imagine it’s because these words occur in a lot of the documents and, therefore, would not be very useful in distinguishing one project from another. So I’ll drop the two project with no summaries and go into the modeling.</p>
 <div class="cell">
-<div class="sourceCode" id="cb9"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="ot">&lt;-</span> jh_tidy <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="ot">&lt;-</span> jh_tidy <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span>project_number <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;1R61HL156248-01&quot;</span>, <span class="st">&quot;3U24TR001609-04S1&quot;</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span>project_number <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"1R61HL156248-01"</span>, <span class="st">"3U24TR001609-04S1"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="modeling" class="level2">
-<h2>Modeling</h2>
+<h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
 <p>To be able to perform text mining of any kind, including structural topic modeling, I first need to put my data into a sparse matrix. For this I’ll use the <code>tidytext::cast_sparse()</code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>jh_sparse <span class="ot">&lt;-</span> jh_tidy <span class="sc">|&gt;</span> <span class="fu">cast_sparse</span>(project_number, word, n)</span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>jh_sparse <span class="ot">&lt;-</span> jh_tidy <span class="sc">|&gt;</span> <span class="fu">cast_sparse</span>(project_number, word, n)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(jh_sparse)</span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(jh_sparse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]   28 1023</code></pre>
 </div>
 </div>
 <p>I now have a matrix of 28 and 1023 columns. There is now one column for each distinct word in my corpus of data. I’m going to create a structural model with 3 topics (number chosen arbitrarily) just to get an idea of how I might evaluate a model. I’m going to use the <code>stm::stm()</code> function and use the LDA algorithm to generate my model.</p>
-<div class="cell" data-hash="topic-modeling_cache/html/run-lda-3_614ec6b4b6e42693b4ae8a9ed94999fb">
-<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>jh_lda_3 <span class="ot">&lt;-</span> jh_sparse <span class="sc">|&gt;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stm</span>(<span class="at">K =</span> <span class="dv">3</span>, <span class="at">init.type =</span> <span class="st">&quot;LDA&quot;</span>, <span class="at">seed =</span> <span class="dv">212</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>jh_lda_3 <span class="ot">&lt;-</span> jh_sparse <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stm</span>(<span class="at">K =</span> <span class="dv">3</span>, <span class="at">init.type =</span> <span class="st">"LDA"</span>, <span class="at">seed =</span> <span class="dv">212</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now I want to see what some of the most frequently occurring words are within each topic. For this I’m going to simply use the <code>tidy</code> method from <code>stm</code> on the model. By default, the tidy method extracts values of “beta” which tells us the probability that a word comes from a given topic.</p>
 <div class="cell">
-<div class="sourceCode" id="cb13"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>jh_lda_3 <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>jh_lda_3 <span class="sc">|&gt;</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(topic) <span class="sc">|&gt;</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(beta, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
@@ -2278,56 +2349,64 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">reorder_within</span>(term, beta, topic), beta, <span class="at">fill =</span> <span class="fu">factor</span>(topic))) <span class="sc">+</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reordered</span>() <span class="sc">+</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Beta&quot;</span>, <span class="at">x =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> topic, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Beta"</span>, <span class="at">x =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> topic, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="topic-modeling_files/figure-html/lda_3-top-terms-1.png" class="img-fluid" width="672" /></p>
+<div>
+<figure class="figure">
+<p><img src="topic-modeling_files/figure-html/lda_3-top-terms-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The word “pain” is in the top 2 most frequently occurring words in each topic and the word “opioid” occurs in the top 10 words of 2 of the topics. It looks like the model’s not doing a great job of separating topics based on this.</p>
 <p>Another interesting metric to look at is “gamma” which is the probability that a given document is related to a given topic and this is also provided by our model output, which we can access by specifying the <code>matrix = "gamma"</code> argument in our <code>tidy()</code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>jh_lda_3 <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">matrix =</span> <span class="st">&quot;gamma&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic =</span> <span class="fu">str_c</span>(<span class="st">&quot;Topic&quot;</span>, topic, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>) <span class="sc">|&gt;</span> <span class="fu">factor</span>()) <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>jh_lda_3 <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">matrix =</span> <span class="st">"gamma"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic =</span> <span class="fu">str_c</span>(<span class="st">"Topic"</span>, topic, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">|&gt;</span> <span class="fu">factor</span>()) <span class="sc">|&gt;</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(document, gamma, <span class="at">fill =</span> topic)) <span class="sc">+</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(<span class="fu">distinct</span>(jh_tidy, project_number))) <span class="sc">+</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> topic, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Document&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Gamma&quot;</span>) <span class="sc">+</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> topic, <span class="at">scales =</span> <span class="st">"free"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Document"</span>, <span class="at">y =</span> <span class="st">"Gamma"</span>) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="topic-modeling_files/figure-html/lda_3-topic-probs-1.png" class="img-fluid" width="672" /></p>
+<div>
+<figure class="figure">
+<p><img src="topic-modeling_files/figure-html/lda_3-topic-probs-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>It looks like each document except for Document 16 has a high probability of coming from only 1 topic. This is pretty good considering what the beta values showed.</p>
 <p>Next I’ll see if there’s a better number of topics to separate these documents into.</p>
 </section>
 <section id="choosing-a-number-of-topics" class="level2">
-<h2>Choosing a number of topics</h2>
+<h2 class="anchored" data-anchor-id="choosing-a-number-of-topics">Choosing a number of topics</h2>
 <p>First I’m going to build a set of LDA models with values of K (number of topics) ranging from 2 to 25. I’m also going to create a hold-out dataset to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.</p>
-<div class="cell" data-hash="topic-modeling_cache/html/tune-models_6e47a8b64744ecf9a9769e63cd80a8ba">
-<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">k =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">24</span>) <span class="sc">|&gt;</span></span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">k =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">24</span>) <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lda_mod =</span> <span class="fu">map</span>(</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>      k,</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>      \(x) <span class="fu">stm</span>(</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        jh_sparse,</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">K =</span> x,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">init.type =</span> <span class="st">&quot;LDA&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">init.type =</span> <span class="st">"LDA"</span>,</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">seed =</span> <span class="dv">212</span>,</span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      )</span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>heldout <span class="ot">&lt;-</span> <span class="fu">make.heldout</span>(jh_sparse)</span></code></pre></div>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>heldout <span class="ot">&lt;-</span> <span class="fu">make.heldout</span>(jh_sparse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now I’m going to extract the metrics that I want to use to evaluate my model. I’m going to focus on the approach of find the value of K with high held-out likelihood and semantic coherence metrics, but I’m also interested in looking at the residual and exclusivity metrics, so I’ll keep those as well.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>jh_tune_results <span class="ot">&lt;-</span> jh_tune_models <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>jh_tune_results <span class="ot">&lt;-</span> jh_tune_models <span class="sc">|&gt;</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">exclusivity =</span> <span class="fu">map</span>(lda_mod, exclusivity),</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">semantic_coherence =</span> <span class="fu">map</span>(</span>
@@ -2338,85 +2417,97 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">eval_heldout =</span> <span class="fu">map</span>(lda_mod, eval.heldout, heldout<span class="sc">$</span>missing),</span>
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">residual =</span> <span class="fu">map</span>(lda_mod, checkResiduals, jh_sparse)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>jh_tune_results <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>jh_tune_results <span class="sc">|&gt;</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    k,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Residuals =</span> <span class="fu">map_dbl</span>(residual, <span class="st">&quot;dispersion&quot;</span>),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Residuals =</span> <span class="fu">map_dbl</span>(residual, <span class="st">"dispersion"</span>),</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Semantic coherence</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">map_dbl</span>(semantic_coherence, mean),</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Held-out likelihood</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">map_dbl</span>(eval_heldout, <span class="st">&quot;expected.heldout&quot;</span>),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Held-out likelihood</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">map_dbl</span>(eval_heldout, <span class="st">"expected.heldout"</span>),</span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Exclusivity =</span> <span class="fu">map_dbl</span>(exclusivity, mean)</span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>k, <span class="at">names_to =</span> <span class="st">&quot;metrics&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>k, <span class="at">names_to =</span> <span class="st">"metrics"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(k, value, <span class="at">color =</span> metrics)) <span class="sc">+</span></span>
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Number of Topics&quot;</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> metrics, <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Number of Topics"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> metrics, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="topic-modeling_files/figure-html/plot-tune-results-1.png" class="img-fluid" width="672" /></p>
+<div>
+<figure class="figure">
+<p><img src="topic-modeling_files/figure-html/plot-tune-results-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The highest held-out likelihood score comes from the model with <code>K = 17</code> and the highest semantic coherence comes from the model with <code>K = 20</code>, so there’s a little bit of a trade-off. In this case I’m going to go with parsimony and choose the model with <code>K = 17</code>. This model also has relatively high exclusivity. Notably, exclusivity and the residual seem to flatten out and semantic coherence increases dramatically at <code>K &gt; 10</code>.</p>
 <p>Now I’m going to look at both the <code>K = 17</code> and <code>K = 20</code> models to see whether one is clearly better. I’m going to start by looking at how easily each model would predict each document to belong to a specific topic. For that, I’m going to look at the maximum values of gamma for each document. For comparison I’m going to show the same plot for the approach of maximizing semantic coherence (<code>K = 21</code>).</p>
 <div class="cell">
-<div class="sourceCode" id="cb18"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="sc">|&gt;</span> </span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(k <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">17</span>, <span class="dv">20</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_gammas =</span> <span class="fu">map</span>(</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      lda_mod,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      \(x) <span class="fu">tidy</span>(x, <span class="at">matrix =</span> <span class="st">&quot;gamma&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>      \(x) <span class="fu">tidy</span>(x, <span class="at">matrix =</span> <span class="st">"gamma"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">group_by</span>(document) <span class="sc">|&gt;</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarise</span>(<span class="at">gamma =</span> <span class="fu">max</span>(gamma), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">summarise</span>(<span class="at">gamma =</span> <span class="fu">max</span>(gamma), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_label =</span> <span class="fu">str_c</span>(<span class="st">&quot;Number of Topics:&quot;</span>, k, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>) <span class="sc">|&gt;</span> <span class="fu">fct_reorder</span>(k)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">k_label =</span> <span class="fu">str_c</span>(<span class="st">"Number of Topics:"</span>, k, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">|&gt;</span> <span class="fu">fct_reorder</span>(k)</span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>lda_mod) <span class="sc">|&gt;</span></span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(max_gammas) <span class="sc">|&gt;</span></span>
 <span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(document, gamma, <span class="at">fill =</span> <span class="fu">factor</span>(k))) <span class="sc">+</span></span>
 <span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>) <span class="sc">+</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Document&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Maximum Gamma&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Document"</span>, <span class="at">y =</span> <span class="st">"Maximum Gamma"</span>) <span class="sc">+</span></span>
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> k_label, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="topic-modeling_files/figure-html/compare-gamma-1.png" class="img-fluid" width="672" /></p>
+<div>
+<figure class="figure">
+<p><img src="topic-modeling_files/figure-html/compare-gamma-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>It looks like both models yield relatively high probabilities that each document corresponds to one specific topic across the board with only documents 23 and 24 having maximum gammas below 0.75, but the model with <code>K = 17</code> generally performs a bit better.</p>
 <p>For the purposes of visualization I’ll look at the top 5 words defining the topics for the 17-topic model.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="sc">|&gt;</span> </span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(k <span class="sc">==</span> <span class="dv">17</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">&quot;lda_mod&quot;</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"lda_mod"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() <span class="sc">|&gt;</span></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(topic) <span class="sc">|&gt;</span></span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(beta, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">topic =</span> <span class="fu">str_c</span>(<span class="st">&quot;Topic&quot;</span>, topic, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">factor</span>(<span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">&quot;Topic&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">topic =</span> <span class="fu">str_c</span>(<span class="st">"Topic"</span>, topic, <span class="at">sep =</span> <span class="st">" "</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">factor</span>(<span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">"Topic"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>, <span class="at">sep =</span> <span class="st">" "</span>))</span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">reorder_within</span>(term, beta, topic), beta, <span class="at">fill =</span> <span class="fu">factor</span>(topic))) <span class="sc">+</span></span>
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reordered</span>() <span class="sc">+</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Beta&quot;</span>, <span class="at">x =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> topic, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Beta"</span>, <span class="at">x =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> topic, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="topic-modeling_files/figure-html/lda_17-top-words-1.png" class="img-fluid" width="672" /></p>
+<div>
+<figure class="figure">
+<p><img src="topic-modeling_files/figure-html/lda_17-top-words-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The word “pain” appears in the top 5 words of 7 topics; in further analysis I might consider making this a stop word along with words like “study” and “research”. But topic 11 seems to be about joint issues given the prevalence of the words “osteoarthritis” and “knee”; topic 12 seems to be about demographics with words like “american” and “urban” in the top 5 words; and topic 17 seems to be clearly about digestion issues with words like “pain”, “ibs”, and “abdominal” in the top 5 words.</p>
 <p>Finally, I’ll look at the titles grouped by each project’s maximum gamma value. You be the judge.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>jh_tune_models <span class="sc">|&gt;</span> </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(k <span class="sc">==</span> <span class="dv">17</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">&quot;lda_mod&quot;</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">matrix =</span> <span class="st">&quot;gamma&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="st">"lda_mod"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">matrix =</span> <span class="st">"gamma"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="sc">-</span>document) <span class="sc">|&gt;</span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">map</span>(data,\(x) <span class="fu">slice_max</span>(x, gamma, <span class="at">n =</span> <span class="dv">1</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)),</span>
@@ -2425,14 +2516,13 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
 <span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    jh_clean <span class="sc">|&gt;</span> <span class="fu">select</span>(project_number, project_title),</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">&quot;project_number&quot;</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"project_number"</span></span>
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(topic, project_title, gamma) <span class="sc">|&gt;</span></span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gamma =</span> <span class="fu">round</span>(gamma, <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(topic, gamma) <span class="sc">|&gt;</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code></pre></div>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div id="gwrvrkxqpw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#gwrvrkxqpw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -2873,116 +2963,168 @@ $ Summary               &lt;chr&gt; &quot;Activation of immune cells (microglia)
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="topic">topic</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="project_title">project_title</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="gamma">gamma</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="topic" class="gt_row gt_right">1</td>
-<td headers="project_title" class="gt_row gt_left">Validation of peripheral CGRP signaling as a target for the treatment of pain in chronic pancreatitis</td>
-<td headers="gamma" class="gt_row gt_right">0.991</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">1</td>
-<td headers="project_title" class="gt_row gt_left">Development of MRGPRX1 positive allosteric modulators as non-addictive therapies for neuropathic pain</td>
-<td headers="gamma" class="gt_row gt_right">0.994</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">2</td>
-<td headers="project_title" class="gt_row gt_left">DEVELOPMENT &amp;amp; MALLEABILITY FROM CHILDHOOD TO ADULTHOOD</td>
-<td headers="gamma" class="gt_row gt_right">0.993</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">3</td>
-<td headers="project_title" class="gt_row gt_left">Data Center for Acute to Chronic Pain Biosignatures</td>
-<td headers="gamma" class="gt_row gt_right">0.991</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">3</td>
-<td headers="project_title" class="gt_row gt_left">Social Networks among Native American caregivers participating in an evidence-based and culturally informed intergenerational intervention</td>
-<td headers="gamma" class="gt_row gt_right">0.993</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">4</td>
-<td headers="project_title" class="gt_row gt_left">HEALthy ORCHARD: Developing plans for a Baltimore site of the HEALthy BCD study</td>
-<td headers="gamma" class="gt_row gt_right">0.989</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">5</td>
-<td headers="project_title" class="gt_row gt_left">Subchondral Bone Cavities in Osteoarthritis Pain</td>
-<td headers="gamma" class="gt_row gt_right">0.985</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">5</td>
-<td headers="project_title" class="gt_row gt_left">Implementing and Evaluating the Impact of Novel Mobile Harm Reduction Services on Overdose Among Women who use Drugs: The SHOUT Study</td>
-<td headers="gamma" class="gt_row gt_right">0.989</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">6</td>
-<td headers="project_title" class="gt_row gt_left">Improving Function and Reducing Opioid Use for Patients with Chronic Low Back Pain in Rural Communities Through Improved Access to Physical Therapy Using Telerehabilitation</td>
-<td headers="gamma" class="gt_row gt_right">0.992</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">6</td>
-<td headers="project_title" class="gt_row gt_left">UNDERSTANDING THE INTERSECTION BETWEEN OPIOIDS AND SUICIDE THROUGH THE SOUTHWEST HUB</td>
-<td headers="gamma" class="gt_row gt_right">0.993</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">7</td>
-<td headers="project_title" class="gt_row gt_left">Evaluating the Role of the Orexin System in Circadian Rhythms of Sleep and Stress in Persons on Medication-Assisted Treatments for Opioid Use Disorder</td>
-<td headers="gamma" class="gt_row gt_right">0.993</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">7</td>
-<td headers="project_title" class="gt_row gt_left">Evaluating Suvorexant for Sleep Disturbance in Opioid Use Disorder</td>
-<td headers="gamma" class="gt_row gt_right">0.993</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">8</td>
-<td headers="project_title" class="gt_row gt_left">Validation of a New Large-Pore Channel as a Novel Target for Neuropathic Pain</td>
-<td headers="gamma" class="gt_row gt_right">0.987</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">9</td>
-<td headers="project_title" class="gt_row gt_left">The Short and Long-Term Dynamics of Opioid/Stimulant Use: Mixed Methods to Inform Overdose Prevention and Treatment Related to Polysubstance Use</td>
-<td headers="gamma" class="gt_row gt_right">0.992</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">9</td>
-<td headers="project_title" class="gt_row gt_left">Sympathetic-mediated sensory neuron cluster firing as a novel therapeutic target for neuropathic pain</td>
-<td headers="gamma" class="gt_row gt_right">0.995</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">10</td>
-<td headers="project_title" class="gt_row gt_left">7/24 Healthy Brain and Child Development National Consortium</td>
-<td headers="gamma" class="gt_row gt_right">0.990</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">11</td>
-<td headers="project_title" class="gt_row gt_left">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
-<td headers="gamma" class="gt_row gt_right">0.989</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">11</td>
-<td headers="project_title" class="gt_row gt_left">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
-<td headers="gamma" class="gt_row gt_right">0.990</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">11</td>
-<td headers="project_title" class="gt_row gt_left">Increasing Participant Diversity in a 'Sequenced-Strategy to Improve Outcomes in People with Knee Osteoarthritis Pain (SKOAP)</td>
-<td headers="gamma" class="gt_row gt_right">0.991</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">11</td>
-<td headers="project_title" class="gt_row gt_left">Mentorship of Junior Investigators on HEAL-SKOAP</td>
-<td headers="gamma" class="gt_row gt_right">0.992</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">11</td>
-<td headers="project_title" class="gt_row gt_left">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
-<td headers="gamma" class="gt_row gt_right">0.994</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">13</td>
-<td headers="project_title" class="gt_row gt_left">DC Research Infrastructure Building &amp;amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
-<td headers="gamma" class="gt_row gt_right">0.754</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">13</td>
-<td headers="project_title" class="gt_row gt_left">DC Research Infrastructure Building &amp;amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
-<td headers="gamma" class="gt_row gt_right">0.754</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">14</td>
-<td headers="project_title" class="gt_row gt_left">Quantifying and Treating Myofascial Dysfunction in Post Stroke Shoulder Pain</td>
-<td headers="gamma" class="gt_row gt_right">0.990</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">14</td>
-<td headers="project_title" class="gt_row gt_left">ETHNIC DIFFERENCES IN ENDOGENOUS PAIN REGULATION: PET IMAGING OF OPIOID RECEPTORS</td>
-<td headers="gamma" class="gt_row gt_right">0.993</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">15</td>
-<td headers="project_title" class="gt_row gt_left">Sleep and Circadian Rhythm Phenotypes and Mechanisms Associated With Opioid Use Disorder Treatment Outcomes</td>
-<td headers="gamma" class="gt_row gt_right">0.988</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">16</td>
-<td headers="project_title" class="gt_row gt_left">Effects of experimental sleep disruption and fragmentation on cerebral Mu-opioid receptor function, Mu-opioid receptor agonist analgesia, and abuse liability.</td>
-<td headers="gamma" class="gt_row gt_right">0.991</td></tr>
-    <tr><td headers="topic" class="gt_row gt_right">17</td>
-<td headers="project_title" class="gt_row gt_left">Home-based transcutaneous electrical acustimulation for abdominal pain</td>
-<td headers="gamma" class="gt_row gt_right">0.991</td></tr>
-  </tbody>
-  
-  
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="topic" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">topic</th>
+<th id="project_title" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">project_title</th>
+<th id="gamma" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">gamma</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">1</td>
+<td class="gt_row gt_left" headers="project_title">Validation of peripheral CGRP signaling as a target for the treatment of pain in chronic pancreatitis</td>
+<td class="gt_row gt_right" headers="gamma">0.991</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">1</td>
+<td class="gt_row gt_left" headers="project_title">Development of MRGPRX1 positive allosteric modulators as non-addictive therapies for neuropathic pain</td>
+<td class="gt_row gt_right" headers="gamma">0.994</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">2</td>
+<td class="gt_row gt_left" headers="project_title">DEVELOPMENT &amp;amp; MALLEABILITY FROM CHILDHOOD TO ADULTHOOD</td>
+<td class="gt_row gt_right" headers="gamma">0.993</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">3</td>
+<td class="gt_row gt_left" headers="project_title">Data Center for Acute to Chronic Pain Biosignatures</td>
+<td class="gt_row gt_right" headers="gamma">0.991</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">3</td>
+<td class="gt_row gt_left" headers="project_title">Social Networks among Native American caregivers participating in an evidence-based and culturally informed intergenerational intervention</td>
+<td class="gt_row gt_right" headers="gamma">0.993</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">4</td>
+<td class="gt_row gt_left" headers="project_title">HEALthy ORCHARD: Developing plans for a Baltimore site of the HEALthy BCD study</td>
+<td class="gt_row gt_right" headers="gamma">0.989</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">5</td>
+<td class="gt_row gt_left" headers="project_title">Subchondral Bone Cavities in Osteoarthritis Pain</td>
+<td class="gt_row gt_right" headers="gamma">0.985</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">5</td>
+<td class="gt_row gt_left" headers="project_title">Implementing and Evaluating the Impact of Novel Mobile Harm Reduction Services on Overdose Among Women who use Drugs: The SHOUT Study</td>
+<td class="gt_row gt_right" headers="gamma">0.989</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">6</td>
+<td class="gt_row gt_left" headers="project_title">Improving Function and Reducing Opioid Use for Patients with Chronic Low Back Pain in Rural Communities Through Improved Access to Physical Therapy Using Telerehabilitation</td>
+<td class="gt_row gt_right" headers="gamma">0.992</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">6</td>
+<td class="gt_row gt_left" headers="project_title">UNDERSTANDING THE INTERSECTION BETWEEN OPIOIDS AND SUICIDE THROUGH THE SOUTHWEST HUB</td>
+<td class="gt_row gt_right" headers="gamma">0.993</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">7</td>
+<td class="gt_row gt_left" headers="project_title">Evaluating the Role of the Orexin System in Circadian Rhythms of Sleep and Stress in Persons on Medication-Assisted Treatments for Opioid Use Disorder</td>
+<td class="gt_row gt_right" headers="gamma">0.993</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">7</td>
+<td class="gt_row gt_left" headers="project_title">Evaluating Suvorexant for Sleep Disturbance in Opioid Use Disorder</td>
+<td class="gt_row gt_right" headers="gamma">0.993</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">8</td>
+<td class="gt_row gt_left" headers="project_title">Validation of a New Large-Pore Channel as a Novel Target for Neuropathic Pain</td>
+<td class="gt_row gt_right" headers="gamma">0.987</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">9</td>
+<td class="gt_row gt_left" headers="project_title">The Short and Long-Term Dynamics of Opioid/Stimulant Use: Mixed Methods to Inform Overdose Prevention and Treatment Related to Polysubstance Use</td>
+<td class="gt_row gt_right" headers="gamma">0.992</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">9</td>
+<td class="gt_row gt_left" headers="project_title">Sympathetic-mediated sensory neuron cluster firing as a novel therapeutic target for neuropathic pain</td>
+<td class="gt_row gt_right" headers="gamma">0.995</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">10</td>
+<td class="gt_row gt_left" headers="project_title">7/24 Healthy Brain and Child Development National Consortium</td>
+<td class="gt_row gt_right" headers="gamma">0.990</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">11</td>
+<td class="gt_row gt_left" headers="project_title">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
+<td class="gt_row gt_right" headers="gamma">0.989</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">11</td>
+<td class="gt_row gt_left" headers="project_title">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
+<td class="gt_row gt_right" headers="gamma">0.990</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">11</td>
+<td class="gt_row gt_left" headers="project_title">Increasing Participant Diversity in a 'Sequenced-Strategy to Improve Outcomes in People with Knee Osteoarthritis Pain (SKOAP)</td>
+<td class="gt_row gt_right" headers="gamma">0.991</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">11</td>
+<td class="gt_row gt_left" headers="project_title">Mentorship of Junior Investigators on HEAL-SKOAP</td>
+<td class="gt_row gt_right" headers="gamma">0.992</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">11</td>
+<td class="gt_row gt_left" headers="project_title">A sequenced-strategy for improving outcomes in patients with knee osteoarthritis pain</td>
+<td class="gt_row gt_right" headers="gamma">0.994</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">13</td>
+<td class="gt_row gt_left" headers="project_title">DC Research Infrastructure Building &amp;amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
+<td class="gt_row gt_right" headers="gamma">0.754</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">13</td>
+<td class="gt_row gt_left" headers="project_title">DC Research Infrastructure Building &amp;amp; Initiative to Reach, Engage, and Retain in MOUD Patients with OUD</td>
+<td class="gt_row gt_right" headers="gamma">0.754</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">14</td>
+<td class="gt_row gt_left" headers="project_title">Quantifying and Treating Myofascial Dysfunction in Post Stroke Shoulder Pain</td>
+<td class="gt_row gt_right" headers="gamma">0.990</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">14</td>
+<td class="gt_row gt_left" headers="project_title">ETHNIC DIFFERENCES IN ENDOGENOUS PAIN REGULATION: PET IMAGING OF OPIOID RECEPTORS</td>
+<td class="gt_row gt_right" headers="gamma">0.993</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">15</td>
+<td class="gt_row gt_left" headers="project_title">Sleep and Circadian Rhythm Phenotypes and Mechanisms Associated With Opioid Use Disorder Treatment Outcomes</td>
+<td class="gt_row gt_right" headers="gamma">0.988</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="topic">16</td>
+<td class="gt_row gt_left" headers="project_title">Effects of experimental sleep disruption and fragmentation on cerebral Mu-opioid receptor function, Mu-opioid receptor agonist analgesia, and abuse liability.</td>
+<td class="gt_row gt_right" headers="gamma">0.991</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="topic">17</td>
+<td class="gt_row gt_left" headers="project_title">Home-based transcutaneous electrical acustimulation for abdominal pain</td>
+<td class="gt_row gt_right" headers="gamma">0.991</td>
+</tr>
+</tbody>
 </table>
+
 </div>
 </div>
 </div>
-<div id="quarto-navigation-envelope" class="hidden">
-<p><span class="hidden" data-render-id="quarto-int-sidebar-title">Arcenis Rojas</span> <span class="hidden" data-render-id="quarto-int-navbar-title">Arcenis Rojas</span> <span class="hidden" data-render-id="quarto-int-navbar:Data Science Projects">Data Science Projects</span> <span class="hidden" data-render-id="quarto-int-navbar:Opening the ML ‘Black Box’: A Tidy Approach">Opening the ML ‘Black Box’: A Tidy Approach</span> <span class="hidden" data-render-id="quarto-int-navbar:/open-blackbox-tidy.html">/open-blackbox-tidy.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Unbalanced Data: Optimal Threshold vs. Upsampling">Unbalanced Data: Optimal Threshold vs. Upsampling</span> <span class="hidden" data-render-id="quarto-int-navbar:/class-thresh-vs-upsampling.html">/class-thresh-vs-upsampling.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Topic Modeling with R">Topic Modeling with R</span> <span class="hidden" data-render-id="quarto-int-navbar:/topic-modeling.html">/topic-modeling.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Introduction to cepumd (R package)">Introduction to cepumd (R package)</span> <span class="hidden" data-render-id="quarto-int-navbar:/cepumd-intro.html">/cepumd-intro.html</span> <span class="hidden" data-render-id="quarto-int-navbar:CE Dashboards">CE Dashboards</span> <span class="hidden" data-render-id="quarto-int-navbar:/ce-dashboards.html">/ce-dashboards.html</span> <span class="hidden" data-render-id="quarto-int-navbar:Publications">Publications</span> <span class="hidden" data-render-id="quarto-int-navbar:/publications.html">/publications.html</span> <span class="hidden" data-render-id="quarto-int-navbar:https://linkedin.com/in/arcenisrojas">https://linkedin.com/in/arcenisrojas</span> <span class="hidden" data-render-id="quarto-int-navbar:https://github.com/arcenis-r">https://github.com/arcenis-r</span></p>
-</div>
-<div id="quarto-meta-markdown" class="hidden">
-<p><span class="hidden" data-render-id="quarto-metatitle">Arcenis Rojas - Topic Modeling with R</span> <span class="hidden" data-render-id="quarto-twittercardtitle">Arcenis Rojas - Topic Modeling with R</span> <span class="hidden" data-render-id="quarto-ogcardtitle">Arcenis Rojas - Topic Modeling with R</span> <span class="hidden" data-render-id="quarto-metasitename">Arcenis Rojas</span> <span class="hidden" data-render-id="quarto-twittercarddesc"></span> <span class="hidden" data-render-id="quarto-ogcardddesc"></span></p>
-</div>
+
+
 </section>
 
 </main> <!-- /main -->
-<script id = "quarto-html-after-body" type="application/javascript">
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -3061,10 +3203,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/arcenis-r\.github\.io\/ajr-portfolio\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -3074,8 +3233,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -3088,6 +3256,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -3131,6 +3418,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -3156,6 +3444,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -3213,24 +3527,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp("https:\/\/arcenis-r\.github\.io\/ajr-portfolio\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-      }
-    }
 });
 </script>
 </div> <!-- /content -->
 
-</body>
 
-</html>
+
+
+</body></html>
