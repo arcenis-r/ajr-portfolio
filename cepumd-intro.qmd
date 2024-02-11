@@ -2,11 +2,6 @@
 title: "Introduction to cepumd"
 author: "Arcenis Rojas"
 date: "01/24/2024"
-format:
-  html:
-    link-external-newwindow: true
-    toc: true
-    toc_float: true
 editor: visual
 execute:
   warning: false

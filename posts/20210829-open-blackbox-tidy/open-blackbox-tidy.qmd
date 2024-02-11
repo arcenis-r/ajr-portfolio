@@ -18,6 +18,8 @@ execute:
 
 ## Introduction / Motivation
 
+![Blackbox over neural network vector](images/ml-blackbox.png){fig-alt="Blackbox over neural network vector" fig-align="center" width="443"}
+
 Recently I worked on a project which required explanation of ML algorithms more precisely than with precision (I've heard you should always open with a bad joke). Being fairly new to the world of ML, I wasn't aware of many ways to do that, but in my research I found [DALEX](https://dalex.drwhy.ai/) developed by [MI2DataLab](https://github.com/ModelOriented/). I was impressed, surprised, and excited. I very quickly developed some code for my project and even built a [modelStudio](https://modelstudio.drwhy.ai/) dashboard as a proof of concept. Some of the advantages of [DALEX](https://dalex.drwhy.ai/) are that it...
 
 -   is model agnostic with comparable results across models
@@ -62,7 +64,7 @@ Next I loaded a script containing some functions that I defined [(available on G
 ```{r}
 #| label: load-helper-funs
 
-source("./helper-functions/tidy-ml-evaluation-funs.R")
+source("./tidy-ml-evaluation-funs.R")
 
 ```
 

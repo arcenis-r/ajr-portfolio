@@ -20,6 +20,8 @@ website:
         text: "CE Dashboards"
       - href: publications.qmd
         text: "Publications"
+      - href: posts.qmd
+        text: "Blog"
     right:
       - icon: linkedin
         href: https://linkedin.com/in/arcenisrojas
@@ -33,6 +35,9 @@ format:
     theme: flatly
     css: styles.css
     toc: true
+    toc_float: true
+    link-external-icon: true
+    link-external-newwindow: true
 
 editor: visual
 

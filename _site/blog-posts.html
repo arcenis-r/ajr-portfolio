@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Arcenis Rojas">
 
-<title>Arcenis Rojas - Welcome</title>
+<title>Arcenis Rojas - Arcenis’s DS Learning Journey</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -150,13 +151,19 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Welcome</h1>
+<h1 class="title">Arcenis’s DS Learning Journey</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Arcenis Rojas </p>
+          </div>
+  </div>
     
   
     
@@ -167,27 +174,6 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div>
-
-</div>
-<div class="quarto-layout-panel" data-layout="[35, 65]">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 35.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/profile-pic-20201207.jpg" class="img-fluid quarto-figure quarto-figure-left figure-img" style="margin-right: 20px; margin-bottom: 20px;width:100.0%"></p>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 65.0%;justify-content: flex-start;">
-<p>I’m an economist turned consultant/data scientist with strong interests in the divergence between inferential modeling and predictive modeling. Over the last few years I’ve started to really enjoy programming in the Tidyverse style and have even begun to work quite a bit with Tidymodels.<br>
-<br>
-I hold a B.S. in Applied Economics from <a href="https://www.ithaca.edu">Ithaca College</a> and an M.S. in Economics from the <a href="https://www.ccny.cuny.edu/">City University of New York - City College</a>. I enjoy projects that allow me to learn and implement new techniques ranging from different types of regression analysis to more advanced machine learning algorithms.</p>
-</div>
-</div>
-</div>
-<p>One of the most fun personal projects of mine has been to create the <code>cepumd</code> package. You can read more about it here: <a href="./cepumd-intro.html" title="Introduction to cepumd package">cepumd-intro.qmd</a>.</p>
-<p>I also enjoy tutoring econometrics, data science, R, and statistics on Wyzant. <a href="https://is.gd/6xUixC">Check out my profile!</a></p>
 
 
 
@@ -271,6 +257,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+          // default icon
+          link.classList.add("external");
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,

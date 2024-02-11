@@ -1,14 +1,10 @@
 ---
 title: "Welcome"
-format:
-  html:
-    link-external-icon: true
-    link-external-newwindow: true
 editor: visual
 ---
 
 ::: {layout="[35, 65]"}
-![](images/profile-pic-20201207.jpg){style="margin-right: 20px; margin-bottom: 20px" fig-align="left" width="25%"}
+![](images/profile-pic-20201207.jpg){style="margin-right: 20px; margin-bottom: 20px" fig-align="left" width="100%"}
 
 I'm an economist turned consultant/data scientist with strong interests in the divergence between inferential modeling and predictive modeling. Over the last few years I've started to really enjoy programming in the Tidyverse style and have even begun to work quite a bit with Tidymodels.\
 \
