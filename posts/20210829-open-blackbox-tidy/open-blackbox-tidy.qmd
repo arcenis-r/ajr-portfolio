@@ -5,9 +5,6 @@ author: "Arcenis Rojas"
 date: "8/29/2021"
 format: 
   html:
-    link-external-newwindow: true
-    toc: true
-    toc_float: true
     fig-width: 12
     fig-height: 8
 editor: visual

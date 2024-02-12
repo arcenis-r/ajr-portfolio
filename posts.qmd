@@ -1,5 +1,5 @@
 ---
-title: "Arcenis's DS Learning Journey"
+title: "Projects in Data Science and Statistics"
 listing:
   contents: posts
   type: default
