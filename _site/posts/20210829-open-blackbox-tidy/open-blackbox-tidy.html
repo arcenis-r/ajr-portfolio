@@ -126,29 +126,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Data Science Projects</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-data-science-projects">    
-        <li>
-    <a class="dropdown-item" href="../../open-blackbox-tidy.qmd">
- <span class="dropdown-text">Opening the ML ‘Black Box’: A Tidy Approach</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../class-thresh-vs-upsampling.html">
- <span class="dropdown-text">Unbalanced Data: Optimal Threshold vs.&nbsp;Upsampling</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../topic-modeling.html">
- <span class="dropdown-text">Topic Modeling with R</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../cepumd-intro.html">
- <span class="dropdown-text">Introduction to cepumd (R package)</span></a>
-  </li>  
-    </ul>
-  </li>
   <li class="nav-item">
     <a class="nav-link" href="../../ce-dashboards.html"> 
 <span class="menu-text">CE Dashboards</span></a>
@@ -159,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../posts.html"> 
-<span class="menu-text">Blog</span></a>
+<span class="menu-text">Personal Projects</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -186,7 +163,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="quarto-title column-body">
       <h1 class="title">Opening the ML ‘Black Box’ with Shapley Values</h1>
             <p class="subtitle lead">A Tidy Approach</p>
-                      </div>
+                                <div class="quarto-categories">
+                <div class="quarto-category">data science</div>
+                <div class="quarto-category">machine learning</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -248,8 +229,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="introduction-motivation">Introduction / Motivation</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/ml-blackbox.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Blackbox over neural network vector" width="443"></p>
-<figcaption>Blackbox over neural network vector</figcaption>
+<p><a href="https://christophm.github.io/interpretable-ml-book/shapley.html"><img src="images/shapley-instance.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Apartment price predicted by square footage, floor number, whether there are nearby parks, and whether cats are banned" width="443"></a></p>
+<figcaption>[Image from “Interpretable Machine Learning” by Christopher Molnar](https://christophm.github.io/interpretable-ml-book/shapley.html)</figcaption>
 </figure>
 </div>
 <p>Recently I worked on a project which required explanation of ML algorithms more precisely than with precision (I’ve heard you should always open with a bad joke). Being fairly new to the world of ML, I wasn’t aware of many ways to do that, but in my research I found <a href="https://dalex.drwhy.ai/">DALEX</a> developed by <a href="https://github.com/ModelOriented/">MI2DataLab</a>. I was impressed, surprised, and excited. I very quickly developed some code for my project and even built a <a href="https://modelstudio.drwhy.ai/">modelStudio</a> dashboard as a proof of concept. Some of the advantages of <a href="https://dalex.drwhy.ai/">DALEX</a> are that it…</p>
@@ -260,11 +241,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>can generates HTML widgets/pages through modelStudio</li>
 <li>provides Various ways to look at contributions of each observation to model predictions</li>
 </ul>
-<p>Upon presenting my proof of concept, though, I learned about some other project requirements that highlighted two disadvantages of <a href="https://dalex.drwhy.ai/">DALEX</a>. The R package does not…</p>
+<p>Upon presenting my proof of concept, though, I learned about some other project requirements that highlighted three disadvantages of <a href="https://dalex.drwhy.ai/">DALEX</a>. The R package does not…</p>
 <ul>
 <li>run in parallel</li>
 <li>provide SHAP values</li>
-<li>work natively (or easily) with <a href="https://www.tidymodels.org/">Tidymodel</a> objects</li>
+<li>work natively (or easily) with <a href="https://www.tidymodels.org/">Tidymodels</a> objects</li>
 </ul>
 <p>These disadvantages were enough to have me go back to the drawing board. I wondered if there were other ways to get the same types of visualizations and model break-downs through or from other R packages. I found…</p>
 <ul>
@@ -1395,6 +1376,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<script src="https://giscus.app/client.js" data-repo="arcenis-r/ajr-portfolio" data-repo-id="MDEwOlJlcG9zaXRvcnkxNzg3MDY3MTM=" data-category="General" data-category-id="DIC_kwDOCqbZGc4CdJXz" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
 
 

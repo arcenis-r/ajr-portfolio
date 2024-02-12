@@ -6,9 +6,12 @@ editor: visual
 execute:
   warning: false
   error: false
-reference-doc: references/cepumd-intro-references.bib
-bibliography: references.bib
+bibliography: cepumd-intro-references.bib
+categories:
+  - package development
 ---
+
+![cepumd hexsticker](images/cepumd.png){fig-alt="cepumd hexsticker" fig-align="center" width="300"}
 
 ## Motivation
 
@@ -18,13 +21,11 @@ The purpose of `cepumd` is to make working with Consumer Expenditure Surveys (CE
 -   Balance the effort to make the end user's experience with CE PUMD easier while being flexible enough to allow that user to perform any analysis with the data they wish
 -   Only designed to help users calculate mean **expenditures** on and of the consumer unit (CU), i.e., not income, not assets, not liabilities, not gifts, at least for now
 
-## History of CE
+## Overview of the CE and CE PUMD
 
 First a little history...
 
 The first Consumer Expenditure Survey happened in 1888 (<https://www.bls.gov/opub/hom/cex/history.htm>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called [130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)
-
-## Overview of the CE and CE PUMD
 
 From the CE home page:
 
@@ -48,7 +49,7 @@ Please visit the following pages to learn more about the CE program overall and 
 
 `cepumd` seeks to address challenges in three categories: data gathering/organization; managing data inconsistencies; and calculating weighted, annual metrics.
 
--   **Data gathering/organization**
+-   **Data wrangling**
     -   Convert hierarchical grouping (HG) files to data tables using `ce_hg()`
     -   Help the user identify the Universal Classification Codes (UCCs) related to their analysis using a combination of `ce_hg()` and `ce_uccs()`
     -   Combine all required files and variables using `ce_prepdata()`

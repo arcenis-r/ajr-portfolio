@@ -2,16 +2,15 @@
 title: "Dealing with Unbalanced Data"
 subtitle: "Optimal Threshold vs. Upsampling"
 author: "Arcenis Rojas"
-format: 
-  html:
-    link-external-newwindow: true
-    toc: true
-    toc_float: true
-editor: visual
 execute:
   warning: false
   error: false
-bibliography: references/class-thresh-vs-upsampling-references.bib
+bibliography: class-thresh-vs-upsampling-references.bib
+date: "2/15/2023"
+categories:
+  - machine learning
+  - data science
+  - classification
 ---
 
 ## Introduction

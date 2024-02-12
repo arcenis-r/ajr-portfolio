@@ -3,4 +3,6 @@ title: "Arcenis's DS Learning Journey"
 listing:
   contents: posts
   type: default
+  sort: "date desc"
+  categories: true
 ---

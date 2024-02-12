@@ -14,11 +14,14 @@ editor: visual
 execute:
   warning: false
   error: false
+categories:
+  - data science
+  - machine learning
 ---
 
 ## Introduction / Motivation
 
-![Blackbox over neural network vector](images/ml-blackbox.png){fig-alt="Blackbox over neural network vector" fig-align="center" width="443"}
+[![\[Image from "Interpretable Machine Learning" by Christopher Molnar\](https://christophm.github.io/interpretable-ml-book/shapley.html)](images/shapley-instance.png){fig-alt="Apartment price predicted by square footage, floor number, whether there are nearby parks, and whether cats are banned" fig-align="center" width="443"}](https://christophm.github.io/interpretable-ml-book/shapley.html)
 
 Recently I worked on a project which required explanation of ML algorithms more precisely than with precision (I've heard you should always open with a bad joke). Being fairly new to the world of ML, I wasn't aware of many ways to do that, but in my research I found [DALEX](https://dalex.drwhy.ai/) developed by [MI2DataLab](https://github.com/ModelOriented/). I was impressed, surprised, and excited. I very quickly developed some code for my project and even built a [modelStudio](https://modelstudio.drwhy.ai/) dashboard as a proof of concept. Some of the advantages of [DALEX](https://dalex.drwhy.ai/) are that it...
 
@@ -28,11 +31,11 @@ Recently I worked on a project which required explanation of ML algorithms more 
 -   can generates HTML widgets/pages through modelStudio
 -   provides Various ways to look at contributions of each observation to model predictions
 
-Upon presenting my proof of concept, though, I learned about some other project requirements that highlighted two disadvantages of [DALEX](https://dalex.drwhy.ai/). The R package does not...
+Upon presenting my proof of concept, though, I learned about some other project requirements that highlighted three disadvantages of [DALEX](https://dalex.drwhy.ai/). The R package does not...
 
 -   run in parallel
 -   provide SHAP values
--   work natively (or easily) with [Tidymodel](https://www.tidymodels.org/) objects
+-   work natively (or easily) with [Tidymodels](https://www.tidymodels.org/) objects
 
 These disadvantages were enough to have me go back to the drawing board. I wondered if there were other ways to get the same types of visualizations and model break-downs through or from other R packages. I found...
 

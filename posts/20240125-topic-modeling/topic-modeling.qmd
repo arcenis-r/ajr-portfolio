@@ -1,15 +1,15 @@
 ---
 title: "Topic Modeling with R"
 author: "Arcenis Rojas"
-format:
-  html:
-    link-external-newwindow: true
-    toc: true
-    toc_float: true
 editor: visual
 execute:
   warning: false
   error: false
+date: "1/24/2025"
+categories:
+  - text analysis
+  - topic modeling
+  - data science
 ---
 
 ## Introduction

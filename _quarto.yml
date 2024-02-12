@@ -6,22 +6,12 @@ website:
   navbar:
     background: primary
     left:
-      - text: "Data Science Projects"
-        menu: 
-          - href: open-blackbox-tidy.qmd
-            text: "Opening the ML ‘Black Box’: A Tidy Approach"
-          - href: class-thresh-vs-upsampling.qmd
-            text: "Unbalanced Data: Optimal Threshold vs. Upsampling"
-          - href: topic-modeling.qmd
-            text: "Topic Modeling with R"
-          - href: cepumd-intro.qmd
-            text: "Introduction to cepumd (R package)"
       - href: ce-dashboards.qmd
         text: "CE Dashboards"
       - href: publications.qmd
         text: "Publications"
       - href: posts.qmd
-        text: "Blog"
+        text: "Personal Projects"
     right:
       - icon: linkedin
         href: https://linkedin.com/in/arcenisrojas

@@ -88,29 +88,6 @@ ul.task-list li input[type="checkbox"] {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Data Science Projects</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-data-science-projects">    
-        <li>
-    <a class="dropdown-item" href="./open-blackbox-tidy.html">
- <span class="dropdown-text">Opening the ML ‘Black Box’: A Tidy Approach</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./class-thresh-vs-upsampling.html">
- <span class="dropdown-text">Unbalanced Data: Optimal Threshold vs.&nbsp;Upsampling</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./topic-modeling.html">
- <span class="dropdown-text">Topic Modeling with R</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./cepumd-intro.html">
- <span class="dropdown-text">Introduction to cepumd (R package)</span></a>
-  </li>  
-    </ul>
-  </li>
   <li class="nav-item">
     <a class="nav-link" href="./ce-dashboards.html"> 
 <span class="menu-text">CE Dashboards</span></a>
@@ -118,6 +95,10 @@ ul.task-list li input[type="checkbox"] {
   <li class="nav-item">
     <a class="nav-link" href="./publications.html"> 
 <span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./posts.html"> 
+<span class="menu-text">Personal Projects</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -186,7 +167,7 @@ I hold a B.S. in Applied Economics from <a href="https://www.ithaca.edu">Ithaca 
 </div>
 </div>
 </div>
-<p>One of the most fun personal projects of mine has been to create the <code>cepumd</code> package. You can read more about it here: <a href="./cepumd-intro.html" title="Introduction to cepumd package">cepumd-intro.qmd</a>.</p>
+<p>One of the most fun personal projects of mine has been to create the <code>cepumd</code> package. You can read more about it here: <a href="cepumd-intro.qmd" title="Introduction to cepumd package">cepumd-intro.qmd</a>.</p>
 <p>I also enjoy tutoring econometrics, data science, R, and statistics on Wyzant. <a href="https://is.gd/6xUixC">Check out my profile!</a></p>
 
 
@@ -271,6 +252,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+          // default icon
+          link.classList.add("external");
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
