@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Arcenis Rojas">
+<meta name="dcterms.date" content="2025-01-24">
 
 <title>Arcenis Rojas - Topic Modeling with R</title>
 <style>
@@ -58,22 +59,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,17 +104,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Arcenis Rojas</span>
     </a>
   </div>
@@ -123,36 +124,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-data-science-projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Data Science Projects</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-data-science-projects">    
-        <li>
-    <a class="dropdown-item" href="./open-blackbox-tidy.html">
- <span class="dropdown-text">Opening the ML ‘Black Box’: A Tidy Approach</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./class-thresh-vs-upsampling.html">
- <span class="dropdown-text">Unbalanced Data: Optimal Threshold vs.&nbsp;Upsampling</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./topic-modeling.html">
- <span class="dropdown-text">Topic Modeling with R</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./cepumd-intro.html">
- <span class="dropdown-text">Introduction to cepumd (R package)</span></a>
-  </li>  
-    </ul>
-  </li>
   <li class="nav-item">
-    <a class="nav-link" href="./ce-dashboards.html"> 
+    <a class="nav-link" href="../../ce-dashboards.html"> 
 <span class="menu-text">CE Dashboards</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./publications.html"> 
+    <a class="nav-link" href="../../publications.html"> 
 <span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html"> 
+<span class="menu-text">Personal Projects</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -174,7 +156,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Topic Modeling with R</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">text analysis</div>
+                <div class="quarto-category">topic modeling</div>
+                <div class="quarto-category">data science</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Arcenis Rojas </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 24, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -191,31 +206,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Topic Modeling with R</h1>
-</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Arcenis Rojas </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-
-</header>
 
 
 <section id="introduction" class="level2">
@@ -262,23 +256,23 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jh_clean, <span class="dv">3</span>) <span class="sc">|&gt;</span> gt<span class="sc">::</span><span class="fu">gt</span>() <span class="co"># kable(booktabs = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ixukylkwau" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ixukylkwau table {
+<div id="rtypeebjbd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rtypeebjbd table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ixukylkwau thead, #ixukylkwau tbody, #ixukylkwau tfoot, #ixukylkwau tr, #ixukylkwau td, #ixukylkwau th {
+#rtypeebjbd thead, #rtypeebjbd tbody, #rtypeebjbd tfoot, #rtypeebjbd tr, #rtypeebjbd td, #rtypeebjbd th {
   border-style: none;
 }
 
-#ixukylkwau p {
+#rtypeebjbd p {
   margin: 0;
   padding: 0;
 }
 
-#ixukylkwau .gt_table {
+#rtypeebjbd .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -304,12 +298,12 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-left-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_caption {
+#rtypeebjbd .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ixukylkwau .gt_title {
+#rtypeebjbd .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -321,7 +315,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-width: 0;
 }
 
-#ixukylkwau .gt_subtitle {
+#rtypeebjbd .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -333,7 +327,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-width: 0;
 }
 
-#ixukylkwau .gt_heading {
+#rtypeebjbd .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -345,13 +339,13 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_bottom_border {
+#rtypeebjbd .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_col_headings {
+#rtypeebjbd .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -366,7 +360,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_col_heading {
+#rtypeebjbd .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -386,7 +380,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#ixukylkwau .gt_column_spanner_outer {
+#rtypeebjbd .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -398,15 +392,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 4px;
 }
 
-#ixukylkwau .gt_column_spanner_outer:first-child {
+#rtypeebjbd .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ixukylkwau .gt_column_spanner_outer:last-child {
+#rtypeebjbd .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ixukylkwau .gt_column_spanner {
+#rtypeebjbd .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -418,11 +412,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   width: 100%;
 }
 
-#ixukylkwau .gt_spanner_row {
+#rtypeebjbd .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ixukylkwau .gt_group_heading {
+#rtypeebjbd .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -448,7 +442,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   text-align: left;
 }
 
-#ixukylkwau .gt_empty_group_heading {
+#rtypeebjbd .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -463,15 +457,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: middle;
 }
 
-#ixukylkwau .gt_from_md > :first-child {
+#rtypeebjbd .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ixukylkwau .gt_from_md > :last-child {
+#rtypeebjbd .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ixukylkwau .gt_row {
+#rtypeebjbd .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -490,7 +484,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#ixukylkwau .gt_stub {
+#rtypeebjbd .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -503,7 +497,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#ixukylkwau .gt_stub_row_group {
+#rtypeebjbd .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -517,15 +511,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: top;
 }
 
-#ixukylkwau .gt_row_group_first td {
+#rtypeebjbd .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ixukylkwau .gt_row_group_first th {
+#rtypeebjbd .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ixukylkwau .gt_summary_row {
+#rtypeebjbd .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -535,16 +529,16 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#ixukylkwau .gt_first_summary_row {
+#rtypeebjbd .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_first_summary_row.thick {
+#rtypeebjbd .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ixukylkwau .gt_last_summary_row {
+#rtypeebjbd .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -554,7 +548,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_grand_summary_row {
+#rtypeebjbd .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -564,7 +558,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#ixukylkwau .gt_first_grand_summary_row {
+#rtypeebjbd .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -574,7 +568,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_last_grand_summary_row_top {
+#rtypeebjbd .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -584,11 +578,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_striped {
+#rtypeebjbd .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ixukylkwau .gt_table_body {
+#rtypeebjbd .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -597,7 +591,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_footnotes {
+#rtypeebjbd .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -611,7 +605,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_footnote {
+#rtypeebjbd .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -620,7 +614,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#ixukylkwau .gt_sourcenotes {
+#rtypeebjbd .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -634,7 +628,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#ixukylkwau .gt_sourcenote {
+#rtypeebjbd .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -642,63 +636,63 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#ixukylkwau .gt_left {
+#rtypeebjbd .gt_left {
   text-align: left;
 }
 
-#ixukylkwau .gt_center {
+#rtypeebjbd .gt_center {
   text-align: center;
 }
 
-#ixukylkwau .gt_right {
+#rtypeebjbd .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ixukylkwau .gt_font_normal {
+#rtypeebjbd .gt_font_normal {
   font-weight: normal;
 }
 
-#ixukylkwau .gt_font_bold {
+#rtypeebjbd .gt_font_bold {
   font-weight: bold;
 }
 
-#ixukylkwau .gt_font_italic {
+#rtypeebjbd .gt_font_italic {
   font-style: italic;
 }
 
-#ixukylkwau .gt_super {
+#rtypeebjbd .gt_super {
   font-size: 65%;
 }
 
-#ixukylkwau .gt_footnote_marks {
+#rtypeebjbd .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ixukylkwau .gt_asterisk {
+#rtypeebjbd .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ixukylkwau .gt_indent_1 {
+#rtypeebjbd .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ixukylkwau .gt_indent_2 {
+#rtypeebjbd .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ixukylkwau .gt_indent_3 {
+#rtypeebjbd .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ixukylkwau .gt_indent_4 {
+#rtypeebjbd .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ixukylkwau .gt_indent_5 {
+#rtypeebjbd .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -748,23 +742,23 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>jh_tidy <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="sc">-</span>n) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="czzvkwwzci" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#czzvkwwzci table {
+<div id="vcwcqenisw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vcwcqenisw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#czzvkwwzci thead, #czzvkwwzci tbody, #czzvkwwzci tfoot, #czzvkwwzci tr, #czzvkwwzci td, #czzvkwwzci th {
+#vcwcqenisw thead, #vcwcqenisw tbody, #vcwcqenisw tfoot, #vcwcqenisw tr, #vcwcqenisw td, #vcwcqenisw th {
   border-style: none;
 }
 
-#czzvkwwzci p {
+#vcwcqenisw p {
   margin: 0;
   padding: 0;
 }
 
-#czzvkwwzci .gt_table {
+#vcwcqenisw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -790,12 +784,12 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-left-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_caption {
+#vcwcqenisw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#czzvkwwzci .gt_title {
+#vcwcqenisw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -807,7 +801,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-width: 0;
 }
 
-#czzvkwwzci .gt_subtitle {
+#vcwcqenisw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -819,7 +813,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-width: 0;
 }
 
-#czzvkwwzci .gt_heading {
+#vcwcqenisw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -831,13 +825,13 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_bottom_border {
+#vcwcqenisw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_col_headings {
+#vcwcqenisw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -852,7 +846,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_col_heading {
+#vcwcqenisw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -872,7 +866,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#czzvkwwzci .gt_column_spanner_outer {
+#vcwcqenisw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -884,15 +878,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 4px;
 }
 
-#czzvkwwzci .gt_column_spanner_outer:first-child {
+#vcwcqenisw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#czzvkwwzci .gt_column_spanner_outer:last-child {
+#vcwcqenisw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#czzvkwwzci .gt_column_spanner {
+#vcwcqenisw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -904,11 +898,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   width: 100%;
 }
 
-#czzvkwwzci .gt_spanner_row {
+#vcwcqenisw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#czzvkwwzci .gt_group_heading {
+#vcwcqenisw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -934,7 +928,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   text-align: left;
 }
 
-#czzvkwwzci .gt_empty_group_heading {
+#vcwcqenisw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -949,15 +943,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: middle;
 }
 
-#czzvkwwzci .gt_from_md > :first-child {
+#vcwcqenisw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#czzvkwwzci .gt_from_md > :last-child {
+#vcwcqenisw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#czzvkwwzci .gt_row {
+#vcwcqenisw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -976,7 +970,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#czzvkwwzci .gt_stub {
+#vcwcqenisw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -989,7 +983,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#czzvkwwzci .gt_stub_row_group {
+#vcwcqenisw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1003,15 +997,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: top;
 }
 
-#czzvkwwzci .gt_row_group_first td {
+#vcwcqenisw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#czzvkwwzci .gt_row_group_first th {
+#vcwcqenisw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#czzvkwwzci .gt_summary_row {
+#vcwcqenisw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1021,16 +1015,16 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#czzvkwwzci .gt_first_summary_row {
+#vcwcqenisw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_first_summary_row.thick {
+#vcwcqenisw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#czzvkwwzci .gt_last_summary_row {
+#vcwcqenisw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1040,7 +1034,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_grand_summary_row {
+#vcwcqenisw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1050,7 +1044,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#czzvkwwzci .gt_first_grand_summary_row {
+#vcwcqenisw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1060,7 +1054,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_last_grand_summary_row_top {
+#vcwcqenisw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1070,11 +1064,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_striped {
+#vcwcqenisw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#czzvkwwzci .gt_table_body {
+#vcwcqenisw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1083,7 +1077,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_footnotes {
+#vcwcqenisw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1097,7 +1091,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_footnote {
+#vcwcqenisw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1106,7 +1100,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#czzvkwwzci .gt_sourcenotes {
+#vcwcqenisw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1120,7 +1114,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#czzvkwwzci .gt_sourcenote {
+#vcwcqenisw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1128,63 +1122,63 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#czzvkwwzci .gt_left {
+#vcwcqenisw .gt_left {
   text-align: left;
 }
 
-#czzvkwwzci .gt_center {
+#vcwcqenisw .gt_center {
   text-align: center;
 }
 
-#czzvkwwzci .gt_right {
+#vcwcqenisw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#czzvkwwzci .gt_font_normal {
+#vcwcqenisw .gt_font_normal {
   font-weight: normal;
 }
 
-#czzvkwwzci .gt_font_bold {
+#vcwcqenisw .gt_font_bold {
   font-weight: bold;
 }
 
-#czzvkwwzci .gt_font_italic {
+#vcwcqenisw .gt_font_italic {
   font-style: italic;
 }
 
-#czzvkwwzci .gt_super {
+#vcwcqenisw .gt_super {
   font-size: 65%;
 }
 
-#czzvkwwzci .gt_footnote_marks {
+#vcwcqenisw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#czzvkwwzci .gt_asterisk {
+#vcwcqenisw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#czzvkwwzci .gt_indent_1 {
+#vcwcqenisw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#czzvkwwzci .gt_indent_2 {
+#vcwcqenisw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#czzvkwwzci .gt_indent_3 {
+#vcwcqenisw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#czzvkwwzci .gt_indent_4 {
+#vcwcqenisw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#czzvkwwzci .gt_indent_5 {
+#vcwcqenisw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1264,23 +1258,23 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">15</span>) <span class="sc">|&gt;</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="zrjdihpzuc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#zrjdihpzuc table {
+<div id="clffgcuchh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#clffgcuchh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#zrjdihpzuc thead, #zrjdihpzuc tbody, #zrjdihpzuc tfoot, #zrjdihpzuc tr, #zrjdihpzuc td, #zrjdihpzuc th {
+#clffgcuchh thead, #clffgcuchh tbody, #clffgcuchh tfoot, #clffgcuchh tr, #clffgcuchh td, #clffgcuchh th {
   border-style: none;
 }
 
-#zrjdihpzuc p {
+#clffgcuchh p {
   margin: 0;
   padding: 0;
 }
 
-#zrjdihpzuc .gt_table {
+#clffgcuchh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1306,12 +1300,12 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-left-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_caption {
+#clffgcuchh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#zrjdihpzuc .gt_title {
+#clffgcuchh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1323,7 +1317,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-width: 0;
 }
 
-#zrjdihpzuc .gt_subtitle {
+#clffgcuchh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1335,7 +1329,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-width: 0;
 }
 
-#zrjdihpzuc .gt_heading {
+#clffgcuchh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1347,13 +1341,13 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_bottom_border {
+#clffgcuchh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_col_headings {
+#clffgcuchh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1368,7 +1362,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_col_heading {
+#clffgcuchh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1388,7 +1382,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#zrjdihpzuc .gt_column_spanner_outer {
+#clffgcuchh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1400,15 +1394,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 4px;
 }
 
-#zrjdihpzuc .gt_column_spanner_outer:first-child {
+#clffgcuchh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zrjdihpzuc .gt_column_spanner_outer:last-child {
+#clffgcuchh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zrjdihpzuc .gt_column_spanner {
+#clffgcuchh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1420,11 +1414,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   width: 100%;
 }
 
-#zrjdihpzuc .gt_spanner_row {
+#clffgcuchh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#zrjdihpzuc .gt_group_heading {
+#clffgcuchh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1450,7 +1444,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   text-align: left;
 }
 
-#zrjdihpzuc .gt_empty_group_heading {
+#clffgcuchh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1465,15 +1459,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: middle;
 }
 
-#zrjdihpzuc .gt_from_md > :first-child {
+#clffgcuchh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zrjdihpzuc .gt_from_md > :last-child {
+#clffgcuchh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zrjdihpzuc .gt_row {
+#clffgcuchh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1492,7 +1486,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#zrjdihpzuc .gt_stub {
+#clffgcuchh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1505,7 +1499,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#zrjdihpzuc .gt_stub_row_group {
+#clffgcuchh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1519,15 +1513,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: top;
 }
 
-#zrjdihpzuc .gt_row_group_first td {
+#clffgcuchh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zrjdihpzuc .gt_row_group_first th {
+#clffgcuchh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#zrjdihpzuc .gt_summary_row {
+#clffgcuchh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1537,16 +1531,16 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#zrjdihpzuc .gt_first_summary_row {
+#clffgcuchh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_first_summary_row.thick {
+#clffgcuchh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zrjdihpzuc .gt_last_summary_row {
+#clffgcuchh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1556,7 +1550,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_grand_summary_row {
+#clffgcuchh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1566,7 +1560,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#zrjdihpzuc .gt_first_grand_summary_row {
+#clffgcuchh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1576,7 +1570,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_last_grand_summary_row_top {
+#clffgcuchh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1586,11 +1580,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_striped {
+#clffgcuchh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zrjdihpzuc .gt_table_body {
+#clffgcuchh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1599,7 +1593,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_footnotes {
+#clffgcuchh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1613,7 +1607,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_footnote {
+#clffgcuchh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1622,7 +1616,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#zrjdihpzuc .gt_sourcenotes {
+#clffgcuchh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1636,7 +1630,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#zrjdihpzuc .gt_sourcenote {
+#clffgcuchh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1644,63 +1638,63 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#zrjdihpzuc .gt_left {
+#clffgcuchh .gt_left {
   text-align: left;
 }
 
-#zrjdihpzuc .gt_center {
+#clffgcuchh .gt_center {
   text-align: center;
 }
 
-#zrjdihpzuc .gt_right {
+#clffgcuchh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zrjdihpzuc .gt_font_normal {
+#clffgcuchh .gt_font_normal {
   font-weight: normal;
 }
 
-#zrjdihpzuc .gt_font_bold {
+#clffgcuchh .gt_font_bold {
   font-weight: bold;
 }
 
-#zrjdihpzuc .gt_font_italic {
+#clffgcuchh .gt_font_italic {
   font-style: italic;
 }
 
-#zrjdihpzuc .gt_super {
+#clffgcuchh .gt_super {
   font-size: 65%;
 }
 
-#zrjdihpzuc .gt_footnote_marks {
+#clffgcuchh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#zrjdihpzuc .gt_asterisk {
+#clffgcuchh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zrjdihpzuc .gt_indent_1 {
+#clffgcuchh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#zrjdihpzuc .gt_indent_2 {
+#clffgcuchh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#zrjdihpzuc .gt_indent_3 {
+#clffgcuchh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#zrjdihpzuc .gt_indent_4 {
+#clffgcuchh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#zrjdihpzuc .gt_indent_5 {
+#clffgcuchh .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1852,23 +1846,23 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(project_number, summary) <span class="sc">|&gt;</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="mnqvfyewap" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mnqvfyewap table {
+<div id="dnajqdumxk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dnajqdumxk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#mnqvfyewap thead, #mnqvfyewap tbody, #mnqvfyewap tfoot, #mnqvfyewap tr, #mnqvfyewap td, #mnqvfyewap th {
+#dnajqdumxk thead, #dnajqdumxk tbody, #dnajqdumxk tfoot, #dnajqdumxk tr, #dnajqdumxk td, #dnajqdumxk th {
   border-style: none;
 }
 
-#mnqvfyewap p {
+#dnajqdumxk p {
   margin: 0;
   padding: 0;
 }
 
-#mnqvfyewap .gt_table {
+#dnajqdumxk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1894,12 +1888,12 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-left-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_caption {
+#dnajqdumxk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#mnqvfyewap .gt_title {
+#dnajqdumxk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1911,7 +1905,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-width: 0;
 }
 
-#mnqvfyewap .gt_subtitle {
+#dnajqdumxk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1923,7 +1917,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-width: 0;
 }
 
-#mnqvfyewap .gt_heading {
+#dnajqdumxk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1935,13 +1929,13 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_bottom_border {
+#dnajqdumxk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_col_headings {
+#dnajqdumxk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1956,7 +1950,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_col_heading {
+#dnajqdumxk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1976,7 +1970,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#mnqvfyewap .gt_column_spanner_outer {
+#dnajqdumxk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1988,15 +1982,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 4px;
 }
 
-#mnqvfyewap .gt_column_spanner_outer:first-child {
+#dnajqdumxk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#mnqvfyewap .gt_column_spanner_outer:last-child {
+#dnajqdumxk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#mnqvfyewap .gt_column_spanner {
+#dnajqdumxk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2008,11 +2002,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   width: 100%;
 }
 
-#mnqvfyewap .gt_spanner_row {
+#dnajqdumxk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#mnqvfyewap .gt_group_heading {
+#dnajqdumxk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2038,7 +2032,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   text-align: left;
 }
 
-#mnqvfyewap .gt_empty_group_heading {
+#dnajqdumxk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2053,15 +2047,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: middle;
 }
 
-#mnqvfyewap .gt_from_md > :first-child {
+#dnajqdumxk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#mnqvfyewap .gt_from_md > :last-child {
+#dnajqdumxk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#mnqvfyewap .gt_row {
+#dnajqdumxk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2080,7 +2074,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   overflow-x: hidden;
 }
 
-#mnqvfyewap .gt_stub {
+#dnajqdumxk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2093,7 +2087,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#mnqvfyewap .gt_stub_row_group {
+#dnajqdumxk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2107,15 +2101,15 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   vertical-align: top;
 }
 
-#mnqvfyewap .gt_row_group_first td {
+#dnajqdumxk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#mnqvfyewap .gt_row_group_first th {
+#dnajqdumxk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#mnqvfyewap .gt_summary_row {
+#dnajqdumxk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2125,16 +2119,16 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#mnqvfyewap .gt_first_summary_row {
+#dnajqdumxk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_first_summary_row.thick {
+#dnajqdumxk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#mnqvfyewap .gt_last_summary_row {
+#dnajqdumxk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2144,7 +2138,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_grand_summary_row {
+#dnajqdumxk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2154,7 +2148,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#mnqvfyewap .gt_first_grand_summary_row {
+#dnajqdumxk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2164,7 +2158,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-top-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_last_grand_summary_row_top {
+#dnajqdumxk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2174,11 +2168,11 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_striped {
+#dnajqdumxk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#mnqvfyewap .gt_table_body {
+#dnajqdumxk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2187,7 +2181,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-bottom-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_footnotes {
+#dnajqdumxk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2201,7 +2195,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_footnote {
+#dnajqdumxk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2210,7 +2204,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#mnqvfyewap .gt_sourcenotes {
+#dnajqdumxk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2224,7 +2218,7 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   border-right-color: #D3D3D3;
 }
 
-#mnqvfyewap .gt_sourcenote {
+#dnajqdumxk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2232,63 +2226,63 @@ $ Summary               &lt;chr&gt; "Chronic opioid use has well known effects o
   padding-right: 5px;
 }
 
-#mnqvfyewap .gt_left {
+#dnajqdumxk .gt_left {
   text-align: left;
 }
 
-#mnqvfyewap .gt_center {
+#dnajqdumxk .gt_center {
   text-align: center;
 }
 
-#mnqvfyewap .gt_right {
+#dnajqdumxk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#mnqvfyewap .gt_font_normal {
+#dnajqdumxk .gt_font_normal {
   font-weight: normal;
 }
 
-#mnqvfyewap .gt_font_bold {
+#dnajqdumxk .gt_font_bold {
   font-weight: bold;
 }
 
-#mnqvfyewap .gt_font_italic {
+#dnajqdumxk .gt_font_italic {
   font-style: italic;
 }
 
-#mnqvfyewap .gt_super {
+#dnajqdumxk .gt_super {
   font-size: 65%;
 }
 
-#mnqvfyewap .gt_footnote_marks {
+#dnajqdumxk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#mnqvfyewap .gt_asterisk {
+#dnajqdumxk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#mnqvfyewap .gt_indent_1 {
+#dnajqdumxk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#mnqvfyewap .gt_indent_2 {
+#dnajqdumxk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#mnqvfyewap .gt_indent_3 {
+#dnajqdumxk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#mnqvfyewap .gt_indent_4 {
+#dnajqdumxk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#mnqvfyewap .gt_indent_5 {
+#dnajqdumxk .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3219,6 +3213,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           if (link.getAttribute("rel") === null) {
             link.setAttribute("rel", "noopener");
           }
+          // default icon
+          link.classList.add("external");
       }
     }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
@@ -3529,6 +3525,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<script src="https://giscus.app/client.js" data-repo="arcenis-r/ajr-portfolio" data-repo-id="MDEwOlJlcG9zaXRvcnkxNzg3MDY3MTM=" data-category="General" data-category-id="DIC_kwDOCqbZGc4CdJXz" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
 </div> <!-- /content -->
 
 
