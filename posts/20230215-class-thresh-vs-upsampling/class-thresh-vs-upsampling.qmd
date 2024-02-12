@@ -1,6 +1,6 @@
 ---
-title: "Dealing with Unbalanced Data"
-subtitle: "Optimal Threshold vs. Upsampling"
+title: "Optimal Threshold vs. Upsampling"
+subtitle: "Dealing with Unbalanced Data"
 author: "Arcenis Rojas"
 execute:
   warning: false
