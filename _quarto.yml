@@ -12,7 +12,7 @@ website:
       - href: publications.qmd
         text: "Publications"
       - href: ce-dashboards.qmd
-        text: "CE Dashboards"
+        text: "Dashboards"
     right:
       - icon: linkedin
         href: https://linkedin.com/in/arcenisrojas
