@@ -68,6 +68,7 @@ library(fredr)
 library(tidycensus)
 library(cpsR)
 library(gt)
+library(multidplyr)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("lag", "dplyr")
@@ -224,7 +225,7 @@ msa_code_tbl <- tribble(
     ),
     msa_code_data = map(
       msa_url,
-      \(x) read_delim(x, delim = ",") |>
+      \(x) read_delim(x, delim = ",", show_col_types = FALSE) |>
         filter(
           str_detect(
             name_msa,
@@ -241,7 +242,7 @@ msa_code_tbl <- tribble(
   distinct(msa_code_data) |>
   unnest(msa_code_data)
 
-gt(msa_code_data)
+gt(msa_code_tbl)
 ```
 
 In the next step I defined the function for importing, filtering, and aggregating CPS data.
@@ -331,10 +332,9 @@ cps_data <- cps_grid |>
   relocate(city, date)
 ```
 
-Here I ensured to clean up my environment a little and free up some of R's working memory.
-
 ```{r}
 #| label: cps-clean-up
+#| include: false
 
 rm(cps_grid, cps_clust)
 gc()
@@ -372,7 +372,8 @@ acs1_pop_data <- tibble(year = c(2005:2019, 2021:2022)) |>
         year = x,
         variables = "B01001_001",
         geography = "cbsa",
-        survey = "acs1"
+        survey = "acs1",
+        show_call = FALSE
       ) |>
         filter(str_detect(NAME, "New York|Dallas|San Diego|Detroit")) |>
         mutate(city = str_extract(NAME, "New York|Dallas|San Diego|Detroit")) |>
@@ -382,6 +383,12 @@ acs1_pop_data <- tibble(year = c(2005:2019, 2021:2022)) |>
   collect() |>
   unnest(pop_data) |>
   mutate(date = str_c(year, "12") |> ym(), .keep = "unused")
+
+```
+
+```{r}
+#| label: acs-clean-up
+#| include: false
 
 rm(acs_clust)
 gc()
@@ -399,7 +406,8 @@ acs5_pop_data <- get_acs(
   year = 2020,
   variables = "B01001_001",
   geography = "cbsa",
-  survey = "acs5"
+  survey = "acs5",
+  show_call = FALSE
 ) |>
   filter(str_detect(NAME, "New York|Dallas|San Diego|Detroit")) |>
   mutate(

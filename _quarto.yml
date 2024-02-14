@@ -35,6 +35,7 @@ format:
     code-tools: true
     code-block-border-left: primary
     code-annotations: select
+    code-line-numbers: true
 
 editor: visual
 
