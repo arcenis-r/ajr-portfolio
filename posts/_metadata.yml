@@ -1,5 +1,4 @@
 freeze: auto
-title-block-banner: true
 comments:
   giscus:
     repo: arcenis-r/ajr-portfolio
