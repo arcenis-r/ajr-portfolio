@@ -13,7 +13,7 @@ categories:
 
 ## Introduction
 
-[![Image by [Images Money](https://www.flickr.com/photos/59937401@N07/)](images/5474453551_afc6ded9af_w.jpg){fig-alt="Monopoly houses on top of increasingly tall stacks of coins" fig-align="center"}](https://www.flickr.com/photos/59937401@N07/5474453551)
+[![Image by \[Images Money\](https://www.flickr.com/photos/59937401\@N07/)](images/5474453551_afc6ded9af_w.jpg){fig-alt="Monopoly houses on top of increasingly tall stacks of coins" fig-align="center"}](https://www.flickr.com/photos/59937401@N07/5474453551)
 
 U.S. housing prices have been [all over the news](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/) in recent times, which comes as no surprise given recent concerns about [inflation and interest rates](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158). With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at [Business Science](https://www.business-science.io/) have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is [modeltime](https://business-science.github.io/modeltime/). When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.
 
@@ -124,7 +124,7 @@ gt(cs_data[1:10, ])
 
 ```
 
-## Getting unemploymnet rat and gas price data from FRED
+## Getting unemployment rate and gas price data from FRED
 
 Next I got series IDs for both average gas prices and unemployment rates for all four cities and got the data for the appropriate time span.
 
@@ -197,7 +197,7 @@ unemp_data <- unemp_ids |>
 
 ## Getting CPS data
 
-Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this woluldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.
+Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this wouldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.
 
 The first step was to get the MSA codes that corresponded to my cities of interest and check that I had a unique set across all of my years of interest. The data for these MSA codes came from the U.S. Census's technical documentation page and MSA definitions only change once every few years.
 
@@ -497,7 +497,7 @@ Overall the data look good except for the `avg_gas_price` variable, which is the
 
 -   `status_other`: Proportion of the population not categorized as either `status_married` or `status_nev_mar`
 
--   `hispanic`: Proportion of the population that reported hispanic ethnicity
+-   `hispanic`: Proportion of the population that reported Hispanic ethnicity
 
 -   `pop_chg`: Population change from one month to the next
 
