@@ -1,0 +1,539 @@
+---
+title: "Forecasting Case Shiller Index - Part I"
+subtitle: "Gathering data"
+author: "Arcenis Rojas"
+format: html
+editor: visual
+date: "2/12/2024"
+bibliography: references.bib
+---
+
+## Introduction
+
+<a data-flickr-embed="true" href="https://www.flickr.com/photos/59937401@N07/5474453551" title="Price of Houses in the UK">![Price of Houses in the UK](https://live.staticflickr.com/5135/5474453551_afc6ded9af_w.jpg){alt="Price of Houses in the UK" width="400"}</a>
+
+```{=html}
+<script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+```
+U.S. housing prices have been [all over the news](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/) in recent times, which comes as no surprise given recent concerns about [inflation and interest rates](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158). With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at [Business Science](https://www.business-science.io/) have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is [modeltime](https://business-science.github.io/modeltime/). When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.
+
+I've broken this project into four parts:
+
+1.  Gathering Data
+
+2.  Time series analysis
+
+3.  ARIMA with global and iterative modeling processes
+
+4.  Global forecasting models
+
+5.  Iterative forecasting models
+
+This post will cover the first part: Gathering Data.
+
+## Choosing house price data
+
+To perform this analysis, obviously the first thing I would need is a data set. I wanted data that had sufficient observations with enough granularity to be able to identify seasonality and level changes. I also wanted to compare time series across different regions or cities of the U.S. This meant getting data that was avaialale at a regional/metropolitan level that went back at least 10 years with very few missing values (ideally none). I looked at the data available through the [Federal Reserve Bank of St. Louis](https://www.stlouisfed.org/) which hosts one of the largest repositories of U.S. economic data available by using the [fredr](https://sboysel.github.io/fredr/reference/fredr_series_search.html) [@fredr] package and narrowed my search for data series down to either median home prices or the Case-Shiller Home Price Index. I chose the Case-Shiller HPI because I could get the data at the level of metro area rather than just U.S. region for a longer period of time, though there is the trade-off that this index only accounts for existing home sales. For my purposes this wasn't a problem.
+
+The Case-Shiller HPI data was available through 2023, but population data (discussed below) was available only through 2022 and there were some other issues with data from before 2006, so I got data starting in January 2006 and ending in December 2022.
+
+Once I chose a data source, the next step was to choose cities. I wanted to compare cities from different regions of the U.S. that were different in other characteristics as well, e.g., population, climate, etc., to see how forecasts might differ. I chose San Diego, Dallas, Detroit, and New York City.
+
+## Additional data
+
+One of the benefits of using [modeltime](https://business-science.github.io/modeltime/) it has functions for running models beyond ARIMA such as Prophet and eXtreme Gradient Boosting (XGB) for time series. Wanting to take advantage of this I wanted to add some features to my data. I decided to add unemployment rates, average gas prices, variables relating to demographic composition, and population for each city at the monthly level. I got the unemployment rate and average gas prices through [fredr](https://sboysel.github.io/fredr/reference/fredr_series_search.html), population data from the U.S. Census's American Community Survey (ACS) using the [tidycensus](https://walker-data.com/tidycensus/) [@tidycensus] package, and other demographic data from the [Current Population Survey (CPS)](https://www.census.gov/programs-surveys/cps.html) (which is a joint program of the U.S. Census and the U.S. Bureau of Labor Statistics) using the [cpsR](https://github.com/matt-saenz/cpsR) [@cpsR] package.
+
+::: callout-important
+Both `tidycensus` and `cpsR` require a [U.S. Census API key](https://api.census.gov/data/key_signup.html). This post will not go into detail on how to obtain a key or how to set it up for use with the relevant packages.
+:::
+
+::: {.callout-note collapse="true" title="Statistical Area Definitions"}
+Some of these data are at the metropolitan statistical area (MSA) level and others are at the core-based statistical area (CBSA) level. While these broadly overlap, which is why I didn't make a big fuss about mixing them, they are technically different. The U.S. Census provides some definitions [here](https://www.census.gov/topics/housing/housing-patterns/about/core-based-statistical-areas.html).
+:::
+
+As usual for me, I performed data importing and wrangling using various [tidyverse](https://www.tidyverse.org/) [@tidyverse]package functions. I also used [multidplyr](https://multidplyr.tidyverse.org/) [@multidplyr] to perform some operations in parallel.
+
+## Loading Packages
+
+To begin with, I first loaded my packages. I'll include the [gt](https://gt.rstudio.com/) package for displaying tables.
+
+```{r}
+#| label: load-packages
+#| warning: false
+#| error: false
+#| message: false
+
+library(tidyverse)
+library(fredr)
+library(tidycensus)
+library(cpsR)
+library(gt)
+
+conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("lag", "dplyr")
+conflicted::conflict_prefer("between", "dplyr")
+```
+
+## Getting Case-Shiller HPI data
+
+I started by getting the appropriate Case-Shiller HPI series IDs for my cities of interest.
+
+```{r}
+#| label: get-cs-ids
+#| cache: true
+
+case_shiller_ids <- fredr_series_search_text("Case-Shiller") |>
+  filter(
+    str_detect(
+      title,
+      "CA-San Diego|TX-Dallas|NY-New York|MI-Detroit Home Price Index"
+    ),
+    seasonal_adjustment_short %in% "NSA",
+    frequency %in% "Monthly"
+  ) |>
+  mutate(city = str_extract(title, "New York|Dallas|San Diego|Detroit")) |>
+  select(city, id)
+
+gt(case_shiller_ids)
+```
+
+Next I read in the Case-Shiller data and kept only the necessary variables.
+
+```{r}
+#| label: import-case-shiller
+#| cache: true
+
+cs_data <- case_shiller_ids |>
+  mutate(
+    data = map(
+      id,
+      \(x) fredr(
+        series_id = x,
+        observation_start = ymd("2006-01-01"),
+        observation_end = ymd("2023-12-31"),
+        frequency = "m"
+      )
+    )
+  ) |>
+  select(-id) |>
+  unnest(data) |>
+  select(city, date, case_shiller = value)
+
+gt(cs_data[1:10, ])
+
+```
+
+## Getting unemploymnet rat and gas price data from FRED
+
+Next I got series IDs for both average gas prices and unemployment rates for all four cities and got the data for the appropriate time span.
+
+```{r}
+#| label: get-addtnl-fred-data
+#| cache: true
+
+# Get average gas price for each CBSA by month
+gas_ids <- fredr_series_search_text(
+  "Average Price: Gasoline, Unleaded Regular"
+) |>
+  filter(
+    str_detect(title, "New York|Dallas|San Diego|Detroit"),
+    frequency %in% "Monthly",
+    seasonal_adjustment_short %in% "NSA"
+  ) |>
+  mutate(city = str_extract(title, "New York|Dallas|San Diego|Detroit")) |>
+  select(city, id)
+
+gas_data <- gas_ids |>
+  mutate(
+    data = map(
+      id,
+      \(x) fredr(
+        series_id = x,
+        observation_start = ymd("2000-01-01"),
+        observation_end = ymd("2023-12-31"),
+        frequency = "m"
+      )
+    )
+  ) |>
+  select(-id) |>
+  unnest(data) |>
+  select(city, date, avg_gas_price = value)
+
+# Get average unemployment rate for each MSA by month
+unemp_ids <- fredr_series_search_text("Unemployment: Rate") |>
+  filter(
+    str_detect(title, "New York|Dallas|San Diego|Detroit"),
+    frequency %in% "Monthly",
+    seasonal_adjustment_short %in% "NSA"
+  ) |>
+  mutate(city = str_extract(title, "New York|Dallas|San Diego|Detroit")) |>
+  group_by(city) |>
+  mutate(
+    rnum = n(),
+    msa_str = str_detect(title, "MSA")
+  ) |>
+  ungroup() |>
+  filter(rnum == 1 | msa_str) |>
+  select(city, id)
+
+unemp_data <- unemp_ids |>
+  mutate(
+    data = map(
+      id,
+      \(x) fredr(
+        series_id = x,
+        observation_start = ymd("2000-01-01"),
+        observation_end = ymd("2023-12-31"),
+        frequency = "m"
+      )
+    )
+  ) |>
+  select(-id) |>
+  unnest(data) |>
+  select(city, date, unemp_rate = value)
+
+```
+
+## Getting CPS data
+
+Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this woluldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.
+
+The first step was to get the MSA codes that corresponded to my cities of interest and check that I had a unique set across all of my years of interest. The data for these MSA codes came from the U.S. Census's technical documentation page and MSA definitions only change once every few years.
+
+```{r}
+#| label: get-msa-codes
+#| cache: true
+
+msa_code_tbl <- tribble(
+  ~start_yr, ~end_yr,
+  2003, 2006,
+  2007, 2011,
+  2012, 2016,
+  2017, 2021
+) |>
+  mutate(
+    suffix = str_sub(start_yr, 3, 4),
+    msa_url = map_chr(
+      suffix,
+      \(x) str_c(
+        "https://www2.census.gov/programs-surveys/cbp/technical-documentation/",
+        "reference/metro-area-geography-reference/msa_county_reference",
+        x,
+        ".txt"
+      )
+    ),
+    msa_code_data = map(
+      msa_url,
+      \(x) read_delim(x, delim = ",") |>
+        filter(
+          str_detect(
+            name_msa,
+            "Dallas.*TX|San Diego.*CA|New York.*NY|Detroit.*MI"
+          )
+        ) |>
+        mutate(
+          city = str_extract(name_msa, "Dallas|New York|San Diego|Detroit"),
+          msa = as.character(msa)
+        ) |>
+        distinct(city, msa)
+    )
+  ) |>
+  distinct(msa_code_data) |>
+  unnest(msa_code_data)
+
+gt(msa_code_data)
+```
+
+In the next step I defined the function for importing, filtering, and aggregating CPS data.
+
+```{r}
+#| label: define-cps-summary-function
+#| cache: true
+
+get_cps_summaries <- function(cps_df, geographies) {
+  cps_df |>
+    rename(hispanic = matches("hspnon"), msa = starts_with("gt")) |>
+    filter(msa %in% geographies) |>
+    relocate(msa, pwsswgt, prtage, pemaritl, peeduca, hispanic) |>
+    mutate(
+      msa = as.character(msa),
+      pwsswgt = as.numeric(pwsswgt),
+      across(prtage:hispanic, as.integer),
+      across(prtage:hispanic, \(x) na_if(x, -1)),
+      age_lt_18 = prtage < 18,
+      age_18_35 = between(prtage, 18, 35),
+      age_36_65 = between(prtage, 36, 65),
+      age_gt_65 = prtage > 65,
+      educ_hs_less = peeduca < 40,
+      educ_college = peeduca %in% 40:43,
+      educ_grad = peeduca > 43,
+      status_married = pemaritl %in% 1:2,
+      status_nev_mar = pemaritl == 6,
+      status_other = !pemaritl %in% c(1:2, 6),
+      hispanic = hispanic == 1,
+      across(
+        c(age_lt_18:status_other, hispanic),
+        \(x) (x * pwsswgt)
+      )
+    ) |>
+    group_by(msa) |>
+    summarise(
+      across(
+        c(age_lt_18:status_other, hispanic),
+        \(x) sum(x / sum(pwsswgt), na.rm = TRUE)
+      )
+    )
+}
+
+```
+
+With that function now defined, I move on to get CPS data using that function.
+
+```{r}
+#| label: get-cps-data
+#| cache: true
+
+# Set up a cluster to get all of the CPS data aggregations
+cps_clust <- new_cluster(12)
+cluster_library(cps_clust, c("tidyverse", "cpsR"))
+cluster_copy(cps_clust, c("get_cps_summaries", "msa_code_tbl"))
+
+# Get CPS data aggregations
+cps_grid <- expand.grid(
+  yr = 2006:2023,
+  mo = 1:12
+) |>
+  partition(cps_clust)
+
+cps_data <- cps_grid |>
+  arrange(yr, mo) |>
+  mutate(
+    cps = map2(
+      yr, mo,
+      possibly(
+        \(y, m) {
+          get_basic(
+            y, m,
+            c("gtcbsa", "prtage", "pemaritl", "peeduca", "pehspnon", "pwsswgt")
+          ) |>
+            get_cps_summaries(msa_code_tbl$msa)
+        }
+      )
+    )
+  ) |>
+  collect() |>
+  unnest(cps) |>
+  mutate(msa = as.character(msa)) |>
+  left_join(msa_code_tbl, by = "msa") |>
+  select(-msa) |>
+  unite("date", yr, mo, sep = "-") |>
+  mutate(date = ym(date)) |>
+  relocate(city, date)
+```
+
+Here I ensured to clean up my environment a little and free up some of R's working memory.
+
+```{r}
+#| label: cps-clean-up
+
+rm(cps_grid, cps_clust)
+gc()
+
+```
+
+This is what the CPS data looked like.
+
+```{r}
+#| label: show-cps-data
+
+gt(head(cps_data))
+
+```
+
+## Getting population data
+
+One would think that if any demographic data is simple to get, population data would be simple, right? I learned something different. I was interested in getting population data at a monthly level for each MSA of interest. I knew population was not counted monthly, but I thought I could get it from the CPS. In fact, one might notice that the code actually calls a population variable (`pwsswgt` ) to perform some calculations. The problem here was that at the MSA level population estimates varied in some cases by as much as 16%. While I I didn't know if this was true or not I did believe (subjectively) that it was unlikely and I believed that CPS weights are not calibrated to MSAs. My understanding is that they are calibrated to the national and state levels. So, I thought a reasonable alternative would be to get data from the ACS 1-year survey and interpolate data from one year to the next. In fact, the reason that I started my time series in 2006 is that the ACS 1-year and 5-year survey data became available in 2005 and I needed one year before the time series for interpolation. However, there was wrinkle caused by COVID. The 1-year ACS was not released for 2020 because of understandable challenges with data collection. So, for 2020 I used ACS 5-year survey data. I started by getting all of the ACS 1-year data. Here again, I processed the data in parallel.
+
+```{r}
+#| label: get-acs1-yr
+#| cache: true
+
+# Create a cluster for getting ACS data
+acs_clust <- new_cluster(12)
+cluster_library(acs_clust, c("tidyverse", "tidycensus"))
+
+# Get ACS data for 2005 to 2019, 2021, and 2022
+acs1_pop_data <- tibble(year = c(2005:2019, 2021:2022)) |>
+  partition(acs_clust) |>
+  mutate(
+    pop_data = map(
+      year,
+      \(x) get_acs(
+        year = x,
+        variables = "B01001_001",
+        geography = "cbsa",
+        survey = "acs1"
+      ) |>
+        filter(str_detect(NAME, "New York|Dallas|San Diego|Detroit")) |>
+        mutate(city = str_extract(NAME, "New York|Dallas|San Diego|Detroit")) |>
+        select(city, population = estimate)
+    )
+  ) |>
+  collect() |>
+  unnest(pop_data) |>
+  mutate(date = str_c(year, "12") |> ym(), .keep = "unused")
+
+rm(acs_clust)
+gc()
+
+```
+
+Next I got the data for 2020 and combined it with the ACS 1-year data. I performed interpolation using the `ts_impute_vec()` function from the [timetk](https://business-science.github.io/timetk/) [@timetk] package.
+
+```{r}
+#| label: complete-acs-data
+#| cache: true
+
+# Get data for 2020 separately since it wasn't available in the ACS 1-year
+acs5_pop_data <- get_acs(
+  year = 2020,
+  variables = "B01001_001",
+  geography = "cbsa",
+  survey = "acs5"
+) |>
+  filter(str_detect(NAME, "New York|Dallas|San Diego|Detroit")) |>
+  mutate(
+    city = str_extract(NAME, "New York|Dallas|San Diego|Detroit"),
+    date = rep(ym("2020-12"), 4),
+  ) |>
+  select(city, date, population = estimate)
+
+# Put together all the ACS population data and interpolate between annual
+# estimates
+acs_pop_data <- expand_grid(
+  yr = 2006:2022,
+  mo = 1:12
+) |>
+  add_row(yr = 2005, mo = 12) |>
+  expand_grid(city = c("New York", "Dallas", "San Diego", "Detroit")) |>
+  unite(date, yr, mo, sep = "-", remove = TRUE) |>
+  mutate(date = ym(date)) |>
+  arrange(date, city) |>
+  left_join(
+    bind_rows(acs1_pop_data, acs5_pop_data),
+    by = c("city", "date")
+  ) |>
+  group_by(city) |>
+  arrange(date) |>
+  mutate(
+    population = timetk::ts_impute_vec(population, period = 1),
+    pop_chg = (population / lag(population)) - 1
+  ) |>
+  drop_na(pop_chg) |>
+  ungroup() |>
+  select(!population)
+
+gt(head(acs_pop_data))
+```
+
+## Merge data and check
+
+With all of the data gathered and each data set containing variables for city and date (monthly) along with at least one demographic or economic variable, they were ready to be merged.
+
+```{r}
+#| label: merge-data
+
+econ_data <- list(cs_data, unemp_data, gas_data, cps_data, acs_pop_data) |>
+  reduce(inner_join, by = c("city", "date"))
+
+```
+
+It would be a mistake to ever think that there is no more cleaning that can be done, so I skimmed the data using the `skimr()` function from the [skimr](https://github.com/ropensci/skimr) [@skimr] package.
+
+```{r}
+#| label: skim-data
+
+skimr::skim(econ_data)
+
+```
+
+Overall the data look good except for the `avg_gas_price` variable, which is the only variable that has any missing values. I'll turn to that shortly, but I'll briefly describe the variables in the data set below:
+
+-   `city` : self-explanatory
+
+-   `date`: month expressed as the first day of the month
+
+-   `case_shiller`: Case-Shiller Home Price Index value
+
+-   `unemp_rate`: Unemployment rate
+
+-   `avg_gas_price`: Average gas price
+
+-   `age_lt_18`: Proportion of the population younger than 18 years old
+
+-   `age_18_35`: Proportion of the population between the ages of 18 and 35
+
+-   `age_36_65`: Proportion of the population between the ages of 36 and 65
+
+-   `age_gt_65`: Proportion of the population older than 65 years old
+
+-   `educ_hs_less`: Proportion of the population with up to a high school diploma
+
+-   `educ_college`: Proportion of the population with more than a high school diploma and up to a bachelor's degree
+
+-   `educ_grad`: Proportion of the population with education higher than a bachelor's degree
+
+-   `status_married`: Proportion of the population that is married; including separated
+
+-   `status_nev_mar`: Proportion of the population that has never been married
+
+-   `status_other`: Proportion of the population not categorized as either `status_married` or `status_nev_mar`
+
+-   `hispanic`: Proportion of the population that reported hispanic ethnicity
+
+-   `pop_chg`: Population change from one month to the next
+
+Once I skimmed the data, I took a closer look at the percent of `avg_gas_price` values that were missing for each city.
+
+```{r}
+#| label: check-avg-gas-missing
+
+econ_data |>
+  group_by(city) |>
+  summarise(pct_miss_gas = sum(is.na(avg_gas_price)) / n()) |>
+  ggplot(aes(y = pct_miss_gas, x = city)) +
+  geom_col(fill = "#2c3e50") +
+  scale_y_continuous(limits = c(-0.1, 1.1), labels = scales::percent) +
+  labs(
+    y = "Percent Missing",
+    x = NULL,
+    title = "Missingness in avg_gas_price variable by city"
+  ) + 
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Evidently data were missing only for San Diego. Below are the start and end dates of average gas price data for San Diego in this data set.
+
+```{r}
+#| label: show-avg-gas-dates
+
+econ_data |>
+  filter(city %in% "San Diego", !is.na(avg_gas_price)) |>
+  summarise(start_date = min(date), end_date = max(date)) |>
+  gt()
+
+```
+
+As it turns out, reports of average gas price data for San Diego start in January of 2018, which means that 12 years of data would be missing. With that many values missing for one of the cities it makes sense to drop the average gas price variable.
+
+```{r}
+#| label: drop-avg-gas
+
+econ_data <- select(econ_data, !avg_gas_price)
+
+econ_data |> slice(1:6) |> gt()
+```
+
+With all this data in hand, the next step is to perform some time series analysis on the Case-Shiller HPI which I'll show in Part 2 of this set of posts.

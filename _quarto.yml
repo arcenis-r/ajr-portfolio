@@ -29,6 +29,12 @@ format:
     toc_float: true
     link-external-icon: true
     link-external-newwindow: true
+    link-external-filter: ^(?:http:|https:)\/\/www\.arcenis-r\.github\.io\/ajr-portfolio
+    code-fold: true
+    code-overflow: scroll
+    code-tools: true
+    code-block-border-left: primary
+    code-annotations: select
 
 editor: visual
 
