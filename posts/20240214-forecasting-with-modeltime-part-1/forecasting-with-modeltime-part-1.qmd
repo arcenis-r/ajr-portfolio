@@ -6,6 +6,9 @@ format: html
 editor: visual
 date: "2/12/2024"
 bibliography: references.bib
+categories:
+  - time series
+  - economic data
 ---
 
 ## Introduction
