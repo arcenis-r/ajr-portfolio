@@ -181,7 +181,11 @@ div.csl-indent {
     <div class="quarto-title column-body">
       <div class="quarto-title-block"><div><h1 class="title">Forecasting Case Shiller Index - Part I</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
             <p class="subtitle lead">Gathering data</p>
-                      </div>
+                                <div class="quarto-categories">
+                <div class="quarto-category">time series</div>
+                <div class="quarto-category">economic data</div>
+              </div>
+                  </div>
   </div>
     
   
@@ -5146,545 +5150,548 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-6"><a href="#cb20-6"></a><span class="an">editor:</span><span class="co"> visual</span></span>
 <span id="cb20-7"><a href="#cb20-7"></a><span class="an">date:</span><span class="co"> "2/12/2024"</span></span>
 <span id="cb20-8"><a href="#cb20-8"></a><span class="an">bibliography:</span><span class="co"> references.bib</span></span>
-<span id="cb20-9"><a href="#cb20-9"></a><span class="co">---</span></span>
-<span id="cb20-10"><a href="#cb20-10"></a></span>
-<span id="cb20-11"><a href="#cb20-11"></a><span class="fu">## Introduction</span></span>
-<span id="cb20-12"><a href="#cb20-12"></a></span>
-<span id="cb20-13"><a href="#cb20-13"></a>&lt;a data-flickr-embed="true" href="https://www.flickr.com/photos/59937401@N07/5474453551" title="Price of Houses in the UK"&gt;<span class="al">![Price of Houses in the UK](https://live.staticflickr.com/5135/5474453551_afc6ded9af_w.jpg)</span>{alt="Price of Houses in the UK" width="400"}&lt;/a&gt;</span>
-<span id="cb20-14"><a href="#cb20-14"></a></span>
-<span id="cb20-15"><a href="#cb20-15"></a><span class="in">```{=html}</span></span>
-<span id="cb20-16"><a href="#cb20-16"></a><span class="in">&lt;script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"&gt;&lt;/script&gt;</span></span>
-<span id="cb20-17"><a href="#cb20-17"></a><span class="in">```</span></span>
-<span id="cb20-18"><a href="#cb20-18"></a>U.S. housing prices have been <span class="co">[</span><span class="ot">all over the news</span><span class="co">](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/)</span> in recent times, which comes as no surprise given recent concerns about <span class="co">[</span><span class="ot">inflation and interest rates</span><span class="co">](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158)</span>. With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at <span class="co">[</span><span class="ot">Business Science</span><span class="co">](https://www.business-science.io/)</span> have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>. When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.</span>
-<span id="cb20-19"><a href="#cb20-19"></a></span>
-<span id="cb20-20"><a href="#cb20-20"></a>I've broken this project into four parts:</span>
-<span id="cb20-21"><a href="#cb20-21"></a></span>
-<span id="cb20-22"><a href="#cb20-22"></a><span class="ss">1.  </span>Gathering Data</span>
-<span id="cb20-23"><a href="#cb20-23"></a></span>
-<span id="cb20-24"><a href="#cb20-24"></a><span class="ss">2.  </span>Time series analysis</span>
-<span id="cb20-25"><a href="#cb20-25"></a></span>
-<span id="cb20-26"><a href="#cb20-26"></a><span class="ss">3.  </span>ARIMA with global and iterative modeling processes</span>
-<span id="cb20-27"><a href="#cb20-27"></a></span>
-<span id="cb20-28"><a href="#cb20-28"></a><span class="ss">4.  </span>Global forecasting models</span>
-<span id="cb20-29"><a href="#cb20-29"></a></span>
-<span id="cb20-30"><a href="#cb20-30"></a><span class="ss">5.  </span>Iterative forecasting models</span>
-<span id="cb20-31"><a href="#cb20-31"></a></span>
-<span id="cb20-32"><a href="#cb20-32"></a>This post will cover the first part: Gathering Data.</span>
-<span id="cb20-33"><a href="#cb20-33"></a></span>
-<span id="cb20-34"><a href="#cb20-34"></a><span class="fu">## Choosing house price data</span></span>
-<span id="cb20-35"><a href="#cb20-35"></a></span>
-<span id="cb20-36"><a href="#cb20-36"></a>To perform this analysis, obviously the first thing I would need is a data set. I wanted data that had sufficient observations with enough granularity to be able to identify seasonality and level changes. I also wanted to compare time series across different regions or cities of the U.S. This meant getting data that was avaialale at a regional/metropolitan level that went back at least 10 years with very few missing values (ideally none). I looked at the data available through the <span class="co">[</span><span class="ot">Federal Reserve Bank of St. Louis</span><span class="co">](https://www.stlouisfed.org/)</span> which hosts one of the largest repositories of U.S. economic data available by using the <span class="co">[</span><span class="ot">fredr</span><span class="co">](https://sboysel.github.io/fredr/reference/fredr_series_search.html)</span> <span class="co">[</span><span class="ot">@fredr</span><span class="co">]</span> package and narrowed my search for data series down to either median home prices or the Case-Shiller Home Price Index. I chose the Case-Shiller HPI because I could get the data at the level of metro area rather than just U.S. region for a longer period of time, though there is the trade-off that this index only accounts for existing home sales. For my purposes this wasn't a problem.</span>
-<span id="cb20-37"><a href="#cb20-37"></a></span>
-<span id="cb20-38"><a href="#cb20-38"></a>The Case-Shiller HPI data was available through 2023, but population data (discussed below) was available only through 2022 and there were some other issues with data from before 2006, so I got data starting in January 2006 and ending in December 2022.</span>
-<span id="cb20-39"><a href="#cb20-39"></a></span>
-<span id="cb20-40"><a href="#cb20-40"></a>Once I chose a data source, the next step was to choose cities. I wanted to compare cities from different regions of the U.S. that were different in other characteristics as well, e.g., population, climate, etc., to see how forecasts might differ. I chose San Diego, Dallas, Detroit, and New York City.</span>
-<span id="cb20-41"><a href="#cb20-41"></a></span>
-<span id="cb20-42"><a href="#cb20-42"></a><span class="fu">## Additional data</span></span>
-<span id="cb20-43"><a href="#cb20-43"></a></span>
-<span id="cb20-44"><a href="#cb20-44"></a>One of the benefits of using <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span> it has functions for running models beyond ARIMA such as Prophet and eXtreme Gradient Boosting (XGB) for time series. Wanting to take advantage of this I wanted to add some features to my data. I decided to add unemployment rates, average gas prices, variables relating to demographic composition, and population for each city at the monthly level. I got the unemployment rate and average gas prices through <span class="co">[</span><span class="ot">fredr</span><span class="co">](https://sboysel.github.io/fredr/reference/fredr_series_search.html)</span>, population data from the U.S. Census's American Community Survey (ACS) using the <span class="co">[</span><span class="ot">tidycensus</span><span class="co">](https://walker-data.com/tidycensus/)</span> <span class="co">[</span><span class="ot">@tidycensus</span><span class="co">]</span> package, and other demographic data from the <span class="co">[</span><span class="ot">Current Population Survey (CPS)</span><span class="co">](https://www.census.gov/programs-surveys/cps.html)</span> (which is a joint program of the U.S. Census and the U.S. Bureau of Labor Statistics) using the <span class="co">[</span><span class="ot">cpsR</span><span class="co">](https://github.com/matt-saenz/cpsR)</span> <span class="co">[</span><span class="ot">@cpsR</span><span class="co">]</span> package.</span>
-<span id="cb20-45"><a href="#cb20-45"></a></span>
-<span id="cb20-46"><a href="#cb20-46"></a>::: callout-important</span>
-<span id="cb20-47"><a href="#cb20-47"></a>Both <span class="in">`tidycensus`</span> and <span class="in">`cpsR`</span> require a <span class="co">[</span><span class="ot">U.S. Census API key</span><span class="co">](https://api.census.gov/data/key_signup.html)</span>. This post will not go into detail on how to obtain a key or how to set it up for use with the relevant packages.</span>
-<span id="cb20-48"><a href="#cb20-48"></a>:::</span>
-<span id="cb20-49"><a href="#cb20-49"></a></span>
-<span id="cb20-50"><a href="#cb20-50"></a>::: {.callout-note collapse="true" title="Statistical Area Definitions"}</span>
-<span id="cb20-51"><a href="#cb20-51"></a>Some of these data are at the metropolitan statistical area (MSA) level and others are at the core-based statistical area (CBSA) level. While these broadly overlap, which is why I didn't make a big fuss about mixing them, they are technically different. The U.S. Census provides some definitions <span class="co">[</span><span class="ot">here</span><span class="co">](https://www.census.gov/topics/housing/housing-patterns/about/core-based-statistical-areas.html)</span>.</span>
-<span id="cb20-52"><a href="#cb20-52"></a>:::</span>
-<span id="cb20-53"><a href="#cb20-53"></a></span>
-<span id="cb20-54"><a href="#cb20-54"></a>As usual for me, I performed data importing and wrangling using various <span class="co">[</span><span class="ot">tidyverse</span><span class="co">](https://www.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@tidyverse</span><span class="co">]</span>package functions. I also used <span class="co">[</span><span class="ot">multidplyr</span><span class="co">](https://multidplyr.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@multidplyr</span><span class="co">]</span> to perform some operations in parallel.</span>
-<span id="cb20-55"><a href="#cb20-55"></a></span>
-<span id="cb20-56"><a href="#cb20-56"></a><span class="fu">## Loading Packages</span></span>
-<span id="cb20-57"><a href="#cb20-57"></a></span>
-<span id="cb20-58"><a href="#cb20-58"></a>To begin with, I first loaded my packages. I'll include the <span class="co">[</span><span class="ot">gt</span><span class="co">](https://gt.rstudio.com/)</span> package for displaying tables.</span>
-<span id="cb20-59"><a href="#cb20-59"></a></span>
-<span id="cb20-62"><a href="#cb20-62"></a><span class="in">```{r}</span></span>
-<span id="cb20-63"><a href="#cb20-63"></a><span class="co">#| label: load-packages</span></span>
-<span id="cb20-64"><a href="#cb20-64"></a><span class="co">#| warning: false</span></span>
-<span id="cb20-65"><a href="#cb20-65"></a><span class="co">#| error: false</span></span>
-<span id="cb20-66"><a href="#cb20-66"></a><span class="co">#| message: false</span></span>
-<span id="cb20-67"><a href="#cb20-67"></a></span>
-<span id="cb20-68"><a href="#cb20-68"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb20-69"><a href="#cb20-69"></a><span class="fu">library</span>(fredr)</span>
-<span id="cb20-70"><a href="#cb20-70"></a><span class="fu">library</span>(tidycensus)</span>
-<span id="cb20-71"><a href="#cb20-71"></a><span class="fu">library</span>(cpsR)</span>
-<span id="cb20-72"><a href="#cb20-72"></a><span class="fu">library</span>(gt)</span>
-<span id="cb20-73"><a href="#cb20-73"></a><span class="fu">library</span>(multidplyr)</span>
-<span id="cb20-74"><a href="#cb20-74"></a></span>
-<span id="cb20-75"><a href="#cb20-75"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb20-76"><a href="#cb20-76"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"lag"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb20-77"><a href="#cb20-77"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"between"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb20-78"><a href="#cb20-78"></a><span class="in">```</span></span>
-<span id="cb20-79"><a href="#cb20-79"></a></span>
-<span id="cb20-80"><a href="#cb20-80"></a><span class="fu">## Getting Case-Shiller HPI data</span></span>
-<span id="cb20-81"><a href="#cb20-81"></a></span>
-<span id="cb20-82"><a href="#cb20-82"></a>I started by getting the appropriate Case-Shiller HPI series IDs for my cities of interest.</span>
-<span id="cb20-83"><a href="#cb20-83"></a></span>
-<span id="cb20-86"><a href="#cb20-86"></a><span class="in">```{r}</span></span>
-<span id="cb20-87"><a href="#cb20-87"></a><span class="co">#| label: get-cs-ids</span></span>
-<span id="cb20-88"><a href="#cb20-88"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-89"><a href="#cb20-89"></a></span>
-<span id="cb20-90"><a href="#cb20-90"></a>case_shiller_ids <span class="ot">&lt;-</span> <span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-91"><a href="#cb20-91"></a>  <span class="fu">filter</span>(</span>
-<span id="cb20-92"><a href="#cb20-92"></a>    <span class="fu">str_detect</span>(</span>
-<span id="cb20-93"><a href="#cb20-93"></a>      title,</span>
-<span id="cb20-94"><a href="#cb20-94"></a>      <span class="st">"CA-San Diego|TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
-<span id="cb20-95"><a href="#cb20-95"></a>    ),</span>
-<span id="cb20-96"><a href="#cb20-96"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
-<span id="cb20-97"><a href="#cb20-97"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
-<span id="cb20-98"><a href="#cb20-98"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-99"><a href="#cb20-99"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-100"><a href="#cb20-100"></a>  <span class="fu">select</span>(city, id)</span>
-<span id="cb20-101"><a href="#cb20-101"></a></span>
-<span id="cb20-102"><a href="#cb20-102"></a><span class="fu">gt</span>(case_shiller_ids)</span>
-<span id="cb20-103"><a href="#cb20-103"></a><span class="in">```</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a><span class="an">categories:</span></span>
+<span id="cb20-10"><a href="#cb20-10"></a><span class="co">  - time series</span></span>
+<span id="cb20-11"><a href="#cb20-11"></a><span class="co">  - economic data</span></span>
+<span id="cb20-12"><a href="#cb20-12"></a><span class="co">---</span></span>
+<span id="cb20-13"><a href="#cb20-13"></a></span>
+<span id="cb20-14"><a href="#cb20-14"></a><span class="fu">## Introduction</span></span>
+<span id="cb20-15"><a href="#cb20-15"></a></span>
+<span id="cb20-16"><a href="#cb20-16"></a>&lt;a data-flickr-embed="true" href="https://www.flickr.com/photos/59937401@N07/5474453551" title="Price of Houses in the UK"&gt;<span class="al">![Price of Houses in the UK](https://live.staticflickr.com/5135/5474453551_afc6ded9af_w.jpg)</span>{alt="Price of Houses in the UK" width="400"}&lt;/a&gt;</span>
+<span id="cb20-17"><a href="#cb20-17"></a></span>
+<span id="cb20-18"><a href="#cb20-18"></a><span class="in">```{=html}</span></span>
+<span id="cb20-19"><a href="#cb20-19"></a><span class="in">&lt;script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"&gt;&lt;/script&gt;</span></span>
+<span id="cb20-20"><a href="#cb20-20"></a><span class="in">```</span></span>
+<span id="cb20-21"><a href="#cb20-21"></a>U.S. housing prices have been <span class="co">[</span><span class="ot">all over the news</span><span class="co">](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/)</span> in recent times, which comes as no surprise given recent concerns about <span class="co">[</span><span class="ot">inflation and interest rates</span><span class="co">](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158)</span>. With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at <span class="co">[</span><span class="ot">Business Science</span><span class="co">](https://www.business-science.io/)</span> have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>. When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.</span>
+<span id="cb20-22"><a href="#cb20-22"></a></span>
+<span id="cb20-23"><a href="#cb20-23"></a>I've broken this project into four parts:</span>
+<span id="cb20-24"><a href="#cb20-24"></a></span>
+<span id="cb20-25"><a href="#cb20-25"></a><span class="ss">1.  </span>Gathering Data</span>
+<span id="cb20-26"><a href="#cb20-26"></a></span>
+<span id="cb20-27"><a href="#cb20-27"></a><span class="ss">2.  </span>Time series analysis</span>
+<span id="cb20-28"><a href="#cb20-28"></a></span>
+<span id="cb20-29"><a href="#cb20-29"></a><span class="ss">3.  </span>ARIMA with global and iterative modeling processes</span>
+<span id="cb20-30"><a href="#cb20-30"></a></span>
+<span id="cb20-31"><a href="#cb20-31"></a><span class="ss">4.  </span>Global forecasting models</span>
+<span id="cb20-32"><a href="#cb20-32"></a></span>
+<span id="cb20-33"><a href="#cb20-33"></a><span class="ss">5.  </span>Iterative forecasting models</span>
+<span id="cb20-34"><a href="#cb20-34"></a></span>
+<span id="cb20-35"><a href="#cb20-35"></a>This post will cover the first part: Gathering Data.</span>
+<span id="cb20-36"><a href="#cb20-36"></a></span>
+<span id="cb20-37"><a href="#cb20-37"></a><span class="fu">## Choosing house price data</span></span>
+<span id="cb20-38"><a href="#cb20-38"></a></span>
+<span id="cb20-39"><a href="#cb20-39"></a>To perform this analysis, obviously the first thing I would need is a data set. I wanted data that had sufficient observations with enough granularity to be able to identify seasonality and level changes. I also wanted to compare time series across different regions or cities of the U.S. This meant getting data that was avaialale at a regional/metropolitan level that went back at least 10 years with very few missing values (ideally none). I looked at the data available through the <span class="co">[</span><span class="ot">Federal Reserve Bank of St. Louis</span><span class="co">](https://www.stlouisfed.org/)</span> which hosts one of the largest repositories of U.S. economic data available by using the <span class="co">[</span><span class="ot">fredr</span><span class="co">](https://sboysel.github.io/fredr/reference/fredr_series_search.html)</span> <span class="co">[</span><span class="ot">@fredr</span><span class="co">]</span> package and narrowed my search for data series down to either median home prices or the Case-Shiller Home Price Index. I chose the Case-Shiller HPI because I could get the data at the level of metro area rather than just U.S. region for a longer period of time, though there is the trade-off that this index only accounts for existing home sales. For my purposes this wasn't a problem.</span>
+<span id="cb20-40"><a href="#cb20-40"></a></span>
+<span id="cb20-41"><a href="#cb20-41"></a>The Case-Shiller HPI data was available through 2023, but population data (discussed below) was available only through 2022 and there were some other issues with data from before 2006, so I got data starting in January 2006 and ending in December 2022.</span>
+<span id="cb20-42"><a href="#cb20-42"></a></span>
+<span id="cb20-43"><a href="#cb20-43"></a>Once I chose a data source, the next step was to choose cities. I wanted to compare cities from different regions of the U.S. that were different in other characteristics as well, e.g., population, climate, etc., to see how forecasts might differ. I chose San Diego, Dallas, Detroit, and New York City.</span>
+<span id="cb20-44"><a href="#cb20-44"></a></span>
+<span id="cb20-45"><a href="#cb20-45"></a><span class="fu">## Additional data</span></span>
+<span id="cb20-46"><a href="#cb20-46"></a></span>
+<span id="cb20-47"><a href="#cb20-47"></a>One of the benefits of using <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span> it has functions for running models beyond ARIMA such as Prophet and eXtreme Gradient Boosting (XGB) for time series. Wanting to take advantage of this I wanted to add some features to my data. I decided to add unemployment rates, average gas prices, variables relating to demographic composition, and population for each city at the monthly level. I got the unemployment rate and average gas prices through <span class="co">[</span><span class="ot">fredr</span><span class="co">](https://sboysel.github.io/fredr/reference/fredr_series_search.html)</span>, population data from the U.S. Census's American Community Survey (ACS) using the <span class="co">[</span><span class="ot">tidycensus</span><span class="co">](https://walker-data.com/tidycensus/)</span> <span class="co">[</span><span class="ot">@tidycensus</span><span class="co">]</span> package, and other demographic data from the <span class="co">[</span><span class="ot">Current Population Survey (CPS)</span><span class="co">](https://www.census.gov/programs-surveys/cps.html)</span> (which is a joint program of the U.S. Census and the U.S. Bureau of Labor Statistics) using the <span class="co">[</span><span class="ot">cpsR</span><span class="co">](https://github.com/matt-saenz/cpsR)</span> <span class="co">[</span><span class="ot">@cpsR</span><span class="co">]</span> package.</span>
+<span id="cb20-48"><a href="#cb20-48"></a></span>
+<span id="cb20-49"><a href="#cb20-49"></a>::: callout-important</span>
+<span id="cb20-50"><a href="#cb20-50"></a>Both <span class="in">`tidycensus`</span> and <span class="in">`cpsR`</span> require a <span class="co">[</span><span class="ot">U.S. Census API key</span><span class="co">](https://api.census.gov/data/key_signup.html)</span>. This post will not go into detail on how to obtain a key or how to set it up for use with the relevant packages.</span>
+<span id="cb20-51"><a href="#cb20-51"></a>:::</span>
+<span id="cb20-52"><a href="#cb20-52"></a></span>
+<span id="cb20-53"><a href="#cb20-53"></a>::: {.callout-note collapse="true" title="Statistical Area Definitions"}</span>
+<span id="cb20-54"><a href="#cb20-54"></a>Some of these data are at the metropolitan statistical area (MSA) level and others are at the core-based statistical area (CBSA) level. While these broadly overlap, which is why I didn't make a big fuss about mixing them, they are technically different. The U.S. Census provides some definitions <span class="co">[</span><span class="ot">here</span><span class="co">](https://www.census.gov/topics/housing/housing-patterns/about/core-based-statistical-areas.html)</span>.</span>
+<span id="cb20-55"><a href="#cb20-55"></a>:::</span>
+<span id="cb20-56"><a href="#cb20-56"></a></span>
+<span id="cb20-57"><a href="#cb20-57"></a>As usual for me, I performed data importing and wrangling using various <span class="co">[</span><span class="ot">tidyverse</span><span class="co">](https://www.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@tidyverse</span><span class="co">]</span>package functions. I also used <span class="co">[</span><span class="ot">multidplyr</span><span class="co">](https://multidplyr.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@multidplyr</span><span class="co">]</span> to perform some operations in parallel.</span>
+<span id="cb20-58"><a href="#cb20-58"></a></span>
+<span id="cb20-59"><a href="#cb20-59"></a><span class="fu">## Loading Packages</span></span>
+<span id="cb20-60"><a href="#cb20-60"></a></span>
+<span id="cb20-61"><a href="#cb20-61"></a>To begin with, I first loaded my packages. I'll include the <span class="co">[</span><span class="ot">gt</span><span class="co">](https://gt.rstudio.com/)</span> package for displaying tables.</span>
+<span id="cb20-62"><a href="#cb20-62"></a></span>
+<span id="cb20-65"><a href="#cb20-65"></a><span class="in">```{r}</span></span>
+<span id="cb20-66"><a href="#cb20-66"></a><span class="co">#| label: load-packages</span></span>
+<span id="cb20-67"><a href="#cb20-67"></a><span class="co">#| warning: false</span></span>
+<span id="cb20-68"><a href="#cb20-68"></a><span class="co">#| error: false</span></span>
+<span id="cb20-69"><a href="#cb20-69"></a><span class="co">#| message: false</span></span>
+<span id="cb20-70"><a href="#cb20-70"></a></span>
+<span id="cb20-71"><a href="#cb20-71"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb20-72"><a href="#cb20-72"></a><span class="fu">library</span>(fredr)</span>
+<span id="cb20-73"><a href="#cb20-73"></a><span class="fu">library</span>(tidycensus)</span>
+<span id="cb20-74"><a href="#cb20-74"></a><span class="fu">library</span>(cpsR)</span>
+<span id="cb20-75"><a href="#cb20-75"></a><span class="fu">library</span>(gt)</span>
+<span id="cb20-76"><a href="#cb20-76"></a><span class="fu">library</span>(multidplyr)</span>
+<span id="cb20-77"><a href="#cb20-77"></a></span>
+<span id="cb20-78"><a href="#cb20-78"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb20-79"><a href="#cb20-79"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"lag"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb20-80"><a href="#cb20-80"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"between"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb20-81"><a href="#cb20-81"></a><span class="in">```</span></span>
+<span id="cb20-82"><a href="#cb20-82"></a></span>
+<span id="cb20-83"><a href="#cb20-83"></a><span class="fu">## Getting Case-Shiller HPI data</span></span>
+<span id="cb20-84"><a href="#cb20-84"></a></span>
+<span id="cb20-85"><a href="#cb20-85"></a>I started by getting the appropriate Case-Shiller HPI series IDs for my cities of interest.</span>
+<span id="cb20-86"><a href="#cb20-86"></a></span>
+<span id="cb20-89"><a href="#cb20-89"></a><span class="in">```{r}</span></span>
+<span id="cb20-90"><a href="#cb20-90"></a><span class="co">#| label: get-cs-ids</span></span>
+<span id="cb20-91"><a href="#cb20-91"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-92"><a href="#cb20-92"></a></span>
+<span id="cb20-93"><a href="#cb20-93"></a>case_shiller_ids <span class="ot">&lt;-</span> <span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-94"><a href="#cb20-94"></a>  <span class="fu">filter</span>(</span>
+<span id="cb20-95"><a href="#cb20-95"></a>    <span class="fu">str_detect</span>(</span>
+<span id="cb20-96"><a href="#cb20-96"></a>      title,</span>
+<span id="cb20-97"><a href="#cb20-97"></a>      <span class="st">"CA-San Diego|TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
+<span id="cb20-98"><a href="#cb20-98"></a>    ),</span>
+<span id="cb20-99"><a href="#cb20-99"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
+<span id="cb20-100"><a href="#cb20-100"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
+<span id="cb20-101"><a href="#cb20-101"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-102"><a href="#cb20-102"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-103"><a href="#cb20-103"></a>  <span class="fu">select</span>(city, id)</span>
 <span id="cb20-104"><a href="#cb20-104"></a></span>
-<span id="cb20-105"><a href="#cb20-105"></a>Next I read in the Case-Shiller data and kept only the necessary variables.</span>
-<span id="cb20-106"><a href="#cb20-106"></a></span>
-<span id="cb20-109"><a href="#cb20-109"></a><span class="in">```{r}</span></span>
-<span id="cb20-110"><a href="#cb20-110"></a><span class="co">#| label: import-case-shiller</span></span>
-<span id="cb20-111"><a href="#cb20-111"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-112"><a href="#cb20-112"></a></span>
-<span id="cb20-113"><a href="#cb20-113"></a>cs_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
-<span id="cb20-114"><a href="#cb20-114"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-115"><a href="#cb20-115"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
-<span id="cb20-116"><a href="#cb20-116"></a>      id,</span>
-<span id="cb20-117"><a href="#cb20-117"></a>      \(x) <span class="fu">fredr</span>(</span>
-<span id="cb20-118"><a href="#cb20-118"></a>        <span class="at">series_id =</span> x,</span>
-<span id="cb20-119"><a href="#cb20-119"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2006-01-01"</span>),</span>
-<span id="cb20-120"><a href="#cb20-120"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
-<span id="cb20-121"><a href="#cb20-121"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
-<span id="cb20-122"><a href="#cb20-122"></a>      )</span>
-<span id="cb20-123"><a href="#cb20-123"></a>    )</span>
-<span id="cb20-124"><a href="#cb20-124"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-125"><a href="#cb20-125"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
-<span id="cb20-126"><a href="#cb20-126"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
-<span id="cb20-127"><a href="#cb20-127"></a>  <span class="fu">select</span>(city, date, <span class="at">case_shiller =</span> value)</span>
-<span id="cb20-128"><a href="#cb20-128"></a></span>
-<span id="cb20-129"><a href="#cb20-129"></a><span class="fu">gt</span>(cs_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ])</span>
-<span id="cb20-130"><a href="#cb20-130"></a></span>
-<span id="cb20-131"><a href="#cb20-131"></a><span class="in">```</span></span>
-<span id="cb20-132"><a href="#cb20-132"></a></span>
-<span id="cb20-133"><a href="#cb20-133"></a><span class="fu">## Getting unemploymnet rat and gas price data from FRED</span></span>
-<span id="cb20-134"><a href="#cb20-134"></a></span>
-<span id="cb20-135"><a href="#cb20-135"></a>Next I got series IDs for both average gas prices and unemployment rates for all four cities and got the data for the appropriate time span.</span>
-<span id="cb20-136"><a href="#cb20-136"></a></span>
-<span id="cb20-139"><a href="#cb20-139"></a><span class="in">```{r}</span></span>
-<span id="cb20-140"><a href="#cb20-140"></a><span class="co">#| label: get-addtnl-fred-data</span></span>
-<span id="cb20-141"><a href="#cb20-141"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-142"><a href="#cb20-142"></a></span>
-<span id="cb20-143"><a href="#cb20-143"></a><span class="co"># Get average gas price for each CBSA by month</span></span>
-<span id="cb20-144"><a href="#cb20-144"></a>gas_ids <span class="ot">&lt;-</span> <span class="fu">fredr_series_search_text</span>(</span>
-<span id="cb20-145"><a href="#cb20-145"></a>  <span class="st">"Average Price: Gasoline, Unleaded Regular"</span></span>
-<span id="cb20-146"><a href="#cb20-146"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-147"><a href="#cb20-147"></a>  <span class="fu">filter</span>(</span>
-<span id="cb20-148"><a href="#cb20-148"></a>    <span class="fu">str_detect</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>),</span>
-<span id="cb20-149"><a href="#cb20-149"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span>,</span>
-<span id="cb20-150"><a href="#cb20-150"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span></span>
-<span id="cb20-151"><a href="#cb20-151"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-152"><a href="#cb20-152"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-153"><a href="#cb20-153"></a>  <span class="fu">select</span>(city, id)</span>
-<span id="cb20-154"><a href="#cb20-154"></a></span>
-<span id="cb20-155"><a href="#cb20-155"></a>gas_data <span class="ot">&lt;-</span> gas_ids <span class="sc">|&gt;</span></span>
-<span id="cb20-156"><a href="#cb20-156"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-157"><a href="#cb20-157"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
-<span id="cb20-158"><a href="#cb20-158"></a>      id,</span>
-<span id="cb20-159"><a href="#cb20-159"></a>      \(x) <span class="fu">fredr</span>(</span>
-<span id="cb20-160"><a href="#cb20-160"></a>        <span class="at">series_id =</span> x,</span>
-<span id="cb20-161"><a href="#cb20-161"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2000-01-01"</span>),</span>
-<span id="cb20-162"><a href="#cb20-162"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
-<span id="cb20-163"><a href="#cb20-163"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
-<span id="cb20-164"><a href="#cb20-164"></a>      )</span>
-<span id="cb20-165"><a href="#cb20-165"></a>    )</span>
-<span id="cb20-166"><a href="#cb20-166"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-167"><a href="#cb20-167"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
-<span id="cb20-168"><a href="#cb20-168"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
-<span id="cb20-169"><a href="#cb20-169"></a>  <span class="fu">select</span>(city, date, <span class="at">avg_gas_price =</span> value)</span>
-<span id="cb20-170"><a href="#cb20-170"></a></span>
-<span id="cb20-171"><a href="#cb20-171"></a><span class="co"># Get average unemployment rate for each MSA by month</span></span>
-<span id="cb20-172"><a href="#cb20-172"></a>unemp_ids <span class="ot">&lt;-</span> <span class="fu">fredr_series_search_text</span>(<span class="st">"Unemployment: Rate"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-173"><a href="#cb20-173"></a>  <span class="fu">filter</span>(</span>
-<span id="cb20-174"><a href="#cb20-174"></a>    <span class="fu">str_detect</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>),</span>
-<span id="cb20-175"><a href="#cb20-175"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span>,</span>
-<span id="cb20-176"><a href="#cb20-176"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span></span>
-<span id="cb20-177"><a href="#cb20-177"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-178"><a href="#cb20-178"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-179"><a href="#cb20-179"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb20-180"><a href="#cb20-180"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-181"><a href="#cb20-181"></a>    <span class="at">rnum =</span> <span class="fu">n</span>(),</span>
-<span id="cb20-182"><a href="#cb20-182"></a>    <span class="at">msa_str =</span> <span class="fu">str_detect</span>(title, <span class="st">"MSA"</span>)</span>
-<span id="cb20-183"><a href="#cb20-183"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-184"><a href="#cb20-184"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-185"><a href="#cb20-185"></a>  <span class="fu">filter</span>(rnum <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> msa_str) <span class="sc">|&gt;</span></span>
-<span id="cb20-186"><a href="#cb20-186"></a>  <span class="fu">select</span>(city, id)</span>
-<span id="cb20-187"><a href="#cb20-187"></a></span>
-<span id="cb20-188"><a href="#cb20-188"></a>unemp_data <span class="ot">&lt;-</span> unemp_ids <span class="sc">|&gt;</span></span>
-<span id="cb20-189"><a href="#cb20-189"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-190"><a href="#cb20-190"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
-<span id="cb20-191"><a href="#cb20-191"></a>      id,</span>
-<span id="cb20-192"><a href="#cb20-192"></a>      \(x) <span class="fu">fredr</span>(</span>
-<span id="cb20-193"><a href="#cb20-193"></a>        <span class="at">series_id =</span> x,</span>
-<span id="cb20-194"><a href="#cb20-194"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2000-01-01"</span>),</span>
-<span id="cb20-195"><a href="#cb20-195"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
-<span id="cb20-196"><a href="#cb20-196"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
-<span id="cb20-197"><a href="#cb20-197"></a>      )</span>
-<span id="cb20-198"><a href="#cb20-198"></a>    )</span>
-<span id="cb20-199"><a href="#cb20-199"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-200"><a href="#cb20-200"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
-<span id="cb20-201"><a href="#cb20-201"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
-<span id="cb20-202"><a href="#cb20-202"></a>  <span class="fu">select</span>(city, date, <span class="at">unemp_rate =</span> value)</span>
-<span id="cb20-203"><a href="#cb20-203"></a></span>
-<span id="cb20-204"><a href="#cb20-204"></a><span class="in">```</span></span>
-<span id="cb20-205"><a href="#cb20-205"></a></span>
-<span id="cb20-206"><a href="#cb20-206"></a><span class="fu">## Getting CPS data</span></span>
-<span id="cb20-207"><a href="#cb20-207"></a></span>
-<span id="cb20-208"><a href="#cb20-208"></a>Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this woluldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.</span>
-<span id="cb20-209"><a href="#cb20-209"></a></span>
-<span id="cb20-210"><a href="#cb20-210"></a>The first step was to get the MSA codes that corresponded to my cities of interest and check that I had a unique set across all of my years of interest. The data for these MSA codes came from the U.S. Census's technical documentation page and MSA definitions only change once every few years.</span>
-<span id="cb20-211"><a href="#cb20-211"></a></span>
-<span id="cb20-214"><a href="#cb20-214"></a><span class="in">```{r}</span></span>
-<span id="cb20-215"><a href="#cb20-215"></a><span class="co">#| label: get-msa-codes</span></span>
-<span id="cb20-216"><a href="#cb20-216"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-217"><a href="#cb20-217"></a></span>
-<span id="cb20-218"><a href="#cb20-218"></a>msa_code_tbl <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb20-219"><a href="#cb20-219"></a>  <span class="sc">~</span>start_yr, <span class="sc">~</span>end_yr,</span>
-<span id="cb20-220"><a href="#cb20-220"></a>  <span class="dv">2003</span>, <span class="dv">2006</span>,</span>
-<span id="cb20-221"><a href="#cb20-221"></a>  <span class="dv">2007</span>, <span class="dv">2011</span>,</span>
-<span id="cb20-222"><a href="#cb20-222"></a>  <span class="dv">2012</span>, <span class="dv">2016</span>,</span>
-<span id="cb20-223"><a href="#cb20-223"></a>  <span class="dv">2017</span>, <span class="dv">2021</span></span>
-<span id="cb20-224"><a href="#cb20-224"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-225"><a href="#cb20-225"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-226"><a href="#cb20-226"></a>    <span class="at">suffix =</span> <span class="fu">str_sub</span>(start_yr, <span class="dv">3</span>, <span class="dv">4</span>),</span>
-<span id="cb20-227"><a href="#cb20-227"></a>    <span class="at">msa_url =</span> <span class="fu">map_chr</span>(</span>
-<span id="cb20-228"><a href="#cb20-228"></a>      suffix,</span>
-<span id="cb20-229"><a href="#cb20-229"></a>      \(x) <span class="fu">str_c</span>(</span>
-<span id="cb20-230"><a href="#cb20-230"></a>        <span class="st">"https://www2.census.gov/programs-surveys/cbp/technical-documentation/"</span>,</span>
-<span id="cb20-231"><a href="#cb20-231"></a>        <span class="st">"reference/metro-area-geography-reference/msa_county_reference"</span>,</span>
-<span id="cb20-232"><a href="#cb20-232"></a>        x,</span>
-<span id="cb20-233"><a href="#cb20-233"></a>        <span class="st">".txt"</span></span>
-<span id="cb20-234"><a href="#cb20-234"></a>      )</span>
-<span id="cb20-235"><a href="#cb20-235"></a>    ),</span>
-<span id="cb20-236"><a href="#cb20-236"></a>    <span class="at">msa_code_data =</span> <span class="fu">map</span>(</span>
-<span id="cb20-237"><a href="#cb20-237"></a>      msa_url,</span>
-<span id="cb20-238"><a href="#cb20-238"></a>      \(x) <span class="fu">read_delim</span>(x, <span class="at">delim =</span> <span class="st">","</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-239"><a href="#cb20-239"></a>        <span class="fu">filter</span>(</span>
-<span id="cb20-240"><a href="#cb20-240"></a>          <span class="fu">str_detect</span>(</span>
-<span id="cb20-241"><a href="#cb20-241"></a>            name_msa,</span>
-<span id="cb20-242"><a href="#cb20-242"></a>            <span class="st">"Dallas.*TX|San Diego.*CA|New York.*NY|Detroit.*MI"</span></span>
-<span id="cb20-243"><a href="#cb20-243"></a>          )</span>
-<span id="cb20-244"><a href="#cb20-244"></a>        ) <span class="sc">|&gt;</span></span>
-<span id="cb20-245"><a href="#cb20-245"></a>        <span class="fu">mutate</span>(</span>
-<span id="cb20-246"><a href="#cb20-246"></a>          <span class="at">city =</span> <span class="fu">str_extract</span>(name_msa, <span class="st">"Dallas|New York|San Diego|Detroit"</span>),</span>
-<span id="cb20-247"><a href="#cb20-247"></a>          <span class="at">msa =</span> <span class="fu">as.character</span>(msa)</span>
-<span id="cb20-248"><a href="#cb20-248"></a>        ) <span class="sc">|&gt;</span></span>
-<span id="cb20-249"><a href="#cb20-249"></a>        <span class="fu">distinct</span>(city, msa)</span>
-<span id="cb20-250"><a href="#cb20-250"></a>    )</span>
-<span id="cb20-251"><a href="#cb20-251"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-252"><a href="#cb20-252"></a>  <span class="fu">distinct</span>(msa_code_data) <span class="sc">|&gt;</span></span>
-<span id="cb20-253"><a href="#cb20-253"></a>  <span class="fu">unnest</span>(msa_code_data)</span>
-<span id="cb20-254"><a href="#cb20-254"></a></span>
-<span id="cb20-255"><a href="#cb20-255"></a><span class="fu">gt</span>(msa_code_tbl)</span>
-<span id="cb20-256"><a href="#cb20-256"></a><span class="in">```</span></span>
+<span id="cb20-105"><a href="#cb20-105"></a><span class="fu">gt</span>(case_shiller_ids)</span>
+<span id="cb20-106"><a href="#cb20-106"></a><span class="in">```</span></span>
+<span id="cb20-107"><a href="#cb20-107"></a></span>
+<span id="cb20-108"><a href="#cb20-108"></a>Next I read in the Case-Shiller data and kept only the necessary variables.</span>
+<span id="cb20-109"><a href="#cb20-109"></a></span>
+<span id="cb20-112"><a href="#cb20-112"></a><span class="in">```{r}</span></span>
+<span id="cb20-113"><a href="#cb20-113"></a><span class="co">#| label: import-case-shiller</span></span>
+<span id="cb20-114"><a href="#cb20-114"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-115"><a href="#cb20-115"></a></span>
+<span id="cb20-116"><a href="#cb20-116"></a>cs_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
+<span id="cb20-117"><a href="#cb20-117"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-118"><a href="#cb20-118"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb20-119"><a href="#cb20-119"></a>      id,</span>
+<span id="cb20-120"><a href="#cb20-120"></a>      \(x) <span class="fu">fredr</span>(</span>
+<span id="cb20-121"><a href="#cb20-121"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb20-122"><a href="#cb20-122"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2006-01-01"</span>),</span>
+<span id="cb20-123"><a href="#cb20-123"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb20-124"><a href="#cb20-124"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb20-125"><a href="#cb20-125"></a>      )</span>
+<span id="cb20-126"><a href="#cb20-126"></a>    )</span>
+<span id="cb20-127"><a href="#cb20-127"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-128"><a href="#cb20-128"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb20-129"><a href="#cb20-129"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb20-130"><a href="#cb20-130"></a>  <span class="fu">select</span>(city, date, <span class="at">case_shiller =</span> value)</span>
+<span id="cb20-131"><a href="#cb20-131"></a></span>
+<span id="cb20-132"><a href="#cb20-132"></a><span class="fu">gt</span>(cs_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ])</span>
+<span id="cb20-133"><a href="#cb20-133"></a></span>
+<span id="cb20-134"><a href="#cb20-134"></a><span class="in">```</span></span>
+<span id="cb20-135"><a href="#cb20-135"></a></span>
+<span id="cb20-136"><a href="#cb20-136"></a><span class="fu">## Getting unemploymnet rat and gas price data from FRED</span></span>
+<span id="cb20-137"><a href="#cb20-137"></a></span>
+<span id="cb20-138"><a href="#cb20-138"></a>Next I got series IDs for both average gas prices and unemployment rates for all four cities and got the data for the appropriate time span.</span>
+<span id="cb20-139"><a href="#cb20-139"></a></span>
+<span id="cb20-142"><a href="#cb20-142"></a><span class="in">```{r}</span></span>
+<span id="cb20-143"><a href="#cb20-143"></a><span class="co">#| label: get-addtnl-fred-data</span></span>
+<span id="cb20-144"><a href="#cb20-144"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-145"><a href="#cb20-145"></a></span>
+<span id="cb20-146"><a href="#cb20-146"></a><span class="co"># Get average gas price for each CBSA by month</span></span>
+<span id="cb20-147"><a href="#cb20-147"></a>gas_ids <span class="ot">&lt;-</span> <span class="fu">fredr_series_search_text</span>(</span>
+<span id="cb20-148"><a href="#cb20-148"></a>  <span class="st">"Average Price: Gasoline, Unleaded Regular"</span></span>
+<span id="cb20-149"><a href="#cb20-149"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb20-150"><a href="#cb20-150"></a>  <span class="fu">filter</span>(</span>
+<span id="cb20-151"><a href="#cb20-151"></a>    <span class="fu">str_detect</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>),</span>
+<span id="cb20-152"><a href="#cb20-152"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span>,</span>
+<span id="cb20-153"><a href="#cb20-153"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span></span>
+<span id="cb20-154"><a href="#cb20-154"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-155"><a href="#cb20-155"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-156"><a href="#cb20-156"></a>  <span class="fu">select</span>(city, id)</span>
+<span id="cb20-157"><a href="#cb20-157"></a></span>
+<span id="cb20-158"><a href="#cb20-158"></a>gas_data <span class="ot">&lt;-</span> gas_ids <span class="sc">|&gt;</span></span>
+<span id="cb20-159"><a href="#cb20-159"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-160"><a href="#cb20-160"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb20-161"><a href="#cb20-161"></a>      id,</span>
+<span id="cb20-162"><a href="#cb20-162"></a>      \(x) <span class="fu">fredr</span>(</span>
+<span id="cb20-163"><a href="#cb20-163"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb20-164"><a href="#cb20-164"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2000-01-01"</span>),</span>
+<span id="cb20-165"><a href="#cb20-165"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb20-166"><a href="#cb20-166"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb20-167"><a href="#cb20-167"></a>      )</span>
+<span id="cb20-168"><a href="#cb20-168"></a>    )</span>
+<span id="cb20-169"><a href="#cb20-169"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-170"><a href="#cb20-170"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb20-171"><a href="#cb20-171"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb20-172"><a href="#cb20-172"></a>  <span class="fu">select</span>(city, date, <span class="at">avg_gas_price =</span> value)</span>
+<span id="cb20-173"><a href="#cb20-173"></a></span>
+<span id="cb20-174"><a href="#cb20-174"></a><span class="co"># Get average unemployment rate for each MSA by month</span></span>
+<span id="cb20-175"><a href="#cb20-175"></a>unemp_ids <span class="ot">&lt;-</span> <span class="fu">fredr_series_search_text</span>(<span class="st">"Unemployment: Rate"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-176"><a href="#cb20-176"></a>  <span class="fu">filter</span>(</span>
+<span id="cb20-177"><a href="#cb20-177"></a>    <span class="fu">str_detect</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>),</span>
+<span id="cb20-178"><a href="#cb20-178"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span>,</span>
+<span id="cb20-179"><a href="#cb20-179"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span></span>
+<span id="cb20-180"><a href="#cb20-180"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-181"><a href="#cb20-181"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-182"><a href="#cb20-182"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb20-183"><a href="#cb20-183"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-184"><a href="#cb20-184"></a>    <span class="at">rnum =</span> <span class="fu">n</span>(),</span>
+<span id="cb20-185"><a href="#cb20-185"></a>    <span class="at">msa_str =</span> <span class="fu">str_detect</span>(title, <span class="st">"MSA"</span>)</span>
+<span id="cb20-186"><a href="#cb20-186"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-187"><a href="#cb20-187"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-188"><a href="#cb20-188"></a>  <span class="fu">filter</span>(rnum <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> msa_str) <span class="sc">|&gt;</span></span>
+<span id="cb20-189"><a href="#cb20-189"></a>  <span class="fu">select</span>(city, id)</span>
+<span id="cb20-190"><a href="#cb20-190"></a></span>
+<span id="cb20-191"><a href="#cb20-191"></a>unemp_data <span class="ot">&lt;-</span> unemp_ids <span class="sc">|&gt;</span></span>
+<span id="cb20-192"><a href="#cb20-192"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-193"><a href="#cb20-193"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb20-194"><a href="#cb20-194"></a>      id,</span>
+<span id="cb20-195"><a href="#cb20-195"></a>      \(x) <span class="fu">fredr</span>(</span>
+<span id="cb20-196"><a href="#cb20-196"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb20-197"><a href="#cb20-197"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2000-01-01"</span>),</span>
+<span id="cb20-198"><a href="#cb20-198"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb20-199"><a href="#cb20-199"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb20-200"><a href="#cb20-200"></a>      )</span>
+<span id="cb20-201"><a href="#cb20-201"></a>    )</span>
+<span id="cb20-202"><a href="#cb20-202"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-203"><a href="#cb20-203"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb20-204"><a href="#cb20-204"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb20-205"><a href="#cb20-205"></a>  <span class="fu">select</span>(city, date, <span class="at">unemp_rate =</span> value)</span>
+<span id="cb20-206"><a href="#cb20-206"></a></span>
+<span id="cb20-207"><a href="#cb20-207"></a><span class="in">```</span></span>
+<span id="cb20-208"><a href="#cb20-208"></a></span>
+<span id="cb20-209"><a href="#cb20-209"></a><span class="fu">## Getting CPS data</span></span>
+<span id="cb20-210"><a href="#cb20-210"></a></span>
+<span id="cb20-211"><a href="#cb20-211"></a>Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this woluldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.</span>
+<span id="cb20-212"><a href="#cb20-212"></a></span>
+<span id="cb20-213"><a href="#cb20-213"></a>The first step was to get the MSA codes that corresponded to my cities of interest and check that I had a unique set across all of my years of interest. The data for these MSA codes came from the U.S. Census's technical documentation page and MSA definitions only change once every few years.</span>
+<span id="cb20-214"><a href="#cb20-214"></a></span>
+<span id="cb20-217"><a href="#cb20-217"></a><span class="in">```{r}</span></span>
+<span id="cb20-218"><a href="#cb20-218"></a><span class="co">#| label: get-msa-codes</span></span>
+<span id="cb20-219"><a href="#cb20-219"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-220"><a href="#cb20-220"></a></span>
+<span id="cb20-221"><a href="#cb20-221"></a>msa_code_tbl <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb20-222"><a href="#cb20-222"></a>  <span class="sc">~</span>start_yr, <span class="sc">~</span>end_yr,</span>
+<span id="cb20-223"><a href="#cb20-223"></a>  <span class="dv">2003</span>, <span class="dv">2006</span>,</span>
+<span id="cb20-224"><a href="#cb20-224"></a>  <span class="dv">2007</span>, <span class="dv">2011</span>,</span>
+<span id="cb20-225"><a href="#cb20-225"></a>  <span class="dv">2012</span>, <span class="dv">2016</span>,</span>
+<span id="cb20-226"><a href="#cb20-226"></a>  <span class="dv">2017</span>, <span class="dv">2021</span></span>
+<span id="cb20-227"><a href="#cb20-227"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb20-228"><a href="#cb20-228"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-229"><a href="#cb20-229"></a>    <span class="at">suffix =</span> <span class="fu">str_sub</span>(start_yr, <span class="dv">3</span>, <span class="dv">4</span>),</span>
+<span id="cb20-230"><a href="#cb20-230"></a>    <span class="at">msa_url =</span> <span class="fu">map_chr</span>(</span>
+<span id="cb20-231"><a href="#cb20-231"></a>      suffix,</span>
+<span id="cb20-232"><a href="#cb20-232"></a>      \(x) <span class="fu">str_c</span>(</span>
+<span id="cb20-233"><a href="#cb20-233"></a>        <span class="st">"https://www2.census.gov/programs-surveys/cbp/technical-documentation/"</span>,</span>
+<span id="cb20-234"><a href="#cb20-234"></a>        <span class="st">"reference/metro-area-geography-reference/msa_county_reference"</span>,</span>
+<span id="cb20-235"><a href="#cb20-235"></a>        x,</span>
+<span id="cb20-236"><a href="#cb20-236"></a>        <span class="st">".txt"</span></span>
+<span id="cb20-237"><a href="#cb20-237"></a>      )</span>
+<span id="cb20-238"><a href="#cb20-238"></a>    ),</span>
+<span id="cb20-239"><a href="#cb20-239"></a>    <span class="at">msa_code_data =</span> <span class="fu">map</span>(</span>
+<span id="cb20-240"><a href="#cb20-240"></a>      msa_url,</span>
+<span id="cb20-241"><a href="#cb20-241"></a>      \(x) <span class="fu">read_delim</span>(x, <span class="at">delim =</span> <span class="st">","</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-242"><a href="#cb20-242"></a>        <span class="fu">filter</span>(</span>
+<span id="cb20-243"><a href="#cb20-243"></a>          <span class="fu">str_detect</span>(</span>
+<span id="cb20-244"><a href="#cb20-244"></a>            name_msa,</span>
+<span id="cb20-245"><a href="#cb20-245"></a>            <span class="st">"Dallas.*TX|San Diego.*CA|New York.*NY|Detroit.*MI"</span></span>
+<span id="cb20-246"><a href="#cb20-246"></a>          )</span>
+<span id="cb20-247"><a href="#cb20-247"></a>        ) <span class="sc">|&gt;</span></span>
+<span id="cb20-248"><a href="#cb20-248"></a>        <span class="fu">mutate</span>(</span>
+<span id="cb20-249"><a href="#cb20-249"></a>          <span class="at">city =</span> <span class="fu">str_extract</span>(name_msa, <span class="st">"Dallas|New York|San Diego|Detroit"</span>),</span>
+<span id="cb20-250"><a href="#cb20-250"></a>          <span class="at">msa =</span> <span class="fu">as.character</span>(msa)</span>
+<span id="cb20-251"><a href="#cb20-251"></a>        ) <span class="sc">|&gt;</span></span>
+<span id="cb20-252"><a href="#cb20-252"></a>        <span class="fu">distinct</span>(city, msa)</span>
+<span id="cb20-253"><a href="#cb20-253"></a>    )</span>
+<span id="cb20-254"><a href="#cb20-254"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-255"><a href="#cb20-255"></a>  <span class="fu">distinct</span>(msa_code_data) <span class="sc">|&gt;</span></span>
+<span id="cb20-256"><a href="#cb20-256"></a>  <span class="fu">unnest</span>(msa_code_data)</span>
 <span id="cb20-257"><a href="#cb20-257"></a></span>
-<span id="cb20-258"><a href="#cb20-258"></a>In the next step I defined the function for importing, filtering, and aggregating CPS data.</span>
-<span id="cb20-259"><a href="#cb20-259"></a></span>
-<span id="cb20-262"><a href="#cb20-262"></a><span class="in">```{r}</span></span>
-<span id="cb20-263"><a href="#cb20-263"></a><span class="co">#| label: define-cps-summary-function</span></span>
-<span id="cb20-264"><a href="#cb20-264"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-265"><a href="#cb20-265"></a></span>
-<span id="cb20-266"><a href="#cb20-266"></a>get_cps_summaries <span class="ot">&lt;-</span> <span class="cf">function</span>(cps_df, geographies) {</span>
-<span id="cb20-267"><a href="#cb20-267"></a>  cps_df <span class="sc">|&gt;</span></span>
-<span id="cb20-268"><a href="#cb20-268"></a>    <span class="fu">rename</span>(<span class="at">hispanic =</span> <span class="fu">matches</span>(<span class="st">"hspnon"</span>), <span class="at">msa =</span> <span class="fu">starts_with</span>(<span class="st">"gt"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-269"><a href="#cb20-269"></a>    <span class="fu">filter</span>(msa <span class="sc">%in%</span> geographies) <span class="sc">|&gt;</span></span>
-<span id="cb20-270"><a href="#cb20-270"></a>    <span class="fu">relocate</span>(msa, pwsswgt, prtage, pemaritl, peeduca, hispanic) <span class="sc">|&gt;</span></span>
-<span id="cb20-271"><a href="#cb20-271"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb20-272"><a href="#cb20-272"></a>      <span class="at">msa =</span> <span class="fu">as.character</span>(msa),</span>
-<span id="cb20-273"><a href="#cb20-273"></a>      <span class="at">pwsswgt =</span> <span class="fu">as.numeric</span>(pwsswgt),</span>
-<span id="cb20-274"><a href="#cb20-274"></a>      <span class="fu">across</span>(prtage<span class="sc">:</span>hispanic, as.integer),</span>
-<span id="cb20-275"><a href="#cb20-275"></a>      <span class="fu">across</span>(prtage<span class="sc">:</span>hispanic, \(x) <span class="fu">na_if</span>(x, <span class="sc">-</span><span class="dv">1</span>)),</span>
-<span id="cb20-276"><a href="#cb20-276"></a>      <span class="at">age_lt_18 =</span> prtage <span class="sc">&lt;</span> <span class="dv">18</span>,</span>
-<span id="cb20-277"><a href="#cb20-277"></a>      <span class="at">age_18_35 =</span> <span class="fu">between</span>(prtage, <span class="dv">18</span>, <span class="dv">35</span>),</span>
-<span id="cb20-278"><a href="#cb20-278"></a>      <span class="at">age_36_65 =</span> <span class="fu">between</span>(prtage, <span class="dv">36</span>, <span class="dv">65</span>),</span>
-<span id="cb20-279"><a href="#cb20-279"></a>      <span class="at">age_gt_65 =</span> prtage <span class="sc">&gt;</span> <span class="dv">65</span>,</span>
-<span id="cb20-280"><a href="#cb20-280"></a>      <span class="at">educ_hs_less =</span> peeduca <span class="sc">&lt;</span> <span class="dv">40</span>,</span>
-<span id="cb20-281"><a href="#cb20-281"></a>      <span class="at">educ_college =</span> peeduca <span class="sc">%in%</span> <span class="dv">40</span><span class="sc">:</span><span class="dv">43</span>,</span>
-<span id="cb20-282"><a href="#cb20-282"></a>      <span class="at">educ_grad =</span> peeduca <span class="sc">&gt;</span> <span class="dv">43</span>,</span>
-<span id="cb20-283"><a href="#cb20-283"></a>      <span class="at">status_married =</span> pemaritl <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,</span>
-<span id="cb20-284"><a href="#cb20-284"></a>      <span class="at">status_nev_mar =</span> pemaritl <span class="sc">==</span> <span class="dv">6</span>,</span>
-<span id="cb20-285"><a href="#cb20-285"></a>      <span class="at">status_other =</span> <span class="sc">!</span>pemaritl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">6</span>),</span>
-<span id="cb20-286"><a href="#cb20-286"></a>      <span class="at">hispanic =</span> hispanic <span class="sc">==</span> <span class="dv">1</span>,</span>
-<span id="cb20-287"><a href="#cb20-287"></a>      <span class="fu">across</span>(</span>
-<span id="cb20-288"><a href="#cb20-288"></a>        <span class="fu">c</span>(age_lt_18<span class="sc">:</span>status_other, hispanic),</span>
-<span id="cb20-289"><a href="#cb20-289"></a>        \(x) (x <span class="sc">*</span> pwsswgt)</span>
-<span id="cb20-290"><a href="#cb20-290"></a>      )</span>
-<span id="cb20-291"><a href="#cb20-291"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb20-292"><a href="#cb20-292"></a>    <span class="fu">group_by</span>(msa) <span class="sc">|&gt;</span></span>
-<span id="cb20-293"><a href="#cb20-293"></a>    <span class="fu">summarise</span>(</span>
-<span id="cb20-294"><a href="#cb20-294"></a>      <span class="fu">across</span>(</span>
-<span id="cb20-295"><a href="#cb20-295"></a>        <span class="fu">c</span>(age_lt_18<span class="sc">:</span>status_other, hispanic),</span>
-<span id="cb20-296"><a href="#cb20-296"></a>        \(x) <span class="fu">sum</span>(x <span class="sc">/</span> <span class="fu">sum</span>(pwsswgt), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-297"><a href="#cb20-297"></a>      )</span>
-<span id="cb20-298"><a href="#cb20-298"></a>    )</span>
-<span id="cb20-299"><a href="#cb20-299"></a>}</span>
-<span id="cb20-300"><a href="#cb20-300"></a></span>
-<span id="cb20-301"><a href="#cb20-301"></a><span class="in">```</span></span>
-<span id="cb20-302"><a href="#cb20-302"></a></span>
-<span id="cb20-303"><a href="#cb20-303"></a>With that function now defined, I move on to get CPS data using that function.</span>
-<span id="cb20-304"><a href="#cb20-304"></a></span>
-<span id="cb20-307"><a href="#cb20-307"></a><span class="in">```{r}</span></span>
-<span id="cb20-308"><a href="#cb20-308"></a><span class="co">#| label: get-cps-data</span></span>
-<span id="cb20-309"><a href="#cb20-309"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-310"><a href="#cb20-310"></a></span>
-<span id="cb20-311"><a href="#cb20-311"></a><span class="co"># Set up a cluster to get all of the CPS data aggregations</span></span>
-<span id="cb20-312"><a href="#cb20-312"></a>cps_clust <span class="ot">&lt;-</span> <span class="fu">new_cluster</span>(<span class="dv">12</span>)</span>
-<span id="cb20-313"><a href="#cb20-313"></a><span class="fu">cluster_library</span>(cps_clust, <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"cpsR"</span>))</span>
-<span id="cb20-314"><a href="#cb20-314"></a><span class="fu">cluster_copy</span>(cps_clust, <span class="fu">c</span>(<span class="st">"get_cps_summaries"</span>, <span class="st">"msa_code_tbl"</span>))</span>
-<span id="cb20-315"><a href="#cb20-315"></a></span>
-<span id="cb20-316"><a href="#cb20-316"></a><span class="co"># Get CPS data aggregations</span></span>
-<span id="cb20-317"><a href="#cb20-317"></a>cps_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
-<span id="cb20-318"><a href="#cb20-318"></a>  <span class="at">yr =</span> <span class="dv">2006</span><span class="sc">:</span><span class="dv">2023</span>,</span>
-<span id="cb20-319"><a href="#cb20-319"></a>  <span class="at">mo =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span></span>
-<span id="cb20-320"><a href="#cb20-320"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-321"><a href="#cb20-321"></a>  <span class="fu">partition</span>(cps_clust)</span>
-<span id="cb20-322"><a href="#cb20-322"></a></span>
-<span id="cb20-323"><a href="#cb20-323"></a>cps_data <span class="ot">&lt;-</span> cps_grid <span class="sc">|&gt;</span></span>
-<span id="cb20-324"><a href="#cb20-324"></a>  <span class="fu">arrange</span>(yr, mo) <span class="sc">|&gt;</span></span>
-<span id="cb20-325"><a href="#cb20-325"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-326"><a href="#cb20-326"></a>    <span class="at">cps =</span> <span class="fu">map2</span>(</span>
-<span id="cb20-327"><a href="#cb20-327"></a>      yr, mo,</span>
-<span id="cb20-328"><a href="#cb20-328"></a>      <span class="fu">possibly</span>(</span>
-<span id="cb20-329"><a href="#cb20-329"></a>        \(y, m) {</span>
-<span id="cb20-330"><a href="#cb20-330"></a>          <span class="fu">get_basic</span>(</span>
-<span id="cb20-331"><a href="#cb20-331"></a>            y, m,</span>
-<span id="cb20-332"><a href="#cb20-332"></a>            <span class="fu">c</span>(<span class="st">"gtcbsa"</span>, <span class="st">"prtage"</span>, <span class="st">"pemaritl"</span>, <span class="st">"peeduca"</span>, <span class="st">"pehspnon"</span>, <span class="st">"pwsswgt"</span>)</span>
-<span id="cb20-333"><a href="#cb20-333"></a>          ) <span class="sc">|&gt;</span></span>
-<span id="cb20-334"><a href="#cb20-334"></a>            <span class="fu">get_cps_summaries</span>(msa_code_tbl<span class="sc">$</span>msa)</span>
-<span id="cb20-335"><a href="#cb20-335"></a>        }</span>
-<span id="cb20-336"><a href="#cb20-336"></a>      )</span>
-<span id="cb20-337"><a href="#cb20-337"></a>    )</span>
-<span id="cb20-338"><a href="#cb20-338"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-339"><a href="#cb20-339"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-340"><a href="#cb20-340"></a>  <span class="fu">unnest</span>(cps) <span class="sc">|&gt;</span></span>
-<span id="cb20-341"><a href="#cb20-341"></a>  <span class="fu">mutate</span>(<span class="at">msa =</span> <span class="fu">as.character</span>(msa)) <span class="sc">|&gt;</span></span>
-<span id="cb20-342"><a href="#cb20-342"></a>  <span class="fu">left_join</span>(msa_code_tbl, <span class="at">by =</span> <span class="st">"msa"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-343"><a href="#cb20-343"></a>  <span class="fu">select</span>(<span class="sc">-</span>msa) <span class="sc">|&gt;</span></span>
-<span id="cb20-344"><a href="#cb20-344"></a>  <span class="fu">unite</span>(<span class="st">"date"</span>, yr, mo, <span class="at">sep =</span> <span class="st">"-"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-345"><a href="#cb20-345"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ym</span>(date)) <span class="sc">|&gt;</span></span>
-<span id="cb20-346"><a href="#cb20-346"></a>  <span class="fu">relocate</span>(city, date)</span>
-<span id="cb20-347"><a href="#cb20-347"></a><span class="in">```</span></span>
-<span id="cb20-348"><a href="#cb20-348"></a></span>
-<span id="cb20-351"><a href="#cb20-351"></a><span class="in">```{r}</span></span>
-<span id="cb20-352"><a href="#cb20-352"></a><span class="co">#| label: cps-clean-up</span></span>
-<span id="cb20-353"><a href="#cb20-353"></a><span class="co">#| include: false</span></span>
-<span id="cb20-354"><a href="#cb20-354"></a></span>
-<span id="cb20-355"><a href="#cb20-355"></a><span class="fu">rm</span>(cps_grid, cps_clust)</span>
-<span id="cb20-356"><a href="#cb20-356"></a><span class="fu">gc</span>()</span>
+<span id="cb20-258"><a href="#cb20-258"></a><span class="fu">gt</span>(msa_code_tbl)</span>
+<span id="cb20-259"><a href="#cb20-259"></a><span class="in">```</span></span>
+<span id="cb20-260"><a href="#cb20-260"></a></span>
+<span id="cb20-261"><a href="#cb20-261"></a>In the next step I defined the function for importing, filtering, and aggregating CPS data.</span>
+<span id="cb20-262"><a href="#cb20-262"></a></span>
+<span id="cb20-265"><a href="#cb20-265"></a><span class="in">```{r}</span></span>
+<span id="cb20-266"><a href="#cb20-266"></a><span class="co">#| label: define-cps-summary-function</span></span>
+<span id="cb20-267"><a href="#cb20-267"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-268"><a href="#cb20-268"></a></span>
+<span id="cb20-269"><a href="#cb20-269"></a>get_cps_summaries <span class="ot">&lt;-</span> <span class="cf">function</span>(cps_df, geographies) {</span>
+<span id="cb20-270"><a href="#cb20-270"></a>  cps_df <span class="sc">|&gt;</span></span>
+<span id="cb20-271"><a href="#cb20-271"></a>    <span class="fu">rename</span>(<span class="at">hispanic =</span> <span class="fu">matches</span>(<span class="st">"hspnon"</span>), <span class="at">msa =</span> <span class="fu">starts_with</span>(<span class="st">"gt"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-272"><a href="#cb20-272"></a>    <span class="fu">filter</span>(msa <span class="sc">%in%</span> geographies) <span class="sc">|&gt;</span></span>
+<span id="cb20-273"><a href="#cb20-273"></a>    <span class="fu">relocate</span>(msa, pwsswgt, prtage, pemaritl, peeduca, hispanic) <span class="sc">|&gt;</span></span>
+<span id="cb20-274"><a href="#cb20-274"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb20-275"><a href="#cb20-275"></a>      <span class="at">msa =</span> <span class="fu">as.character</span>(msa),</span>
+<span id="cb20-276"><a href="#cb20-276"></a>      <span class="at">pwsswgt =</span> <span class="fu">as.numeric</span>(pwsswgt),</span>
+<span id="cb20-277"><a href="#cb20-277"></a>      <span class="fu">across</span>(prtage<span class="sc">:</span>hispanic, as.integer),</span>
+<span id="cb20-278"><a href="#cb20-278"></a>      <span class="fu">across</span>(prtage<span class="sc">:</span>hispanic, \(x) <span class="fu">na_if</span>(x, <span class="sc">-</span><span class="dv">1</span>)),</span>
+<span id="cb20-279"><a href="#cb20-279"></a>      <span class="at">age_lt_18 =</span> prtage <span class="sc">&lt;</span> <span class="dv">18</span>,</span>
+<span id="cb20-280"><a href="#cb20-280"></a>      <span class="at">age_18_35 =</span> <span class="fu">between</span>(prtage, <span class="dv">18</span>, <span class="dv">35</span>),</span>
+<span id="cb20-281"><a href="#cb20-281"></a>      <span class="at">age_36_65 =</span> <span class="fu">between</span>(prtage, <span class="dv">36</span>, <span class="dv">65</span>),</span>
+<span id="cb20-282"><a href="#cb20-282"></a>      <span class="at">age_gt_65 =</span> prtage <span class="sc">&gt;</span> <span class="dv">65</span>,</span>
+<span id="cb20-283"><a href="#cb20-283"></a>      <span class="at">educ_hs_less =</span> peeduca <span class="sc">&lt;</span> <span class="dv">40</span>,</span>
+<span id="cb20-284"><a href="#cb20-284"></a>      <span class="at">educ_college =</span> peeduca <span class="sc">%in%</span> <span class="dv">40</span><span class="sc">:</span><span class="dv">43</span>,</span>
+<span id="cb20-285"><a href="#cb20-285"></a>      <span class="at">educ_grad =</span> peeduca <span class="sc">&gt;</span> <span class="dv">43</span>,</span>
+<span id="cb20-286"><a href="#cb20-286"></a>      <span class="at">status_married =</span> pemaritl <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,</span>
+<span id="cb20-287"><a href="#cb20-287"></a>      <span class="at">status_nev_mar =</span> pemaritl <span class="sc">==</span> <span class="dv">6</span>,</span>
+<span id="cb20-288"><a href="#cb20-288"></a>      <span class="at">status_other =</span> <span class="sc">!</span>pemaritl <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">6</span>),</span>
+<span id="cb20-289"><a href="#cb20-289"></a>      <span class="at">hispanic =</span> hispanic <span class="sc">==</span> <span class="dv">1</span>,</span>
+<span id="cb20-290"><a href="#cb20-290"></a>      <span class="fu">across</span>(</span>
+<span id="cb20-291"><a href="#cb20-291"></a>        <span class="fu">c</span>(age_lt_18<span class="sc">:</span>status_other, hispanic),</span>
+<span id="cb20-292"><a href="#cb20-292"></a>        \(x) (x <span class="sc">*</span> pwsswgt)</span>
+<span id="cb20-293"><a href="#cb20-293"></a>      )</span>
+<span id="cb20-294"><a href="#cb20-294"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb20-295"><a href="#cb20-295"></a>    <span class="fu">group_by</span>(msa) <span class="sc">|&gt;</span></span>
+<span id="cb20-296"><a href="#cb20-296"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb20-297"><a href="#cb20-297"></a>      <span class="fu">across</span>(</span>
+<span id="cb20-298"><a href="#cb20-298"></a>        <span class="fu">c</span>(age_lt_18<span class="sc">:</span>status_other, hispanic),</span>
+<span id="cb20-299"><a href="#cb20-299"></a>        \(x) <span class="fu">sum</span>(x <span class="sc">/</span> <span class="fu">sum</span>(pwsswgt), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-300"><a href="#cb20-300"></a>      )</span>
+<span id="cb20-301"><a href="#cb20-301"></a>    )</span>
+<span id="cb20-302"><a href="#cb20-302"></a>}</span>
+<span id="cb20-303"><a href="#cb20-303"></a></span>
+<span id="cb20-304"><a href="#cb20-304"></a><span class="in">```</span></span>
+<span id="cb20-305"><a href="#cb20-305"></a></span>
+<span id="cb20-306"><a href="#cb20-306"></a>With that function now defined, I move on to get CPS data using that function.</span>
+<span id="cb20-307"><a href="#cb20-307"></a></span>
+<span id="cb20-310"><a href="#cb20-310"></a><span class="in">```{r}</span></span>
+<span id="cb20-311"><a href="#cb20-311"></a><span class="co">#| label: get-cps-data</span></span>
+<span id="cb20-312"><a href="#cb20-312"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-313"><a href="#cb20-313"></a></span>
+<span id="cb20-314"><a href="#cb20-314"></a><span class="co"># Set up a cluster to get all of the CPS data aggregations</span></span>
+<span id="cb20-315"><a href="#cb20-315"></a>cps_clust <span class="ot">&lt;-</span> <span class="fu">new_cluster</span>(<span class="dv">12</span>)</span>
+<span id="cb20-316"><a href="#cb20-316"></a><span class="fu">cluster_library</span>(cps_clust, <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"cpsR"</span>))</span>
+<span id="cb20-317"><a href="#cb20-317"></a><span class="fu">cluster_copy</span>(cps_clust, <span class="fu">c</span>(<span class="st">"get_cps_summaries"</span>, <span class="st">"msa_code_tbl"</span>))</span>
+<span id="cb20-318"><a href="#cb20-318"></a></span>
+<span id="cb20-319"><a href="#cb20-319"></a><span class="co"># Get CPS data aggregations</span></span>
+<span id="cb20-320"><a href="#cb20-320"></a>cps_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb20-321"><a href="#cb20-321"></a>  <span class="at">yr =</span> <span class="dv">2006</span><span class="sc">:</span><span class="dv">2023</span>,</span>
+<span id="cb20-322"><a href="#cb20-322"></a>  <span class="at">mo =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span></span>
+<span id="cb20-323"><a href="#cb20-323"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb20-324"><a href="#cb20-324"></a>  <span class="fu">partition</span>(cps_clust)</span>
+<span id="cb20-325"><a href="#cb20-325"></a></span>
+<span id="cb20-326"><a href="#cb20-326"></a>cps_data <span class="ot">&lt;-</span> cps_grid <span class="sc">|&gt;</span></span>
+<span id="cb20-327"><a href="#cb20-327"></a>  <span class="fu">arrange</span>(yr, mo) <span class="sc">|&gt;</span></span>
+<span id="cb20-328"><a href="#cb20-328"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-329"><a href="#cb20-329"></a>    <span class="at">cps =</span> <span class="fu">map2</span>(</span>
+<span id="cb20-330"><a href="#cb20-330"></a>      yr, mo,</span>
+<span id="cb20-331"><a href="#cb20-331"></a>      <span class="fu">possibly</span>(</span>
+<span id="cb20-332"><a href="#cb20-332"></a>        \(y, m) {</span>
+<span id="cb20-333"><a href="#cb20-333"></a>          <span class="fu">get_basic</span>(</span>
+<span id="cb20-334"><a href="#cb20-334"></a>            y, m,</span>
+<span id="cb20-335"><a href="#cb20-335"></a>            <span class="fu">c</span>(<span class="st">"gtcbsa"</span>, <span class="st">"prtage"</span>, <span class="st">"pemaritl"</span>, <span class="st">"peeduca"</span>, <span class="st">"pehspnon"</span>, <span class="st">"pwsswgt"</span>)</span>
+<span id="cb20-336"><a href="#cb20-336"></a>          ) <span class="sc">|&gt;</span></span>
+<span id="cb20-337"><a href="#cb20-337"></a>            <span class="fu">get_cps_summaries</span>(msa_code_tbl<span class="sc">$</span>msa)</span>
+<span id="cb20-338"><a href="#cb20-338"></a>        }</span>
+<span id="cb20-339"><a href="#cb20-339"></a>      )</span>
+<span id="cb20-340"><a href="#cb20-340"></a>    )</span>
+<span id="cb20-341"><a href="#cb20-341"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-342"><a href="#cb20-342"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-343"><a href="#cb20-343"></a>  <span class="fu">unnest</span>(cps) <span class="sc">|&gt;</span></span>
+<span id="cb20-344"><a href="#cb20-344"></a>  <span class="fu">mutate</span>(<span class="at">msa =</span> <span class="fu">as.character</span>(msa)) <span class="sc">|&gt;</span></span>
+<span id="cb20-345"><a href="#cb20-345"></a>  <span class="fu">left_join</span>(msa_code_tbl, <span class="at">by =</span> <span class="st">"msa"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-346"><a href="#cb20-346"></a>  <span class="fu">select</span>(<span class="sc">-</span>msa) <span class="sc">|&gt;</span></span>
+<span id="cb20-347"><a href="#cb20-347"></a>  <span class="fu">unite</span>(<span class="st">"date"</span>, yr, mo, <span class="at">sep =</span> <span class="st">"-"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-348"><a href="#cb20-348"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ym</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb20-349"><a href="#cb20-349"></a>  <span class="fu">relocate</span>(city, date)</span>
+<span id="cb20-350"><a href="#cb20-350"></a><span class="in">```</span></span>
+<span id="cb20-351"><a href="#cb20-351"></a></span>
+<span id="cb20-354"><a href="#cb20-354"></a><span class="in">```{r}</span></span>
+<span id="cb20-355"><a href="#cb20-355"></a><span class="co">#| label: cps-clean-up</span></span>
+<span id="cb20-356"><a href="#cb20-356"></a><span class="co">#| include: false</span></span>
 <span id="cb20-357"><a href="#cb20-357"></a></span>
-<span id="cb20-358"><a href="#cb20-358"></a><span class="in">```</span></span>
-<span id="cb20-359"><a href="#cb20-359"></a></span>
-<span id="cb20-360"><a href="#cb20-360"></a>This is what the CPS data looked like.</span>
-<span id="cb20-361"><a href="#cb20-361"></a></span>
-<span id="cb20-364"><a href="#cb20-364"></a><span class="in">```{r}</span></span>
-<span id="cb20-365"><a href="#cb20-365"></a><span class="co">#| label: show-cps-data</span></span>
-<span id="cb20-366"><a href="#cb20-366"></a></span>
-<span id="cb20-367"><a href="#cb20-367"></a><span class="fu">gt</span>(<span class="fu">head</span>(cps_data))</span>
-<span id="cb20-368"><a href="#cb20-368"></a></span>
-<span id="cb20-369"><a href="#cb20-369"></a><span class="in">```</span></span>
-<span id="cb20-370"><a href="#cb20-370"></a></span>
-<span id="cb20-371"><a href="#cb20-371"></a><span class="fu">## Getting population data</span></span>
-<span id="cb20-372"><a href="#cb20-372"></a></span>
-<span id="cb20-373"><a href="#cb20-373"></a>One would think that if any demographic data is simple to get, population data would be simple, right? I learned something different. I was interested in getting population data at a monthly level for each MSA of interest. I knew population was not counted monthly, but I thought I could get it from the CPS. In fact, one might notice that the code actually calls a population variable (<span class="in">`pwsswgt`</span> ) to perform some calculations. The problem here was that at the MSA level population estimates varied in some cases by as much as 16%. While I I didn't know if this was true or not I did believe (subjectively) that it was unlikely and I believed that CPS weights are not calibrated to MSAs. My understanding is that they are calibrated to the national and state levels. So, I thought a reasonable alternative would be to get data from the ACS 1-year survey and interpolate data from one year to the next. In fact, the reason that I started my time series in 2006 is that the ACS 1-year and 5-year survey data became available in 2005 and I needed one year before the time series for interpolation. However, there was wrinkle caused by COVID. The 1-year ACS was not released for 2020 because of understandable challenges with data collection. So, for 2020 I used ACS 5-year survey data. I started by getting all of the ACS 1-year data. Here again, I processed the data in parallel.</span>
-<span id="cb20-374"><a href="#cb20-374"></a></span>
-<span id="cb20-377"><a href="#cb20-377"></a><span class="in">```{r}</span></span>
-<span id="cb20-378"><a href="#cb20-378"></a><span class="co">#| label: get-acs1-yr</span></span>
-<span id="cb20-379"><a href="#cb20-379"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-380"><a href="#cb20-380"></a></span>
-<span id="cb20-381"><a href="#cb20-381"></a><span class="co"># Create a cluster for getting ACS data</span></span>
-<span id="cb20-382"><a href="#cb20-382"></a>acs_clust <span class="ot">&lt;-</span> <span class="fu">new_cluster</span>(<span class="dv">12</span>)</span>
-<span id="cb20-383"><a href="#cb20-383"></a><span class="fu">cluster_library</span>(acs_clust, <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"tidycensus"</span>))</span>
-<span id="cb20-384"><a href="#cb20-384"></a></span>
-<span id="cb20-385"><a href="#cb20-385"></a><span class="co"># Get ACS data for 2005 to 2019, 2021, and 2022</span></span>
-<span id="cb20-386"><a href="#cb20-386"></a>acs1_pop_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">year =</span> <span class="fu">c</span>(<span class="dv">2005</span><span class="sc">:</span><span class="dv">2019</span>, <span class="dv">2021</span><span class="sc">:</span><span class="dv">2022</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-387"><a href="#cb20-387"></a>  <span class="fu">partition</span>(acs_clust) <span class="sc">|&gt;</span></span>
-<span id="cb20-388"><a href="#cb20-388"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-389"><a href="#cb20-389"></a>    <span class="at">pop_data =</span> <span class="fu">map</span>(</span>
-<span id="cb20-390"><a href="#cb20-390"></a>      year,</span>
-<span id="cb20-391"><a href="#cb20-391"></a>      \(x) <span class="fu">get_acs</span>(</span>
-<span id="cb20-392"><a href="#cb20-392"></a>        <span class="at">year =</span> x,</span>
-<span id="cb20-393"><a href="#cb20-393"></a>        <span class="at">variables =</span> <span class="st">"B01001_001"</span>,</span>
-<span id="cb20-394"><a href="#cb20-394"></a>        <span class="at">geography =</span> <span class="st">"cbsa"</span>,</span>
-<span id="cb20-395"><a href="#cb20-395"></a>        <span class="at">survey =</span> <span class="st">"acs1"</span>,</span>
-<span id="cb20-396"><a href="#cb20-396"></a>        <span class="at">show_call =</span> <span class="cn">FALSE</span></span>
-<span id="cb20-397"><a href="#cb20-397"></a>      ) <span class="sc">|&gt;</span></span>
-<span id="cb20-398"><a href="#cb20-398"></a>        <span class="fu">filter</span>(<span class="fu">str_detect</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-399"><a href="#cb20-399"></a>        <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-400"><a href="#cb20-400"></a>        <span class="fu">select</span>(city, <span class="at">population =</span> estimate)</span>
-<span id="cb20-401"><a href="#cb20-401"></a>    )</span>
-<span id="cb20-402"><a href="#cb20-402"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-403"><a href="#cb20-403"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-404"><a href="#cb20-404"></a>  <span class="fu">unnest</span>(pop_data) <span class="sc">|&gt;</span></span>
-<span id="cb20-405"><a href="#cb20-405"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">str_c</span>(year, <span class="st">"12"</span>) <span class="sc">|&gt;</span> <span class="fu">ym</span>(), <span class="at">.keep =</span> <span class="st">"unused"</span>)</span>
-<span id="cb20-406"><a href="#cb20-406"></a></span>
-<span id="cb20-407"><a href="#cb20-407"></a><span class="in">```</span></span>
-<span id="cb20-408"><a href="#cb20-408"></a></span>
-<span id="cb20-411"><a href="#cb20-411"></a><span class="in">```{r}</span></span>
-<span id="cb20-412"><a href="#cb20-412"></a><span class="co">#| label: acs-clean-up</span></span>
-<span id="cb20-413"><a href="#cb20-413"></a><span class="co">#| include: false</span></span>
-<span id="cb20-414"><a href="#cb20-414"></a></span>
-<span id="cb20-415"><a href="#cb20-415"></a><span class="fu">rm</span>(acs_clust)</span>
-<span id="cb20-416"><a href="#cb20-416"></a><span class="fu">gc</span>()</span>
+<span id="cb20-358"><a href="#cb20-358"></a><span class="fu">rm</span>(cps_grid, cps_clust)</span>
+<span id="cb20-359"><a href="#cb20-359"></a><span class="fu">gc</span>()</span>
+<span id="cb20-360"><a href="#cb20-360"></a></span>
+<span id="cb20-361"><a href="#cb20-361"></a><span class="in">```</span></span>
+<span id="cb20-362"><a href="#cb20-362"></a></span>
+<span id="cb20-363"><a href="#cb20-363"></a>This is what the CPS data looked like.</span>
+<span id="cb20-364"><a href="#cb20-364"></a></span>
+<span id="cb20-367"><a href="#cb20-367"></a><span class="in">```{r}</span></span>
+<span id="cb20-368"><a href="#cb20-368"></a><span class="co">#| label: show-cps-data</span></span>
+<span id="cb20-369"><a href="#cb20-369"></a></span>
+<span id="cb20-370"><a href="#cb20-370"></a><span class="fu">gt</span>(<span class="fu">head</span>(cps_data))</span>
+<span id="cb20-371"><a href="#cb20-371"></a></span>
+<span id="cb20-372"><a href="#cb20-372"></a><span class="in">```</span></span>
+<span id="cb20-373"><a href="#cb20-373"></a></span>
+<span id="cb20-374"><a href="#cb20-374"></a><span class="fu">## Getting population data</span></span>
+<span id="cb20-375"><a href="#cb20-375"></a></span>
+<span id="cb20-376"><a href="#cb20-376"></a>One would think that if any demographic data is simple to get, population data would be simple, right? I learned something different. I was interested in getting population data at a monthly level for each MSA of interest. I knew population was not counted monthly, but I thought I could get it from the CPS. In fact, one might notice that the code actually calls a population variable (<span class="in">`pwsswgt`</span> ) to perform some calculations. The problem here was that at the MSA level population estimates varied in some cases by as much as 16%. While I I didn't know if this was true or not I did believe (subjectively) that it was unlikely and I believed that CPS weights are not calibrated to MSAs. My understanding is that they are calibrated to the national and state levels. So, I thought a reasonable alternative would be to get data from the ACS 1-year survey and interpolate data from one year to the next. In fact, the reason that I started my time series in 2006 is that the ACS 1-year and 5-year survey data became available in 2005 and I needed one year before the time series for interpolation. However, there was wrinkle caused by COVID. The 1-year ACS was not released for 2020 because of understandable challenges with data collection. So, for 2020 I used ACS 5-year survey data. I started by getting all of the ACS 1-year data. Here again, I processed the data in parallel.</span>
+<span id="cb20-377"><a href="#cb20-377"></a></span>
+<span id="cb20-380"><a href="#cb20-380"></a><span class="in">```{r}</span></span>
+<span id="cb20-381"><a href="#cb20-381"></a><span class="co">#| label: get-acs1-yr</span></span>
+<span id="cb20-382"><a href="#cb20-382"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-383"><a href="#cb20-383"></a></span>
+<span id="cb20-384"><a href="#cb20-384"></a><span class="co"># Create a cluster for getting ACS data</span></span>
+<span id="cb20-385"><a href="#cb20-385"></a>acs_clust <span class="ot">&lt;-</span> <span class="fu">new_cluster</span>(<span class="dv">12</span>)</span>
+<span id="cb20-386"><a href="#cb20-386"></a><span class="fu">cluster_library</span>(acs_clust, <span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"tidycensus"</span>))</span>
+<span id="cb20-387"><a href="#cb20-387"></a></span>
+<span id="cb20-388"><a href="#cb20-388"></a><span class="co"># Get ACS data for 2005 to 2019, 2021, and 2022</span></span>
+<span id="cb20-389"><a href="#cb20-389"></a>acs1_pop_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">year =</span> <span class="fu">c</span>(<span class="dv">2005</span><span class="sc">:</span><span class="dv">2019</span>, <span class="dv">2021</span><span class="sc">:</span><span class="dv">2022</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-390"><a href="#cb20-390"></a>  <span class="fu">partition</span>(acs_clust) <span class="sc">|&gt;</span></span>
+<span id="cb20-391"><a href="#cb20-391"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-392"><a href="#cb20-392"></a>    <span class="at">pop_data =</span> <span class="fu">map</span>(</span>
+<span id="cb20-393"><a href="#cb20-393"></a>      year,</span>
+<span id="cb20-394"><a href="#cb20-394"></a>      \(x) <span class="fu">get_acs</span>(</span>
+<span id="cb20-395"><a href="#cb20-395"></a>        <span class="at">year =</span> x,</span>
+<span id="cb20-396"><a href="#cb20-396"></a>        <span class="at">variables =</span> <span class="st">"B01001_001"</span>,</span>
+<span id="cb20-397"><a href="#cb20-397"></a>        <span class="at">geography =</span> <span class="st">"cbsa"</span>,</span>
+<span id="cb20-398"><a href="#cb20-398"></a>        <span class="at">survey =</span> <span class="st">"acs1"</span>,</span>
+<span id="cb20-399"><a href="#cb20-399"></a>        <span class="at">show_call =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-400"><a href="#cb20-400"></a>      ) <span class="sc">|&gt;</span></span>
+<span id="cb20-401"><a href="#cb20-401"></a>        <span class="fu">filter</span>(<span class="fu">str_detect</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-402"><a href="#cb20-402"></a>        <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-403"><a href="#cb20-403"></a>        <span class="fu">select</span>(city, <span class="at">population =</span> estimate)</span>
+<span id="cb20-404"><a href="#cb20-404"></a>    )</span>
+<span id="cb20-405"><a href="#cb20-405"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-406"><a href="#cb20-406"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-407"><a href="#cb20-407"></a>  <span class="fu">unnest</span>(pop_data) <span class="sc">|&gt;</span></span>
+<span id="cb20-408"><a href="#cb20-408"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">str_c</span>(year, <span class="st">"12"</span>) <span class="sc">|&gt;</span> <span class="fu">ym</span>(), <span class="at">.keep =</span> <span class="st">"unused"</span>)</span>
+<span id="cb20-409"><a href="#cb20-409"></a></span>
+<span id="cb20-410"><a href="#cb20-410"></a><span class="in">```</span></span>
+<span id="cb20-411"><a href="#cb20-411"></a></span>
+<span id="cb20-414"><a href="#cb20-414"></a><span class="in">```{r}</span></span>
+<span id="cb20-415"><a href="#cb20-415"></a><span class="co">#| label: acs-clean-up</span></span>
+<span id="cb20-416"><a href="#cb20-416"></a><span class="co">#| include: false</span></span>
 <span id="cb20-417"><a href="#cb20-417"></a></span>
-<span id="cb20-418"><a href="#cb20-418"></a><span class="in">```</span></span>
-<span id="cb20-419"><a href="#cb20-419"></a></span>
-<span id="cb20-420"><a href="#cb20-420"></a>Next I got the data for 2020 and combined it with the ACS 1-year data. I performed interpolation using the <span class="in">`ts_impute_vec()`</span> function from the <span class="co">[</span><span class="ot">timetk</span><span class="co">](https://business-science.github.io/timetk/)</span> <span class="co">[</span><span class="ot">@timetk</span><span class="co">]</span> package.</span>
-<span id="cb20-421"><a href="#cb20-421"></a></span>
-<span id="cb20-424"><a href="#cb20-424"></a><span class="in">```{r}</span></span>
-<span id="cb20-425"><a href="#cb20-425"></a><span class="co">#| label: complete-acs-data</span></span>
-<span id="cb20-426"><a href="#cb20-426"></a><span class="co">#| cache: true</span></span>
-<span id="cb20-427"><a href="#cb20-427"></a></span>
-<span id="cb20-428"><a href="#cb20-428"></a><span class="co"># Get data for 2020 separately since it wasn't available in the ACS 1-year</span></span>
-<span id="cb20-429"><a href="#cb20-429"></a>acs5_pop_data <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
-<span id="cb20-430"><a href="#cb20-430"></a>  <span class="at">year =</span> <span class="dv">2020</span>,</span>
-<span id="cb20-431"><a href="#cb20-431"></a>  <span class="at">variables =</span> <span class="st">"B01001_001"</span>,</span>
-<span id="cb20-432"><a href="#cb20-432"></a>  <span class="at">geography =</span> <span class="st">"cbsa"</span>,</span>
-<span id="cb20-433"><a href="#cb20-433"></a>  <span class="at">survey =</span> <span class="st">"acs5"</span>,</span>
-<span id="cb20-434"><a href="#cb20-434"></a>  <span class="at">show_call =</span> <span class="cn">FALSE</span></span>
-<span id="cb20-435"><a href="#cb20-435"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-436"><a href="#cb20-436"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-437"><a href="#cb20-437"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-438"><a href="#cb20-438"></a>    <span class="at">city =</span> <span class="fu">str_extract</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>),</span>
-<span id="cb20-439"><a href="#cb20-439"></a>    <span class="at">date =</span> <span class="fu">rep</span>(<span class="fu">ym</span>(<span class="st">"2020-12"</span>), <span class="dv">4</span>),</span>
-<span id="cb20-440"><a href="#cb20-440"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-441"><a href="#cb20-441"></a>  <span class="fu">select</span>(city, date, <span class="at">population =</span> estimate)</span>
-<span id="cb20-442"><a href="#cb20-442"></a></span>
-<span id="cb20-443"><a href="#cb20-443"></a><span class="co"># Put together all the ACS population data and interpolate between annual</span></span>
-<span id="cb20-444"><a href="#cb20-444"></a><span class="co"># estimates</span></span>
-<span id="cb20-445"><a href="#cb20-445"></a>acs_pop_data <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
-<span id="cb20-446"><a href="#cb20-446"></a>  <span class="at">yr =</span> <span class="dv">2006</span><span class="sc">:</span><span class="dv">2022</span>,</span>
-<span id="cb20-447"><a href="#cb20-447"></a>  <span class="at">mo =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span></span>
-<span id="cb20-448"><a href="#cb20-448"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-449"><a href="#cb20-449"></a>  <span class="fu">add_row</span>(<span class="at">yr =</span> <span class="dv">2005</span>, <span class="at">mo =</span> <span class="dv">12</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-450"><a href="#cb20-450"></a>  <span class="fu">expand_grid</span>(<span class="at">city =</span> <span class="fu">c</span>(<span class="st">"New York"</span>, <span class="st">"Dallas"</span>, <span class="st">"San Diego"</span>, <span class="st">"Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-451"><a href="#cb20-451"></a>  <span class="fu">unite</span>(date, yr, mo, <span class="at">sep =</span> <span class="st">"-"</span>, <span class="at">remove =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-452"><a href="#cb20-452"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ym</span>(date)) <span class="sc">|&gt;</span></span>
-<span id="cb20-453"><a href="#cb20-453"></a>  <span class="fu">arrange</span>(date, city) <span class="sc">|&gt;</span></span>
-<span id="cb20-454"><a href="#cb20-454"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb20-455"><a href="#cb20-455"></a>    <span class="fu">bind_rows</span>(acs1_pop_data, acs5_pop_data),</span>
-<span id="cb20-456"><a href="#cb20-456"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span>)</span>
-<span id="cb20-457"><a href="#cb20-457"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-458"><a href="#cb20-458"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb20-459"><a href="#cb20-459"></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span></span>
-<span id="cb20-460"><a href="#cb20-460"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-461"><a href="#cb20-461"></a>    <span class="at">population =</span> timetk<span class="sc">::</span><span class="fu">ts_impute_vec</span>(population, <span class="at">period =</span> <span class="dv">1</span>),</span>
-<span id="cb20-462"><a href="#cb20-462"></a>    <span class="at">pop_chg =</span> (population <span class="sc">/</span> <span class="fu">lag</span>(population)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb20-463"><a href="#cb20-463"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-464"><a href="#cb20-464"></a>  <span class="fu">drop_na</span>(pop_chg) <span class="sc">|&gt;</span></span>
-<span id="cb20-465"><a href="#cb20-465"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-466"><a href="#cb20-466"></a>  <span class="fu">select</span>(<span class="sc">!</span>population)</span>
-<span id="cb20-467"><a href="#cb20-467"></a></span>
-<span id="cb20-468"><a href="#cb20-468"></a><span class="fu">gt</span>(<span class="fu">head</span>(acs_pop_data))</span>
-<span id="cb20-469"><a href="#cb20-469"></a><span class="in">```</span></span>
+<span id="cb20-418"><a href="#cb20-418"></a><span class="fu">rm</span>(acs_clust)</span>
+<span id="cb20-419"><a href="#cb20-419"></a><span class="fu">gc</span>()</span>
+<span id="cb20-420"><a href="#cb20-420"></a></span>
+<span id="cb20-421"><a href="#cb20-421"></a><span class="in">```</span></span>
+<span id="cb20-422"><a href="#cb20-422"></a></span>
+<span id="cb20-423"><a href="#cb20-423"></a>Next I got the data for 2020 and combined it with the ACS 1-year data. I performed interpolation using the <span class="in">`ts_impute_vec()`</span> function from the <span class="co">[</span><span class="ot">timetk</span><span class="co">](https://business-science.github.io/timetk/)</span> <span class="co">[</span><span class="ot">@timetk</span><span class="co">]</span> package.</span>
+<span id="cb20-424"><a href="#cb20-424"></a></span>
+<span id="cb20-427"><a href="#cb20-427"></a><span class="in">```{r}</span></span>
+<span id="cb20-428"><a href="#cb20-428"></a><span class="co">#| label: complete-acs-data</span></span>
+<span id="cb20-429"><a href="#cb20-429"></a><span class="co">#| cache: true</span></span>
+<span id="cb20-430"><a href="#cb20-430"></a></span>
+<span id="cb20-431"><a href="#cb20-431"></a><span class="co"># Get data for 2020 separately since it wasn't available in the ACS 1-year</span></span>
+<span id="cb20-432"><a href="#cb20-432"></a>acs5_pop_data <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(</span>
+<span id="cb20-433"><a href="#cb20-433"></a>  <span class="at">year =</span> <span class="dv">2020</span>,</span>
+<span id="cb20-434"><a href="#cb20-434"></a>  <span class="at">variables =</span> <span class="st">"B01001_001"</span>,</span>
+<span id="cb20-435"><a href="#cb20-435"></a>  <span class="at">geography =</span> <span class="st">"cbsa"</span>,</span>
+<span id="cb20-436"><a href="#cb20-436"></a>  <span class="at">survey =</span> <span class="st">"acs5"</span>,</span>
+<span id="cb20-437"><a href="#cb20-437"></a>  <span class="at">show_call =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-438"><a href="#cb20-438"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb20-439"><a href="#cb20-439"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-440"><a href="#cb20-440"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-441"><a href="#cb20-441"></a>    <span class="at">city =</span> <span class="fu">str_extract</span>(NAME, <span class="st">"New York|Dallas|San Diego|Detroit"</span>),</span>
+<span id="cb20-442"><a href="#cb20-442"></a>    <span class="at">date =</span> <span class="fu">rep</span>(<span class="fu">ym</span>(<span class="st">"2020-12"</span>), <span class="dv">4</span>),</span>
+<span id="cb20-443"><a href="#cb20-443"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-444"><a href="#cb20-444"></a>  <span class="fu">select</span>(city, date, <span class="at">population =</span> estimate)</span>
+<span id="cb20-445"><a href="#cb20-445"></a></span>
+<span id="cb20-446"><a href="#cb20-446"></a><span class="co"># Put together all the ACS population data and interpolate between annual</span></span>
+<span id="cb20-447"><a href="#cb20-447"></a><span class="co"># estimates</span></span>
+<span id="cb20-448"><a href="#cb20-448"></a>acs_pop_data <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
+<span id="cb20-449"><a href="#cb20-449"></a>  <span class="at">yr =</span> <span class="dv">2006</span><span class="sc">:</span><span class="dv">2022</span>,</span>
+<span id="cb20-450"><a href="#cb20-450"></a>  <span class="at">mo =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span></span>
+<span id="cb20-451"><a href="#cb20-451"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb20-452"><a href="#cb20-452"></a>  <span class="fu">add_row</span>(<span class="at">yr =</span> <span class="dv">2005</span>, <span class="at">mo =</span> <span class="dv">12</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-453"><a href="#cb20-453"></a>  <span class="fu">expand_grid</span>(<span class="at">city =</span> <span class="fu">c</span>(<span class="st">"New York"</span>, <span class="st">"Dallas"</span>, <span class="st">"San Diego"</span>, <span class="st">"Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-454"><a href="#cb20-454"></a>  <span class="fu">unite</span>(date, yr, mo, <span class="at">sep =</span> <span class="st">"-"</span>, <span class="at">remove =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-455"><a href="#cb20-455"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ym</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb20-456"><a href="#cb20-456"></a>  <span class="fu">arrange</span>(date, city) <span class="sc">|&gt;</span></span>
+<span id="cb20-457"><a href="#cb20-457"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb20-458"><a href="#cb20-458"></a>    <span class="fu">bind_rows</span>(acs1_pop_data, acs5_pop_data),</span>
+<span id="cb20-459"><a href="#cb20-459"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span>)</span>
+<span id="cb20-460"><a href="#cb20-460"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-461"><a href="#cb20-461"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb20-462"><a href="#cb20-462"></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb20-463"><a href="#cb20-463"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-464"><a href="#cb20-464"></a>    <span class="at">population =</span> timetk<span class="sc">::</span><span class="fu">ts_impute_vec</span>(population, <span class="at">period =</span> <span class="dv">1</span>),</span>
+<span id="cb20-465"><a href="#cb20-465"></a>    <span class="at">pop_chg =</span> (population <span class="sc">/</span> <span class="fu">lag</span>(population)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb20-466"><a href="#cb20-466"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-467"><a href="#cb20-467"></a>  <span class="fu">drop_na</span>(pop_chg) <span class="sc">|&gt;</span></span>
+<span id="cb20-468"><a href="#cb20-468"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-469"><a href="#cb20-469"></a>  <span class="fu">select</span>(<span class="sc">!</span>population)</span>
 <span id="cb20-470"><a href="#cb20-470"></a></span>
-<span id="cb20-471"><a href="#cb20-471"></a><span class="fu">## Merge data and check</span></span>
-<span id="cb20-472"><a href="#cb20-472"></a></span>
-<span id="cb20-473"><a href="#cb20-473"></a>With all of the data gathered and each data set containing variables for city and date (monthly) along with at least one demographic or economic variable, they were ready to be merged.</span>
-<span id="cb20-474"><a href="#cb20-474"></a></span>
-<span id="cb20-477"><a href="#cb20-477"></a><span class="in">```{r}</span></span>
-<span id="cb20-478"><a href="#cb20-478"></a><span class="co">#| label: merge-data</span></span>
-<span id="cb20-479"><a href="#cb20-479"></a></span>
-<span id="cb20-480"><a href="#cb20-480"></a>econ_data <span class="ot">&lt;-</span> <span class="fu">list</span>(cs_data, unemp_data, gas_data, cps_data, acs_pop_data) <span class="sc">|&gt;</span></span>
-<span id="cb20-481"><a href="#cb20-481"></a>  <span class="fu">reduce</span>(inner_join, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span>))</span>
+<span id="cb20-471"><a href="#cb20-471"></a><span class="fu">gt</span>(<span class="fu">head</span>(acs_pop_data))</span>
+<span id="cb20-472"><a href="#cb20-472"></a><span class="in">```</span></span>
+<span id="cb20-473"><a href="#cb20-473"></a></span>
+<span id="cb20-474"><a href="#cb20-474"></a><span class="fu">## Merge data and check</span></span>
+<span id="cb20-475"><a href="#cb20-475"></a></span>
+<span id="cb20-476"><a href="#cb20-476"></a>With all of the data gathered and each data set containing variables for city and date (monthly) along with at least one demographic or economic variable, they were ready to be merged.</span>
+<span id="cb20-477"><a href="#cb20-477"></a></span>
+<span id="cb20-480"><a href="#cb20-480"></a><span class="in">```{r}</span></span>
+<span id="cb20-481"><a href="#cb20-481"></a><span class="co">#| label: merge-data</span></span>
 <span id="cb20-482"><a href="#cb20-482"></a></span>
-<span id="cb20-483"><a href="#cb20-483"></a><span class="in">```</span></span>
-<span id="cb20-484"><a href="#cb20-484"></a></span>
-<span id="cb20-485"><a href="#cb20-485"></a>It would be a mistake to ever think that there is no more cleaning that can be done, so I skimmed the data using the <span class="in">`skimr()`</span> function from the <span class="co">[</span><span class="ot">skimr</span><span class="co">](https://github.com/ropensci/skimr)</span> <span class="co">[</span><span class="ot">@skimr</span><span class="co">]</span> package.</span>
-<span id="cb20-486"><a href="#cb20-486"></a></span>
-<span id="cb20-489"><a href="#cb20-489"></a><span class="in">```{r}</span></span>
-<span id="cb20-490"><a href="#cb20-490"></a><span class="co">#| label: skim-data</span></span>
-<span id="cb20-491"><a href="#cb20-491"></a></span>
-<span id="cb20-492"><a href="#cb20-492"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(econ_data)</span>
-<span id="cb20-493"><a href="#cb20-493"></a></span>
-<span id="cb20-494"><a href="#cb20-494"></a><span class="in">```</span></span>
-<span id="cb20-495"><a href="#cb20-495"></a></span>
-<span id="cb20-496"><a href="#cb20-496"></a>Overall the data look good except for the <span class="in">`avg_gas_price`</span> variable, which is the only variable that has any missing values. I'll turn to that shortly, but I'll briefly describe the variables in the data set below:</span>
-<span id="cb20-497"><a href="#cb20-497"></a></span>
-<span id="cb20-498"><a href="#cb20-498"></a><span class="ss">-   </span><span class="in">`city`</span> : self-explanatory</span>
-<span id="cb20-499"><a href="#cb20-499"></a></span>
-<span id="cb20-500"><a href="#cb20-500"></a><span class="ss">-   </span><span class="in">`date`</span>: month expressed as the first day of the month</span>
-<span id="cb20-501"><a href="#cb20-501"></a></span>
-<span id="cb20-502"><a href="#cb20-502"></a><span class="ss">-   </span><span class="in">`case_shiller`</span>: Case-Shiller Home Price Index value</span>
-<span id="cb20-503"><a href="#cb20-503"></a></span>
-<span id="cb20-504"><a href="#cb20-504"></a><span class="ss">-   </span><span class="in">`unemp_rate`</span>: Unemployment rate</span>
-<span id="cb20-505"><a href="#cb20-505"></a></span>
-<span id="cb20-506"><a href="#cb20-506"></a><span class="ss">-   </span><span class="in">`avg_gas_price`</span>: Average gas price</span>
-<span id="cb20-507"><a href="#cb20-507"></a></span>
-<span id="cb20-508"><a href="#cb20-508"></a><span class="ss">-   </span><span class="in">`age_lt_18`</span>: Proportion of the population younger than 18 years old</span>
-<span id="cb20-509"><a href="#cb20-509"></a></span>
-<span id="cb20-510"><a href="#cb20-510"></a><span class="ss">-   </span><span class="in">`age_18_35`</span>: Proportion of the population between the ages of 18 and 35</span>
-<span id="cb20-511"><a href="#cb20-511"></a></span>
-<span id="cb20-512"><a href="#cb20-512"></a><span class="ss">-   </span><span class="in">`age_36_65`</span>: Proportion of the population between the ages of 36 and 65</span>
-<span id="cb20-513"><a href="#cb20-513"></a></span>
-<span id="cb20-514"><a href="#cb20-514"></a><span class="ss">-   </span><span class="in">`age_gt_65`</span>: Proportion of the population older than 65 years old</span>
-<span id="cb20-515"><a href="#cb20-515"></a></span>
-<span id="cb20-516"><a href="#cb20-516"></a><span class="ss">-   </span><span class="in">`educ_hs_less`</span>: Proportion of the population with up to a high school diploma</span>
-<span id="cb20-517"><a href="#cb20-517"></a></span>
-<span id="cb20-518"><a href="#cb20-518"></a><span class="ss">-   </span><span class="in">`educ_college`</span>: Proportion of the population with more than a high school diploma and up to a bachelor's degree</span>
-<span id="cb20-519"><a href="#cb20-519"></a></span>
-<span id="cb20-520"><a href="#cb20-520"></a><span class="ss">-   </span><span class="in">`educ_grad`</span>: Proportion of the population with education higher than a bachelor's degree</span>
-<span id="cb20-521"><a href="#cb20-521"></a></span>
-<span id="cb20-522"><a href="#cb20-522"></a><span class="ss">-   </span><span class="in">`status_married`</span>: Proportion of the population that is married; including separated</span>
-<span id="cb20-523"><a href="#cb20-523"></a></span>
-<span id="cb20-524"><a href="#cb20-524"></a><span class="ss">-   </span><span class="in">`status_nev_mar`</span>: Proportion of the population that has never been married</span>
-<span id="cb20-525"><a href="#cb20-525"></a></span>
-<span id="cb20-526"><a href="#cb20-526"></a><span class="ss">-   </span><span class="in">`status_other`</span>: Proportion of the population not categorized as either <span class="in">`status_married`</span> or <span class="in">`status_nev_mar`</span></span>
-<span id="cb20-527"><a href="#cb20-527"></a></span>
-<span id="cb20-528"><a href="#cb20-528"></a><span class="ss">-   </span><span class="in">`hispanic`</span>: Proportion of the population that reported hispanic ethnicity</span>
-<span id="cb20-529"><a href="#cb20-529"></a></span>
-<span id="cb20-530"><a href="#cb20-530"></a><span class="ss">-   </span><span class="in">`pop_chg`</span>: Population change from one month to the next</span>
-<span id="cb20-531"><a href="#cb20-531"></a></span>
-<span id="cb20-532"><a href="#cb20-532"></a>Once I skimmed the data, I took a closer look at the percent of <span class="in">`avg_gas_price`</span> values that were missing for each city.</span>
-<span id="cb20-533"><a href="#cb20-533"></a></span>
-<span id="cb20-536"><a href="#cb20-536"></a><span class="in">```{r}</span></span>
-<span id="cb20-537"><a href="#cb20-537"></a><span class="co">#| label: check-avg-gas-missing</span></span>
-<span id="cb20-538"><a href="#cb20-538"></a></span>
-<span id="cb20-539"><a href="#cb20-539"></a>econ_data <span class="sc">|&gt;</span></span>
-<span id="cb20-540"><a href="#cb20-540"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb20-541"><a href="#cb20-541"></a>  <span class="fu">summarise</span>(<span class="at">pct_miss_gas =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(avg_gas_price)) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb20-542"><a href="#cb20-542"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> pct_miss_gas, <span class="at">x =</span> city)) <span class="sc">+</span></span>
-<span id="cb20-543"><a href="#cb20-543"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
-<span id="cb20-544"><a href="#cb20-544"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb20-545"><a href="#cb20-545"></a>  <span class="fu">labs</span>(</span>
-<span id="cb20-546"><a href="#cb20-546"></a>    <span class="at">y =</span> <span class="st">"Percent Missing"</span>,</span>
-<span id="cb20-547"><a href="#cb20-547"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb20-548"><a href="#cb20-548"></a>    <span class="at">title =</span> <span class="st">"Missingness in avg_gas_price variable by city"</span></span>
-<span id="cb20-549"><a href="#cb20-549"></a>  ) <span class="sc">+</span> </span>
-<span id="cb20-550"><a href="#cb20-550"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb20-551"><a href="#cb20-551"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb20-552"><a href="#cb20-552"></a></span>
-<span id="cb20-553"><a href="#cb20-553"></a><span class="in">```</span></span>
-<span id="cb20-554"><a href="#cb20-554"></a></span>
-<span id="cb20-555"><a href="#cb20-555"></a>Evidently data were missing only for San Diego. Below are the start and end dates of average gas price data for San Diego in this data set.</span>
-<span id="cb20-556"><a href="#cb20-556"></a></span>
-<span id="cb20-559"><a href="#cb20-559"></a><span class="in">```{r}</span></span>
-<span id="cb20-560"><a href="#cb20-560"></a><span class="co">#| label: show-avg-gas-dates</span></span>
-<span id="cb20-561"><a href="#cb20-561"></a></span>
-<span id="cb20-562"><a href="#cb20-562"></a>econ_data <span class="sc">|&gt;</span></span>
-<span id="cb20-563"><a href="#cb20-563"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>, <span class="sc">!</span><span class="fu">is.na</span>(avg_gas_price)) <span class="sc">|&gt;</span></span>
-<span id="cb20-564"><a href="#cb20-564"></a>  <span class="fu">summarise</span>(<span class="at">start_date =</span> <span class="fu">min</span>(date), <span class="at">end_date =</span> <span class="fu">max</span>(date)) <span class="sc">|&gt;</span></span>
-<span id="cb20-565"><a href="#cb20-565"></a>  <span class="fu">gt</span>()</span>
-<span id="cb20-566"><a href="#cb20-566"></a></span>
-<span id="cb20-567"><a href="#cb20-567"></a><span class="in">```</span></span>
-<span id="cb20-568"><a href="#cb20-568"></a></span>
-<span id="cb20-569"><a href="#cb20-569"></a>As it turns out, reports of average gas price data for San Diego start in January of 2018, which means that 12 years of data would be missing. With that many values missing for one of the cities it makes sense to drop the average gas price variable.</span>
-<span id="cb20-570"><a href="#cb20-570"></a></span>
-<span id="cb20-573"><a href="#cb20-573"></a><span class="in">```{r}</span></span>
-<span id="cb20-574"><a href="#cb20-574"></a><span class="co">#| label: drop-avg-gas</span></span>
-<span id="cb20-575"><a href="#cb20-575"></a></span>
-<span id="cb20-576"><a href="#cb20-576"></a>econ_data <span class="ot">&lt;-</span> <span class="fu">select</span>(econ_data, <span class="sc">!</span>avg_gas_price)</span>
-<span id="cb20-577"><a href="#cb20-577"></a></span>
-<span id="cb20-578"><a href="#cb20-578"></a>econ_data <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span>
-<span id="cb20-579"><a href="#cb20-579"></a><span class="in">```</span></span>
+<span id="cb20-483"><a href="#cb20-483"></a>econ_data <span class="ot">&lt;-</span> <span class="fu">list</span>(cs_data, unemp_data, gas_data, cps_data, acs_pop_data) <span class="sc">|&gt;</span></span>
+<span id="cb20-484"><a href="#cb20-484"></a>  <span class="fu">reduce</span>(inner_join, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span>))</span>
+<span id="cb20-485"><a href="#cb20-485"></a></span>
+<span id="cb20-486"><a href="#cb20-486"></a><span class="in">```</span></span>
+<span id="cb20-487"><a href="#cb20-487"></a></span>
+<span id="cb20-488"><a href="#cb20-488"></a>It would be a mistake to ever think that there is no more cleaning that can be done, so I skimmed the data using the <span class="in">`skimr()`</span> function from the <span class="co">[</span><span class="ot">skimr</span><span class="co">](https://github.com/ropensci/skimr)</span> <span class="co">[</span><span class="ot">@skimr</span><span class="co">]</span> package.</span>
+<span id="cb20-489"><a href="#cb20-489"></a></span>
+<span id="cb20-492"><a href="#cb20-492"></a><span class="in">```{r}</span></span>
+<span id="cb20-493"><a href="#cb20-493"></a><span class="co">#| label: skim-data</span></span>
+<span id="cb20-494"><a href="#cb20-494"></a></span>
+<span id="cb20-495"><a href="#cb20-495"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(econ_data)</span>
+<span id="cb20-496"><a href="#cb20-496"></a></span>
+<span id="cb20-497"><a href="#cb20-497"></a><span class="in">```</span></span>
+<span id="cb20-498"><a href="#cb20-498"></a></span>
+<span id="cb20-499"><a href="#cb20-499"></a>Overall the data look good except for the <span class="in">`avg_gas_price`</span> variable, which is the only variable that has any missing values. I'll turn to that shortly, but I'll briefly describe the variables in the data set below:</span>
+<span id="cb20-500"><a href="#cb20-500"></a></span>
+<span id="cb20-501"><a href="#cb20-501"></a><span class="ss">-   </span><span class="in">`city`</span> : self-explanatory</span>
+<span id="cb20-502"><a href="#cb20-502"></a></span>
+<span id="cb20-503"><a href="#cb20-503"></a><span class="ss">-   </span><span class="in">`date`</span>: month expressed as the first day of the month</span>
+<span id="cb20-504"><a href="#cb20-504"></a></span>
+<span id="cb20-505"><a href="#cb20-505"></a><span class="ss">-   </span><span class="in">`case_shiller`</span>: Case-Shiller Home Price Index value</span>
+<span id="cb20-506"><a href="#cb20-506"></a></span>
+<span id="cb20-507"><a href="#cb20-507"></a><span class="ss">-   </span><span class="in">`unemp_rate`</span>: Unemployment rate</span>
+<span id="cb20-508"><a href="#cb20-508"></a></span>
+<span id="cb20-509"><a href="#cb20-509"></a><span class="ss">-   </span><span class="in">`avg_gas_price`</span>: Average gas price</span>
+<span id="cb20-510"><a href="#cb20-510"></a></span>
+<span id="cb20-511"><a href="#cb20-511"></a><span class="ss">-   </span><span class="in">`age_lt_18`</span>: Proportion of the population younger than 18 years old</span>
+<span id="cb20-512"><a href="#cb20-512"></a></span>
+<span id="cb20-513"><a href="#cb20-513"></a><span class="ss">-   </span><span class="in">`age_18_35`</span>: Proportion of the population between the ages of 18 and 35</span>
+<span id="cb20-514"><a href="#cb20-514"></a></span>
+<span id="cb20-515"><a href="#cb20-515"></a><span class="ss">-   </span><span class="in">`age_36_65`</span>: Proportion of the population between the ages of 36 and 65</span>
+<span id="cb20-516"><a href="#cb20-516"></a></span>
+<span id="cb20-517"><a href="#cb20-517"></a><span class="ss">-   </span><span class="in">`age_gt_65`</span>: Proportion of the population older than 65 years old</span>
+<span id="cb20-518"><a href="#cb20-518"></a></span>
+<span id="cb20-519"><a href="#cb20-519"></a><span class="ss">-   </span><span class="in">`educ_hs_less`</span>: Proportion of the population with up to a high school diploma</span>
+<span id="cb20-520"><a href="#cb20-520"></a></span>
+<span id="cb20-521"><a href="#cb20-521"></a><span class="ss">-   </span><span class="in">`educ_college`</span>: Proportion of the population with more than a high school diploma and up to a bachelor's degree</span>
+<span id="cb20-522"><a href="#cb20-522"></a></span>
+<span id="cb20-523"><a href="#cb20-523"></a><span class="ss">-   </span><span class="in">`educ_grad`</span>: Proportion of the population with education higher than a bachelor's degree</span>
+<span id="cb20-524"><a href="#cb20-524"></a></span>
+<span id="cb20-525"><a href="#cb20-525"></a><span class="ss">-   </span><span class="in">`status_married`</span>: Proportion of the population that is married; including separated</span>
+<span id="cb20-526"><a href="#cb20-526"></a></span>
+<span id="cb20-527"><a href="#cb20-527"></a><span class="ss">-   </span><span class="in">`status_nev_mar`</span>: Proportion of the population that has never been married</span>
+<span id="cb20-528"><a href="#cb20-528"></a></span>
+<span id="cb20-529"><a href="#cb20-529"></a><span class="ss">-   </span><span class="in">`status_other`</span>: Proportion of the population not categorized as either <span class="in">`status_married`</span> or <span class="in">`status_nev_mar`</span></span>
+<span id="cb20-530"><a href="#cb20-530"></a></span>
+<span id="cb20-531"><a href="#cb20-531"></a><span class="ss">-   </span><span class="in">`hispanic`</span>: Proportion of the population that reported hispanic ethnicity</span>
+<span id="cb20-532"><a href="#cb20-532"></a></span>
+<span id="cb20-533"><a href="#cb20-533"></a><span class="ss">-   </span><span class="in">`pop_chg`</span>: Population change from one month to the next</span>
+<span id="cb20-534"><a href="#cb20-534"></a></span>
+<span id="cb20-535"><a href="#cb20-535"></a>Once I skimmed the data, I took a closer look at the percent of <span class="in">`avg_gas_price`</span> values that were missing for each city.</span>
+<span id="cb20-536"><a href="#cb20-536"></a></span>
+<span id="cb20-539"><a href="#cb20-539"></a><span class="in">```{r}</span></span>
+<span id="cb20-540"><a href="#cb20-540"></a><span class="co">#| label: check-avg-gas-missing</span></span>
+<span id="cb20-541"><a href="#cb20-541"></a></span>
+<span id="cb20-542"><a href="#cb20-542"></a>econ_data <span class="sc">|&gt;</span></span>
+<span id="cb20-543"><a href="#cb20-543"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb20-544"><a href="#cb20-544"></a>  <span class="fu">summarise</span>(<span class="at">pct_miss_gas =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(avg_gas_price)) <span class="sc">/</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb20-545"><a href="#cb20-545"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> pct_miss_gas, <span class="at">x =</span> city)) <span class="sc">+</span></span>
+<span id="cb20-546"><a href="#cb20-546"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
+<span id="cb20-547"><a href="#cb20-547"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb20-548"><a href="#cb20-548"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-549"><a href="#cb20-549"></a>    <span class="at">y =</span> <span class="st">"Percent Missing"</span>,</span>
+<span id="cb20-550"><a href="#cb20-550"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-551"><a href="#cb20-551"></a>    <span class="at">title =</span> <span class="st">"Missingness in avg_gas_price variable by city"</span></span>
+<span id="cb20-552"><a href="#cb20-552"></a>  ) <span class="sc">+</span> </span>
+<span id="cb20-553"><a href="#cb20-553"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-554"><a href="#cb20-554"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb20-555"><a href="#cb20-555"></a></span>
+<span id="cb20-556"><a href="#cb20-556"></a><span class="in">```</span></span>
+<span id="cb20-557"><a href="#cb20-557"></a></span>
+<span id="cb20-558"><a href="#cb20-558"></a>Evidently data were missing only for San Diego. Below are the start and end dates of average gas price data for San Diego in this data set.</span>
+<span id="cb20-559"><a href="#cb20-559"></a></span>
+<span id="cb20-562"><a href="#cb20-562"></a><span class="in">```{r}</span></span>
+<span id="cb20-563"><a href="#cb20-563"></a><span class="co">#| label: show-avg-gas-dates</span></span>
+<span id="cb20-564"><a href="#cb20-564"></a></span>
+<span id="cb20-565"><a href="#cb20-565"></a>econ_data <span class="sc">|&gt;</span></span>
+<span id="cb20-566"><a href="#cb20-566"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>, <span class="sc">!</span><span class="fu">is.na</span>(avg_gas_price)) <span class="sc">|&gt;</span></span>
+<span id="cb20-567"><a href="#cb20-567"></a>  <span class="fu">summarise</span>(<span class="at">start_date =</span> <span class="fu">min</span>(date), <span class="at">end_date =</span> <span class="fu">max</span>(date)) <span class="sc">|&gt;</span></span>
+<span id="cb20-568"><a href="#cb20-568"></a>  <span class="fu">gt</span>()</span>
+<span id="cb20-569"><a href="#cb20-569"></a></span>
+<span id="cb20-570"><a href="#cb20-570"></a><span class="in">```</span></span>
+<span id="cb20-571"><a href="#cb20-571"></a></span>
+<span id="cb20-572"><a href="#cb20-572"></a>As it turns out, reports of average gas price data for San Diego start in January of 2018, which means that 12 years of data would be missing. With that many values missing for one of the cities it makes sense to drop the average gas price variable.</span>
+<span id="cb20-573"><a href="#cb20-573"></a></span>
+<span id="cb20-576"><a href="#cb20-576"></a><span class="in">```{r}</span></span>
+<span id="cb20-577"><a href="#cb20-577"></a><span class="co">#| label: drop-avg-gas</span></span>
+<span id="cb20-578"><a href="#cb20-578"></a></span>
+<span id="cb20-579"><a href="#cb20-579"></a>econ_data <span class="ot">&lt;-</span> <span class="fu">select</span>(econ_data, <span class="sc">!</span>avg_gas_price)</span>
 <span id="cb20-580"><a href="#cb20-580"></a></span>
-<span id="cb20-581"><a href="#cb20-581"></a>With all this data in hand, the next step is to perform some time series analysis on the Case-Shiller HPI which I'll show in Part 2 of this set of posts.</span>
+<span id="cb20-581"><a href="#cb20-581"></a>econ_data <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span>
+<span id="cb20-582"><a href="#cb20-582"></a><span class="in">```</span></span>
+<span id="cb20-583"><a href="#cb20-583"></a></span>
+<span id="cb20-584"><a href="#cb20-584"></a>With all this data in hand, the next step is to perform some time series analysis on the Case-Shiller HPI which I'll show in Part 2 of this set of posts.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
