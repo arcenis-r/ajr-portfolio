@@ -7,12 +7,12 @@ website:
   navbar:
     background: primary
     left:
-      - href: ce-dashboards.qmd
-        text: "CE Dashboards"
-      - href: publications.qmd
-        text: "Publications"
       - href: posts.qmd
         text: "Personal Projects"
+      - href: publications.qmd
+        text: "Publications"
+      - href: ce-dashboards.qmd
+        text: "CE Dashboards"
     right:
       - icon: linkedin
         href: https://linkedin.com/in/arcenisrojas
