@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -185,13 +219,13 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="classification">classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="data science">data science <span class="quarto-category-count">(3)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(2)</span></div><div class="category" data-category="package development">package development <span class="quarto-category-count">(1)</span></div><div class="category" data-category="text analysis">text analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="topic modeling">topic modeling <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="classification">classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="data science">data science <span class="quarto-category-count">(3)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(2)</span></div><div class="category" data-category="package development">package development <span class="quarto-category-count">(1)</span></div><div class="category" data-category="text analysis">text analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="topic modeling">topic modeling <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Projects in Data Science and Statistics</h1>
+<div class="quarto-title-block"><div><h1 class="title">Projects in Data Science and Statistics</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -211,10 +245,40 @@ window.Quarto = {
 
 
 
+<!-- -->
+
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="text analysis,topic modeling,data science" data-listing-date-sort="1737698400000" data-listing-file-modified-sort="1707767513383" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2122">
+<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1707717600000" data-listing-file-modified-sort="1707950752469" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3389">
+<div class="thumbnail">
+<p><a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external"></a></p><a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external">
+<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
+</a><p><a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external">Forecasting Case Shiller Index - Part I</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external">Gathering data</a>
+</div>
+<div class="listing-description">
+<a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external">U.S. housing prices have been all over the news in recent times, which comes as no surprise given recent concerns about inflation and interest rates. With this in mind I…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/20240214-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.html" class="no-external">
+<div class="listing-date">
+Feb 12, 2024
+</div>
+<div class="listing-author">
+Arcenis Rojas
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="text analysis,topic modeling,data science" data-listing-date-sort="1706162400000" data-listing-file-modified-sort="1707951267990" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2122">
 <div class="thumbnail">
 <p><a href="./posts/20240125-topic-modeling/topic-modeling.html" class="no-external"></a></p><a href="./posts/20240125-topic-modeling/topic-modeling.html" class="no-external">
 <p class="card-img-top"><img src="posts\20240125-topic-modeling\topic-modeling_files\figure-html\lda_3-top-terms-1.png"  class="thumbnail-image card-img"/></p>
@@ -245,7 +309,7 @@ data science
 <div class="metadata">
 <a href="./posts/20240125-topic-modeling/topic-modeling.html" class="no-external">
 <div class="listing-date">
-Jan 24, 2025
+Jan 25, 2024
 </div>
 <div class="listing-author">
 Arcenis Rojas
@@ -253,7 +317,7 @@ Arcenis Rojas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="package development" data-listing-date-sort="1706076000000" data-listing-file-modified-sort="1707768085183" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4383">
+<div class="quarto-post image-right" data-index="2" data-categories="package development" data-listing-date-sort="1706076000000" data-listing-file-modified-sort="1707768085183" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4383">
 <div class="thumbnail">
 <p><a href="./posts/20240124-cepumd-intro/cepumd-intro.html" class="no-external"></a></p><a href="./posts/20240124-cepumd-intro/cepumd-intro.html" class="no-external">
 <p class="card-img-top"><img src="posts\20240124-cepumd-intro\images\cepumd.png" alt="cepumd hexsticker"  class="thumbnail-image card-img"/></p>
@@ -286,7 +350,7 @@ Arcenis Rojas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="machine learning,data science,classification" data-listing-date-sort="1676440800000" data-listing-file-modified-sort="1707777658556" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2048">
+<div class="quarto-post image-right" data-index="3" data-categories="machine learning,data science,classification" data-listing-date-sort="1676440800000" data-listing-file-modified-sort="1707777658556" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2048">
 <div class="thumbnail">
 <p><a href="./posts/20230215-class-thresh-vs-upsampling/class-thresh-vs-upsampling.html" class="no-external"></a></p><a href="./posts/20230215-class-thresh-vs-upsampling/class-thresh-vs-upsampling.html" class="no-external">
 <p class="card-img-top"><img src="posts\20230215-class-thresh-vs-upsampling\class-thresh-vs-upsampling_files\figure-html\outcome-frequencies-1.png"  class="thumbnail-image card-img"/></p>
@@ -325,7 +389,7 @@ Arcenis Rojas
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="data science,machine learning" data-listing-date-sort="1630213200000" data-listing-file-modified-sort="1707778364583" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3431">
+<div class="quarto-post image-right" data-index="4" data-categories="data science,machine learning" data-listing-date-sort="1630213200000" data-listing-file-modified-sort="1707778364583" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="18" data-listing-word-count-sort="3431">
 <div class="thumbnail">
 <p><a href="./posts/20210829-open-blackbox-tidy/open-blackbox-tidy.html" class="no-external"></a></p><a href="./posts/20210829-open-blackbox-tidy/open-blackbox-tidy.html" class="no-external">
 <p class="card-img-top"><img src="posts\20210829-open-blackbox-tidy\images\shapley-instance.png" alt="Apartment price predicted by square footage, floor number, whether there are nearby parks, and whether cats are banned"  class="thumbnail-image card-img"/></p>
@@ -445,9 +509,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/arcenis-r\.github\.io\/ajr-portfolio\/");
+      var filterRegex = new RegExp("^(?:http:|https:)\/\/www\.arcenis-r\.github\.io\/ajr-portfolio");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -714,25 +829,66 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         }
       };
     }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
           }
-        });
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          trigger: 'click',
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          positionFixed: true,
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
       }
   const findCites = (el) => {
     const parentEl = el.parentElement;
@@ -772,7 +928,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="an">title:</span><span class="co"> "Projects in Data Science and Statistics"</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="an">listing:</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">  contents: posts</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">  type: default</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">  sort: "date desc"</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">  categories: true</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

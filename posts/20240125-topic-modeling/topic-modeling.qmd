@@ -5,7 +5,7 @@ editor: visual
 execute:
   warning: false
   error: false
-date: "1/24/2025"
+date: "1/25/2024"
 categories:
   - text analysis
   - topic modeling
@@ -29,7 +29,7 @@ I'll first download the data from the [NIH's Funded Projects page](%22https://he
 #| label: declare-data-dir
 #| include: false
 
-data_dir <- "C:/r-projects/ajr-portfolio/portfolio-data"
+data_dir <- "./topic-modeling-data"
 
 ```
 

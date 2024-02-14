@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -138,7 +172,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Publications</h1>
+<div class="quarto-title-block"><div><h1 class="title">Publications</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -168,6 +202,8 @@ ul.task-list li input[type="checkbox"] {
 <p>Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). Documenting the Consumer Expenditure Surveys with DDI and Colectica – An Update. <em>North American Data Documentation Initiative</em>. <a href="https://doi.org/10.5281/zenodo.556223" class="uri">https://doi.org/10.5281/zenodo.556223</a></p>
 <p>Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). A Complex Use Case - Documenting the Consumer Expenditure Survey at BLS. <em>North American Data Documentation Initiative</em>. <a href="https://doi.org/10.5281/zenodo.556223" class="uri">https://doi.org/10.5281/zenodo.556223</a></p>
 
+
+<!-- -->
 
 </section>
 
@@ -251,9 +287,60 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/arcenis-r\.github\.io\/ajr-portfolio\/");
+      var filterRegex = new RegExp("^(?:http:|https:)\/\/www\.arcenis-r\.github\.io\/ajr-portfolio");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -520,25 +607,66 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         }
       };
     }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
           }
-        });
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          trigger: 'click',
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          positionFixed: true,
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
       }
   const findCites = (el) => {
     const parentEl = el.parentElement;
@@ -578,7 +706,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="an">title:</span><span class="co"> "Publications"</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">  html:</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">    link-external-newwindow: true</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">    toc: true</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">    toc_float: true</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="an">bibliography:</span><span class="co"> ./references/arcenis-publications.bib</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">---</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">## Papers</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a>Green, D., Melzer, B. T., Parker, J. A., &amp; Rojas, A. (2020). Accelerator or Brake? Cash for Clunkers, Household Liquidity, and Aggregate Demand. *American Economic Journal: Economic Policy*, *12*(4), 178–211. <span class="ot">&lt;https://www.aeaweb.org/articles?id=10.1257/pol.20170122&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a></span>
+<span id="cb1-16"><a href="#cb1-16"></a>Hubener, E., Rojas, A., &amp; Tseng, N. (2018). Tradeoffs in the expenditure patterns of families with children. *Beyond the Numbers: Prices &amp; Spending (U.S. Bureau of Labor Statistics)*, 7(11). <span class="ot">&lt;https://www.bls.gov/opub/btn/volume-7/tradeoffs-in-the-expenditure-patterns-of-families-with-children.htm&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a>Foster, A.C., Rojas, A. (2018). Program participation and spending patterns of families receiving government means-tested assistance. *Monthly Labor Review (U.S. Bureau of Labor Statistics).* <span class="ot">&lt;https://doi.org/10.21916/mlr.2018.3&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="fu">## Presentations</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a>Paulin, G., Rojas, A., Taylor, W. (2018). Expenditures with Policy Implications: Results from the Consumer Expenditure Surveys on Housing, Alcohol, Tobacco, and Gambling. *American Council on Consumer Interests*. <span class="ot">&lt;https://www.consumerinterests.org/assets/docs/CIA/CIA2018/Paulin%281%29CIA2018.pdf&gt;</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a></span>
+<span id="cb1-24"><a href="#cb1-24"></a>Tan, L., Rojas, A. (2019). Exploring the Application of Machine Learning Techniques to Construct R-indicators. *American Association for Public Opinion Research Conference*. <span class="ot">&lt;https://www.bls.gov/cex/research_papers/pdf/rojas-r-indicators-aapor-presentation.pdf&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
+<span id="cb1-26"><a href="#cb1-26"></a>Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). Documenting the Consumer Expenditure Surveys with DDI and Colectica – An Update. *North American Data Documentation Initiative*. <span class="ot">&lt;https://doi.org/10.5281/zenodo.556223&gt;</span></span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a>Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). A Complex Use Case - Documenting the Consumer Expenditure Survey at BLS. *North American Data Documentation Initiative*. <span class="ot">&lt;https://doi.org/10.5281/zenodo.556223&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 
