@@ -11,15 +11,21 @@ categories:
   - package development
 ---
 
-![cepumd hexsticker](images/cepumd.png){fig-alt="cepumd hexsticker" fig-align="center" width="300"}
-
 ## Motivation
 
+::: {layout="[35, 65]"}
+![cepumd hexsticker](images/cepumd.png){alt="cepumd hexsticker" fig-alt="cepumd hexsticker" fig-align="center" width="300"}
+
+::: {layout="[35, 65]"}
 The purpose of `cepumd` is to make working with Consumer Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward calculating mean, weighted, annual expenditures (henceforth "mean expenditures"). The challenges `cepumd` seeks to address deal primarily with pulling together the necessary data toward this end. Some of the overarching ideas underlying the package are as follows:
 
 -   Use a [Tidyverse](https://www.tidyverse.org/) framework for most operations and be (hopefully) generally [Tidyverse](https://www.tidyverse.org/) friendly
+
 -   Balance the effort to make the end user's experience with CE PUMD easier while being flexible enough to allow that user to perform any analysis with the data they wish
--   Only designed to help users calculate mean **expenditures** on and of the consumer unit (CU), i.e., not income, not assets, not liabilities, not gifts, at least for now
+
+-   Only designed to help users calculate mean **expenditures** on and of the consumer unit (CU), i.e., not income, not assets, not liabilities, not gifts.
+:::
+:::
 
 ## Overview of the CE and CE PUMD
 
@@ -466,6 +472,7 @@ The next step is to calculate means, for which I'll use some more Tidyverse func
 
 ```{r}
 #| label: get-food-away-means
+#| cache: true
 
 food_away_means <- food_away_comp_data |>
   group_nest(year, fam_size_label, .key = "data") |>
