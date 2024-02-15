@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="overview-of-the-ce-and-ce-pumd" class="level2">
 <h2 class="anchored" data-anchor-id="overview-of-the-ce-and-ce-pumd">Overview of the CE and CE PUMD</h2>
 <p>First a little history…</p>
-<p>The first Consumer Expenditure Survey happened in 1888 (<a href="https://www.bls.gov/opub/hom/cex/history.htm" class="uri">https://www.bls.gov/opub/hom/cex/history.htm</a>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called <a href="https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf">130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018</a></p>
+<p>The first Consumer Expenditure Survey happened in 1888 (<a href="https://www.bls.gov/opub/hom/cex/history.htm" class="uri">https://www.bls.gov/opub/hom/cex/history.htm</a>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called <a href="https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf">130 Years of the Consumer Expenditure Surveys (CE): 1888 - 2018</a></p>
 <p>From the CE home page:</p>
 <blockquote class="blockquote">
 <p>“The Consumer Expenditure Surveys (CE) program provides data on expenditures, income, and demographic characteristics of consumers in the United States. The CE program provides these data in tables, LABSTAT database, news releases, reports, and public use microdata files.</p>
@@ -244,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>CE data are collected by the Census Bureau for BLS in two surveys, the Interview Survey for major and/or recurring items and the Diary Survey for more minor or frequently purchased items. CE data are primarily used to revise the relative importance of goods and services in the market basket of the Consumer Price Index. The CE is the only Federal household survey to provide information on the complete range of consumers’ expenditures and incomes. Here is an overview of the CE program and its methods.”</p>
 </blockquote>
-<p>Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchichally, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which <code>cepumd</code> seeks to address (more on this further down).</p>
+<p>Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchically, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which <code>cepumd</code> seeks to address (more on this further down).</p>
 <p>Please visit the following pages to learn more about the CE program overall and CE PUMD more specifically.</p>
 <ul>
 <li>CE homepage: (<a href="https://www.bls.gov/cex/)" class="uri">https://www.bls.gov/cex/)</a></li>
@@ -268,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul></li>
 <li><strong>Managing data inconsistencies</strong>
 <ul>
-<li>Provide the ability to recode variable categories using the CE Dictionary for Interview and Diary Surveys</li>
+<li>Provide the ability to re-code variable categories using the CE Dictionary for Interview and Diary Surveys</li>
 <li>Resolve some inconsistencies such as differences code definitions between the Interview and Diary (check the definitions of the “FAM_TYPE” variable categories in 2015 for an example)</li>
 <li>Provide useful errors or warnings when there are multiple categories of something the user is trying to access, e.g., some titles in the hierarchical grouping files (“stub” or “HG” files) repeat and requires more careful selection of UCCs</li>
 </ul></li>
@@ -286,8 +286,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="cautions-and-recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="cautions-and-recommendations">Cautions and recommendations</h2>
 <ul>
-<li><p>Estimates produced using PUMD, which is topcoded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE’s published estimates are based on confidential data that are not topcoded nor have records suppressed. You can learn more at <a href="https://www.bls.gov/cex/pumd_disclosure.htm">CE Protection of Respondent Confidentiality</a>.</p></li>
-<li><p>When calculating estimates for sub-samples or crosss-sections of data it is best to stick to the combinations of variables that the CE uses in it’s publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a <a href="https://www.bls.gov/opub/hom/cex/design.htm">stratified, random sample</a> (a.k.a., “representative sample”) and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. <code>cepumd</code> currently does not support unweighted estimates, but data for such an analysis can be prepared using <code>ce_prepdata()</code>.</p></li>
+<li><p>Estimates produced using PUMD, which is top-coded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE’s published estimates are based on confidential data that are not top-coded nor have records suppressed. You can learn more at <a href="https://www.bls.gov/cex/pumd_disclosure.htm">CE Protection of Respondent Confidentiality</a>.</p></li>
+<li><p>When calculating estimates for sub-samples or cross-sections of data it is best to stick to the combinations of variables that the CE uses in it’s publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a <a href="https://www.bls.gov/opub/hom/cex/design.htm">stratified, random sample</a> (a.k.a., “representative sample”) and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. <code>cepumd</code> currently does not support unweighted estimates, but data for such an analysis can be prepared using <code>ce_prepdata()</code>.</p></li>
 <li><p>Quantiles should only be generated using data from 1 survey instrument as the samples for the Interview and Diary are different.</p></li>
 <li><p>Check the expenditure category in the appropriate HG file to ensure that it is the category for which you intend to generate an estimate.</p></li>
 <li><p>Store an HG object in the environment and call that directly in <code>ce_prepdata()</code>.</p></li>
@@ -307,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="key-cepumd-functions">Key cepumd functions</h2>
 <ul>
 <li><p>The workhorse of <code>cepumd</code> is <code>ce_prepdata()</code>. It merges the household characteristics file (FMLI/-D) with the corresponding expenditure tabulation file (MTBI/EXPD) for a specified year, adjusts weights for months-in-scope and the number of collection quarters, adjusts some cost values by their periodicity factor (some cost categories are represented as annual figures and others as quarterly). With the recent update it only requires the first 3 arguments to function: the year, the survey type, and one or more valid UCCs. <code>ce_prepdata()</code> now creates all of the other necessary objects within the function if not provided.</p></li>
-<li><p>There are two functions for wrangling hierarchical grouping data into more useable formats:</p>
+<li><p>There are two functions for wrangling hierarchical grouping data into more usable formats:</p>
 <ul>
 <li><code>ce_hg()</code> pulls the requested type of HG file (Interview, Diary, or Integrated) for a specified year.</li>
 <li><code>ce_uccs()</code> filters the HG file for the specified expenditure category and returns either a data frame with only that section of the HG file or the Universal Classification Codes (UCCs) that make up that expenditure category.</li>
@@ -321,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="example-workflows" class="level2">
 <h2 class="anchored" data-anchor-id="example-workflows">Example workflows</h2>
-<p>The following are a few sample workflows that show how <code>cepumd</code> can be used. Before jumping into those I’ll first install and load the necessary pacakges and store some CEPUMD files. I’ll keep the path to those files in a variable called <code>ce_data_dir</code>.</p>
+<p>The following are a few sample workflows that show how <code>cepumd</code> can be used. Before jumping into those I’ll first install and load the necessary packages and store some CEPUMD files. I’ll keep the path to those files in a variable called <code>ce_data_dir</code>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -379,7 +379,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="slightly-more-advanced-workflow-used-car-truck-expenditures-by-urbanicity" class="level3">
 <h3 class="anchored" data-anchor-id="slightly-more-advanced-workflow-used-car-truck-expenditures-by-urbanicity">Slightly more advanced workflow: Used Car &amp; Truck Expenditures by Urbanicity</h3>
-<p>In this example I’ll calculate estimated annual expenditures on new and used cars by urbanicity also for 2021. Once the data are prepped with <code>ce_data()</code> I’ll just nest the data by urbanicity and run <code>ce_means()</code> and <code>ce_quantiles()</code> on the nested datasets. Since the overwhelming number of reports of vehicle purchases occur in the Interview survey, I’ll only use Interview data.</p>
+<p>In this example I’ll calculate estimated annual expenditures on new and used cars by urbanicity also for 2021. Once the data are prepped with <code>ce_data()</code> I’ll just nest the data by urbanicity and run <code>ce_means()</code> and <code>ce_quantiles()</code> on the nested data sets. Since the overwhelming number of reports of vehicle purchases occur in the Interview survey, I’ll only use Interview data.</p>
 <p>First I’ll get the stub file and filter it for categories involving new or used cars.</p>
 <div class="cell">
 <details class="code-fold">
@@ -892,7 +892,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   1.000   1.000   2.000   2.666   4.000  14.000 </code></pre>
 </div>
 </div>
-<p>Since some households have as many as 14 people, I’ll create a FAM_SIZE label with any number greater than 4 taking on the value “5+”. Next, I’ll prepare the 2020 data and rowbind it with the 2010 data as well as create the “fam_size_label” variable. I’m also going to convert “ref_mo” and “ref_yr” to character to make it compatible with the CPI data that I’ll get later. I’ll also take a look at just a snippet of the data.</p>
+<p>Since some households have as many as 14 people, I’ll create a FAM_SIZE label with any number greater than 4 taking on the value “5+”. Next, I’ll prepare the 2020 data and row bind it with the 2010 data as well as create the “fam_size_label” variable. I’m also going to convert “ref_mo” and “ref_yr” to character to make it compatible with the CPI data that I’ll get later. I’ll also take a look at just a snippet of the data.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1756,7 +1756,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>Now the codes are consistent across survey instruments and I can use this codebook in my call to <code>ce_prepdata()</code> using the “own_codebook” argument. Then I’ll pass that to <code>ce_mean()</code> per usual.</p>
+<p>Now the codes are consistent across survey instruments and I can use this code-book in my call to <code>ce_prepdata()</code> using the “own_code-book” argument. Then I’ll pass that to <code>ce_mean()</code> per usual.</p>
 <p>Next I’ll get some information about how utilities expenditures are organized using the stub file.</p>
 <div class="cell">
 <details class="code-fold">
@@ -2169,7 +2169,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both “I” and “D” in the survey colum of the stub file if expenditures are collected through both instruments.</p>
+<p>I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both “I” and “D” in the survey column of the stub file if expenditures are collected through both instruments.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2193,7 +2193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>It seems utlities expenditures are collected only through the Interview survey, so I’ll only need to use Interview data files to calculate estimates.</p>
+<p>It seems utilities expenditures are collected only through the Interview survey, so I’ll only need to use Interview data files to calculate estimates.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2871,7 +2871,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-25"><a href="#cb35-25"></a></span>
 <span id="cb35-26"><a href="#cb35-26"></a>First a little history...</span>
 <span id="cb35-27"><a href="#cb35-27"></a></span>
-<span id="cb35-28"><a href="#cb35-28"></a>The first Consumer Expenditure Survey happened in 1888 (<span class="ot">&lt;https://www.bls.gov/opub/hom/cex/history.htm&gt;</span>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called <span class="co">[</span><span class="ot">130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018</span><span class="co">](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)</span></span>
+<span id="cb35-28"><a href="#cb35-28"></a>The first Consumer Expenditure Survey happened in 1888 (<span class="ot">&lt;https://www.bls.gov/opub/hom/cex/history.htm&gt;</span>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called <span class="co">[</span><span class="ot">130 Years of the Consumer Expenditure Surveys (CE): 1888 - 2018</span><span class="co">](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)</span></span>
 <span id="cb35-29"><a href="#cb35-29"></a></span>
 <span id="cb35-30"><a href="#cb35-30"></a>From the CE home page:</span>
 <span id="cb35-31"><a href="#cb35-31"></a></span>
@@ -2879,7 +2879,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-33"><a href="#cb35-33"></a></span>
 <span id="cb35-34"><a href="#cb35-34"></a><span class="at">&gt; CE data are collected by the Census Bureau for BLS in two surveys, the Interview Survey for major and/or recurring items and the Diary Survey for more minor or frequently purchased items. CE data are primarily used to revise the relative importance of goods and services in the market basket of the Consumer Price Index. The CE is the only Federal household survey to provide information on the complete range of consumers' expenditures and incomes. Here is an overview of the CE program and its methods."</span></span>
 <span id="cb35-35"><a href="#cb35-35"></a></span>
-<span id="cb35-36"><a href="#cb35-36"></a>Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchichally, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which <span class="in">`cepumd`</span> seeks to address (more on this further down).</span>
+<span id="cb35-36"><a href="#cb35-36"></a>Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchically, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which <span class="in">`cepumd`</span> seeks to address (more on this further down).</span>
 <span id="cb35-37"><a href="#cb35-37"></a></span>
 <span id="cb35-38"><a href="#cb35-38"></a>Please visit the following pages to learn more about the CE program overall and CE PUMD more specifically.</span>
 <span id="cb35-39"><a href="#cb35-39"></a></span>
@@ -2900,7 +2900,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-54"><a href="#cb35-54"></a><span class="ss">    -   </span>Help the user identify the Universal Classification Codes (UCCs) related to their analysis using a combination of <span class="in">`ce_hg()`</span> and <span class="in">`ce_uccs()`</span></span>
 <span id="cb35-55"><a href="#cb35-55"></a><span class="ss">    -   </span>Combine all required files and variables using <span class="in">`ce_prepdata()`</span></span>
 <span id="cb35-56"><a href="#cb35-56"></a><span class="ss">-   </span>**Managing data inconsistencies**</span>
-<span id="cb35-57"><a href="#cb35-57"></a><span class="ss">    -   </span>Provide the ability to recode variable categories using the CE Dictionary for Interview and Diary Surveys</span>
+<span id="cb35-57"><a href="#cb35-57"></a><span class="ss">    -   </span>Provide the ability to re-code variable categories using the CE Dictionary for Interview and Diary Surveys</span>
 <span id="cb35-58"><a href="#cb35-58"></a><span class="ss">    -   </span>Resolve some inconsistencies such as differences code definitions between the Interview and Diary (check the definitions of the "FAM_TYPE" variable categories in 2015 for an example)</span>
 <span id="cb35-59"><a href="#cb35-59"></a><span class="ss">    -   </span>Provide useful errors or warnings when there are multiple categories of something the user is trying to access, e.g., some titles in the hierarchical grouping files ("stub" or "HG" files) repeat and requires more careful selection of UCCs</span>
 <span id="cb35-60"><a href="#cb35-60"></a><span class="ss">-   </span>**Calculating weighted, annual metrics**</span>
@@ -2914,9 +2914,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-68"><a href="#cb35-68"></a></span>
 <span id="cb35-69"><a href="#cb35-69"></a><span class="fu">## Cautions and recommendations</span></span>
 <span id="cb35-70"><a href="#cb35-70"></a></span>
-<span id="cb35-71"><a href="#cb35-71"></a><span class="ss">-   </span>Estimates produced using PUMD, which is topcoded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not topcoded nor have records suppressed. You can learn more at <span class="co">[</span><span class="ot">CE Protection of Respondent Confidentiality</span><span class="co">](https://www.bls.gov/cex/pumd_disclosure.htm)</span>.</span>
+<span id="cb35-71"><a href="#cb35-71"></a><span class="ss">-   </span>Estimates produced using PUMD, which is top-coded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not top-coded nor have records suppressed. You can learn more at <span class="co">[</span><span class="ot">CE Protection of Respondent Confidentiality</span><span class="co">](https://www.bls.gov/cex/pumd_disclosure.htm)</span>.</span>
 <span id="cb35-72"><a href="#cb35-72"></a></span>
-<span id="cb35-73"><a href="#cb35-73"></a><span class="ss">-   </span>When calculating estimates for sub-samples or crosss-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a <span class="co">[</span><span class="ot">stratified, random sample</span><span class="co">](https://www.bls.gov/opub/hom/cex/design.htm)</span> (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. <span class="in">`cepumd`</span> currently does not support unweighted estimates, but data for such an analysis can be prepared using <span class="in">`ce_prepdata()`</span>.</span>
+<span id="cb35-73"><a href="#cb35-73"></a><span class="ss">-   </span>When calculating estimates for sub-samples or cross-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a <span class="co">[</span><span class="ot">stratified, random sample</span><span class="co">](https://www.bls.gov/opub/hom/cex/design.htm)</span> (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. <span class="in">`cepumd`</span> currently does not support unweighted estimates, but data for such an analysis can be prepared using <span class="in">`ce_prepdata()`</span>.</span>
 <span id="cb35-74"><a href="#cb35-74"></a></span>
 <span id="cb35-75"><a href="#cb35-75"></a><span class="ss">-   </span>Quantiles should only be generated using data from 1 survey instrument as the samples for the Interview and Diary are different.</span>
 <span id="cb35-76"><a href="#cb35-76"></a></span>
@@ -2940,7 +2940,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-96"><a href="#cb35-96"></a></span>
 <span id="cb35-97"><a href="#cb35-97"></a><span class="ss">-   </span>The workhorse of <span class="in">`cepumd`</span> is <span class="in">`ce_prepdata()`</span>. It merges the household characteristics file (FMLI/-D) with the corresponding expenditure tabulation file (MTBI/EXPD) for a specified year, adjusts weights for months-in-scope and the number of collection quarters, adjusts some cost values by their periodicity factor (some cost categories are represented as annual figures and others as quarterly). With the recent update it only requires the first 3 arguments to function: the year, the survey type, and one or more valid UCCs. <span class="in">`ce_prepdata()`</span> now creates all of the other necessary objects within the function if not provided.</span>
 <span id="cb35-98"><a href="#cb35-98"></a></span>
-<span id="cb35-99"><a href="#cb35-99"></a><span class="ss">-   </span>There are two functions for wrangling hierarchical grouping data into more useable formats:</span>
+<span id="cb35-99"><a href="#cb35-99"></a><span class="ss">-   </span>There are two functions for wrangling hierarchical grouping data into more usable formats:</span>
 <span id="cb35-100"><a href="#cb35-100"></a></span>
 <span id="cb35-101"><a href="#cb35-101"></a><span class="ss">    -   </span><span class="in">`ce_hg()`</span> pulls the requested type of HG file (Interview, Diary, or Integrated) for a specified year.</span>
 <span id="cb35-102"><a href="#cb35-102"></a><span class="ss">    -   </span><span class="in">`ce_uccs()`</span> filters the HG file for the specified expenditure category and returns either a data frame with only that section of the HG file or the Universal Classification Codes (UCCs) that make up that expenditure category.</span>
@@ -2952,7 +2952,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-108"><a href="#cb35-108"></a></span>
 <span id="cb35-109"><a href="#cb35-109"></a><span class="fu">## Example workflows</span></span>
 <span id="cb35-110"><a href="#cb35-110"></a></span>
-<span id="cb35-111"><a href="#cb35-111"></a>The following are a few sample workflows that show how <span class="in">`cepumd`</span> can be used. Before jumping into those I'll first install and load the necessary pacakges and store some CEPUMD files. I'll keep the path to those files in a variable called <span class="in">`ce_data_dir`</span>.</span>
+<span id="cb35-111"><a href="#cb35-111"></a>The following are a few sample workflows that show how <span class="in">`cepumd`</span> can be used. Before jumping into those I'll first install and load the necessary packages and store some CEPUMD files. I'll keep the path to those files in a variable called <span class="in">`ce_data_dir`</span>.</span>
 <span id="cb35-112"><a href="#cb35-112"></a></span>
 <span id="cb35-115"><a href="#cb35-115"></a><span class="in">```{r}</span></span>
 <span id="cb35-116"><a href="#cb35-116"></a><span class="co">#| label: store-data-dir</span></span>
@@ -3002,7 +3002,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-164"><a href="#cb35-164"></a></span>
 <span id="cb35-165"><a href="#cb35-165"></a><span class="fu">### Slightly more advanced workflow: Used Car &amp; Truck Expenditures by Urbanicity</span></span>
 <span id="cb35-166"><a href="#cb35-166"></a></span>
-<span id="cb35-167"><a href="#cb35-167"></a>In this example I'll calculate estimated annual expenditures on new and used cars by urbanicity also for 2021. Once the data are prepped with <span class="in">`ce_data()`</span> I'll just nest the data by urbanicity and run <span class="in">`ce_means()`</span> and <span class="in">`ce_quantiles()`</span> on the nested datasets. Since the overwhelming number of reports of vehicle purchases occur in the Interview survey, I'll only use Interview data.</span>
+<span id="cb35-167"><a href="#cb35-167"></a>In this example I'll calculate estimated annual expenditures on new and used cars by urbanicity also for 2021. Once the data are prepped with <span class="in">`ce_data()`</span> I'll just nest the data by urbanicity and run <span class="in">`ce_means()`</span> and <span class="in">`ce_quantiles()`</span> on the nested data sets. Since the overwhelming number of reports of vehicle purchases occur in the Interview survey, I'll only use Interview data.</span>
 <span id="cb35-168"><a href="#cb35-168"></a></span>
 <span id="cb35-169"><a href="#cb35-169"></a>First I'll get the stub file and filter it for categories involving new or used cars.</span>
 <span id="cb35-170"><a href="#cb35-170"></a></span>
@@ -3207,7 +3207,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-395"><a href="#cb35-395"></a><span class="fu">summary</span>(food_away_data_10<span class="sc">$</span>fam_size)</span>
 <span id="cb35-396"><a href="#cb35-396"></a><span class="in">```</span></span>
 <span id="cb35-397"><a href="#cb35-397"></a></span>
-<span id="cb35-398"><a href="#cb35-398"></a>Since some households have as many as 14 people, I'll create a FAM_SIZE label with any number greater than 4 taking on the value "5+". Next, I'll prepare the 2020 data and rowbind it with the 2010 data as well as create the "fam_size_label" variable. I'm also going to convert "ref_mo" and "ref_yr" to character to make it compatible with the CPI data that I'll get later. I'll also take a look at just a snippet of the data.</span>
+<span id="cb35-398"><a href="#cb35-398"></a>Since some households have as many as 14 people, I'll create a FAM_SIZE label with any number greater than 4 taking on the value "5+". Next, I'll prepare the 2020 data and row bind it with the 2010 data as well as create the "fam_size_label" variable. I'm also going to convert "ref_mo" and "ref_yr" to character to make it compatible with the CPI data that I'll get later. I'll also take a look at just a snippet of the data.</span>
 <span id="cb35-399"><a href="#cb35-399"></a></span>
 <span id="cb35-402"><a href="#cb35-402"></a><span class="in">```{r}</span></span>
 <span id="cb35-403"><a href="#cb35-403"></a><span class="co">#| label: prep-data20</span></span>
@@ -3470,7 +3470,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-676"><a href="#cb35-676"></a></span>
 <span id="cb35-677"><a href="#cb35-677"></a><span class="in">```</span></span>
 <span id="cb35-678"><a href="#cb35-678"></a></span>
-<span id="cb35-679"><a href="#cb35-679"></a>Now the codes are consistent across survey instruments and I can use this codebook in my call to <span class="in">`ce_prepdata()`</span> using the "own_codebook" argument. Then I'll pass that to <span class="in">`ce_mean()`</span> per usual.</span>
+<span id="cb35-679"><a href="#cb35-679"></a>Now the codes are consistent across survey instruments and I can use this code-book in my call to <span class="in">`ce_prepdata()`</span> using the "own_code-book" argument. Then I'll pass that to <span class="in">`ce_mean()`</span> per usual.</span>
 <span id="cb35-680"><a href="#cb35-680"></a></span>
 <span id="cb35-681"><a href="#cb35-681"></a>Next I'll get some information about how utilities expenditures are organized using the stub file.</span>
 <span id="cb35-682"><a href="#cb35-682"></a></span>
@@ -3505,7 +3505,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-715"><a href="#cb35-715"></a></span>
 <span id="cb35-716"><a href="#cb35-716"></a><span class="in">```</span></span>
 <span id="cb35-717"><a href="#cb35-717"></a></span>
-<span id="cb35-718"><a href="#cb35-718"></a>I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both "I" and "D" in the survey colum of the stub file if expenditures are collected through both instruments.</span>
+<span id="cb35-718"><a href="#cb35-718"></a>I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both "I" and "D" in the survey column of the stub file if expenditures are collected through both instruments.</span>
 <span id="cb35-719"><a href="#cb35-719"></a></span>
 <span id="cb35-722"><a href="#cb35-722"></a><span class="in">```{r}</span></span>
 <span id="cb35-723"><a href="#cb35-723"></a><span class="co">#| label: check-utilities-instruments</span></span>
@@ -3514,7 +3514,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb35-726"><a href="#cb35-726"></a></span>
 <span id="cb35-727"><a href="#cb35-727"></a><span class="in">```</span></span>
 <span id="cb35-728"><a href="#cb35-728"></a></span>
-<span id="cb35-729"><a href="#cb35-729"></a>It seems utlities expenditures are collected only through the Interview survey, so I'll only need to use Interview data files to calculate estimates.</span>
+<span id="cb35-729"><a href="#cb35-729"></a>It seems utilities expenditures are collected only through the Interview survey, so I'll only need to use Interview data files to calculate estimates.</span>
 <span id="cb35-730"><a href="#cb35-730"></a></span>
 <span id="cb35-733"><a href="#cb35-733"></a><span class="in">```{r}</span></span>
 <span id="cb35-734"><a href="#cb35-734"></a><span class="co">#| label: fam-type-utilities</span></span>
