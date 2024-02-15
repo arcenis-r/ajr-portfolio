@@ -14,7 +14,7 @@ categories:
 ## Motivation
 
 ::: {layout="[35, 65]"}
-![cepumd hexsticker](images/cepumd.png){alt="cepumd hexsticker" fig-alt="cepumd hexsticker" fig-align="center" width="300"}
+![](images/cepumd.png){fig-alt="cepumd hexsticker" fig-align="center" width="300"}
 
 ::: {layout="[35, 65]"}
 The purpose of `cepumd` is to make working with Consumer Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward calculating mean, weighted, annual expenditures (henceforth "mean expenditures"). The challenges `cepumd` seeks to address deal primarily with pulling together the necessary data toward this end. Some of the overarching ideas underlying the package are as follows:
