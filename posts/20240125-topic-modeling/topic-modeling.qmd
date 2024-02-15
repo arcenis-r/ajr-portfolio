@@ -113,7 +113,7 @@ jh_clean |>
   gt()
 ```
 
-There was no summary for either of these documents! The word "summary" had a really high TF-IDF because it was the only word ("no" is a stopword and was dropped) in these documents and it likely isn't used very frequently in other documents. This is one of the benefits of doing this kind of check before going into modeling. Interestingly, though, neither "pain" nor "stress" are in the terms with the top 15 TF-IDF values. I imagine it's because these words occur in a lot of the documents and, therefore, would not be very useful in distinguishing one project from another. So I'll drop the two project with no summaries and go into the modeling.
+There was no summary for either of these documents! The word "summary" had a really high TF-IDF because it was the only word ("no" is a stop word and was dropped) in these documents and it likely isn't used very frequently in other documents. This is one of the benefits of doing this kind of check before going into modeling. Interestingly, though, neither "pain" nor "stress" are in the terms with the top 15 TF-IDF values. I imagine it's because these words occur in a lot of the documents and, therefore, would not be very useful in distinguishing one project from another. So I'll drop the two project with no summaries and go into the modeling.
 
 ```{r}
 #| label: drop-no_summary
@@ -189,7 +189,7 @@ Next I'll see if there's a better number of topics to separate these documents i
 
 ## Choosing a number of topics
 
-First I'm going to build a set of LDA models with values of K (number of topics) ranging from 2 to 25. I'm also going to create a hold-out dataset to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.
+First I'm going to build a set of LDA models with values of K (number of topics) ranging from 2 to 25. I'm also going to create a hold-out data set to calculate the heldout-likelihood metric later. This is somewhat akin to using a cross-validation holdout set in other machine learning methodologies.
 
 ```{r}
 #| label: tune-models

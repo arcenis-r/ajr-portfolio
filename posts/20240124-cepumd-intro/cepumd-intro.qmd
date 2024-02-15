@@ -25,7 +25,7 @@ The purpose of `cepumd` is to make working with Consumer Expenditure Surveys (CE
 
 First a little history...
 
-The first Consumer Expenditure Survey happened in 1888 (<https://www.bls.gov/opub/hom/cex/history.htm>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called [130 Years of theConsumer Expenditure Surveys (CE): 1888 - 2018](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)
+The first Consumer Expenditure Survey happened in 1888 (<https://www.bls.gov/opub/hom/cex/history.htm>), it was first used to revise CPI weights in 1972-1973, and it has been collected on a monthly basis since 1979. For a little bit more detail on the history of the CE, check out the slide deck of a presentation delivered by Steve Henderson (former Chief of the Branch of Information and Analysis) and Adam Safir (current Division Chief of CE) called [130 Years of the Consumer Expenditure Surveys (CE): 1888 - 2018](https://www.bls.gov/cex/ce-130-presentation-safir-henderson.pdf)
 
 From the CE home page:
 
@@ -33,7 +33,7 @@ From the CE home page:
 
 > CE data are collected by the Census Bureau for BLS in two surveys, the Interview Survey for major and/or recurring items and the Diary Survey for more minor or frequently purchased items. CE data are primarily used to revise the relative importance of goods and services in the market basket of the Consumer Price Index. The CE is the only Federal household survey to provide information on the complete range of consumers' expenditures and incomes. Here is an overview of the CE program and its methods."
 
-Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchichally, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which `cepumd` seeks to address (more on this further down).
+Some important things to note are that expenditure data are collected through two different survey instruments (Diary and Interview), expenditure categories are organized hierarchically, and data are stored across thousands of files to which the CE provides access through their website. Also, given the length of the program, it would be difficult to harmonize data across all those years and files, so there are some inconsistencies in the way data are stored, which `cepumd` seeks to address (more on this further down).
 
 Please visit the following pages to learn more about the CE program overall and CE PUMD more specifically.
 
@@ -54,7 +54,7 @@ Please visit the following pages to learn more about the CE program overall and 
     -   Help the user identify the Universal Classification Codes (UCCs) related to their analysis using a combination of `ce_hg()` and `ce_uccs()`
     -   Combine all required files and variables using `ce_prepdata()`
 -   **Managing data inconsistencies**
-    -   Provide the ability to recode variable categories using the CE Dictionary for Interview and Diary Surveys
+    -   Provide the ability to re-code variable categories using the CE Dictionary for Interview and Diary Surveys
     -   Resolve some inconsistencies such as differences code definitions between the Interview and Diary (check the definitions of the "FAM_TYPE" variable categories in 2015 for an example)
     -   Provide useful errors or warnings when there are multiple categories of something the user is trying to access, e.g., some titles in the hierarchical grouping files ("stub" or "HG" files) repeat and requires more careful selection of UCCs
 -   **Calculating weighted, annual metrics**
@@ -68,9 +68,9 @@ Source code and other package information is available at <https://github.com/ar
 
 ## Cautions and recommendations
 
--   Estimates produced using PUMD, which is topcoded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not topcoded nor have records suppressed. You can learn more at [CE Protection of Respondent Confidentiality](https://www.bls.gov/cex/pumd_disclosure.htm).
+-   Estimates produced using PUMD, which is top-coded by the CE and has some records suppressed to protect respondent confidentiality, will not match the published estimates released by the CE in most cases. The CE's published estimates are based on confidential data that are not top-coded nor have records suppressed. You can learn more at [CE Protection of Respondent Confidentiality](https://www.bls.gov/cex/pumd_disclosure.htm).
 
--   When calculating estimates for sub-samples or crosss-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a [stratified, random sample](https://www.bls.gov/opub/hom/cex/design.htm) (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. `cepumd` currently does not support unweighted estimates, but data for such an analysis can be prepared using `ce_prepdata()`.
+-   When calculating estimates for sub-samples or cross-sections of data it is best to stick to the combinations of variables that the CE uses in it's publication tables, e.g., income, geography, composition of CU, size of CU. This is because CE data are collected using a [stratified, random sample](https://www.bls.gov/opub/hom/cex/design.htm) (a.k.a., "representative sample") and only analyses conducted using the stratification variables are statistically valid. Using other variables can be helpful to understand spending across different groups, but unweighted estimates are likely more useful for this. `cepumd` currently does not support unweighted estimates, but data for such an analysis can be prepared using `ce_prepdata()`.
 
 -   Quantiles should only be generated using data from 1 survey instrument as the samples for the Interview and Diary are different.
 
@@ -94,7 +94,7 @@ pak::pkg_install("arcenis-r/cepumd")
 
 -   The workhorse of `cepumd` is `ce_prepdata()`. It merges the household characteristics file (FMLI/-D) with the corresponding expenditure tabulation file (MTBI/EXPD) for a specified year, adjusts weights for months-in-scope and the number of collection quarters, adjusts some cost values by their periodicity factor (some cost categories are represented as annual figures and others as quarterly). With the recent update it only requires the first 3 arguments to function: the year, the survey type, and one or more valid UCCs. `ce_prepdata()` now creates all of the other necessary objects within the function if not provided.
 
--   There are two functions for wrangling hierarchical grouping data into more useable formats:
+-   There are two functions for wrangling hierarchical grouping data into more usable formats:
 
     -   `ce_hg()` pulls the requested type of HG file (Interview, Diary, or Integrated) for a specified year.
     -   `ce_uccs()` filters the HG file for the specified expenditure category and returns either a data frame with only that section of the HG file or the Universal Classification Codes (UCCs) that make up that expenditure category.
@@ -106,7 +106,7 @@ pak::pkg_install("arcenis-r/cepumd")
 
 ## Example workflows
 
-The following are a few sample workflows that show how `cepumd` can be used. Before jumping into those I'll first install and load the necessary pacakges and store some CEPUMD files. I'll keep the path to those files in a variable called `ce_data_dir`.
+The following are a few sample workflows that show how `cepumd` can be used. Before jumping into those I'll first install and load the necessary packages and store some CEPUMD files. I'll keep the path to those files in a variable called `ce_data_dir`.
 
 ```{r}
 #| label: store-data-dir
@@ -156,7 +156,7 @@ Yup... that's all it takes. I simply ran `ce_hg` to get the hierarchical groupin
 
 ### Slightly more advanced workflow: Used Car & Truck Expenditures by Urbanicity
 
-In this example I'll calculate estimated annual expenditures on new and used cars by urbanicity also for 2021. Once the data are prepped with `ce_data()` I'll just nest the data by urbanicity and run `ce_means()` and `ce_quantiles()` on the nested datasets. Since the overwhelming number of reports of vehicle purchases occur in the Interview survey, I'll only use Interview data.
+In this example I'll calculate estimated annual expenditures on new and used cars by urbanicity also for 2021. Once the data are prepped with `ce_data()` I'll just nest the data by urbanicity and run `ce_means()` and `ce_quantiles()` on the nested data sets. Since the overwhelming number of reports of vehicle purchases occur in the Interview survey, I'll only use Interview data.
 
 First I'll get the stub file and filter it for categories involving new or used cars.
 
@@ -361,7 +361,7 @@ food_away_data_10 <- ce_prepdata(
 summary(food_away_data_10$fam_size)
 ```
 
-Since some households have as many as 14 people, I'll create a FAM_SIZE label with any number greater than 4 taking on the value "5+". Next, I'll prepare the 2020 data and rowbind it with the 2010 data as well as create the "fam_size_label" variable. I'm also going to convert "ref_mo" and "ref_yr" to character to make it compatible with the CPI data that I'll get later. I'll also take a look at just a snippet of the data.
+Since some households have as many as 14 people, I'll create a FAM_SIZE label with any number greater than 4 taking on the value "5+". Next, I'll prepare the 2020 data and row bind it with the 2010 data as well as create the "fam_size_label" variable. I'm also going to convert "ref_mo" and "ref_yr" to character to make it compatible with the CPI data that I'll get later. I'll also take a look at just a snippet of the data.
 
 ```{r}
 #| label: prep-data20
@@ -624,7 +624,7 @@ fam_type_codes |>
 
 ```
 
-Now the codes are consistent across survey instruments and I can use this codebook in my call to `ce_prepdata()` using the "own_codebook" argument. Then I'll pass that to `ce_mean()` per usual.
+Now the codes are consistent across survey instruments and I can use this code-book in my call to `ce_prepdata()` using the "own_code-book" argument. Then I'll pass that to `ce_mean()` per usual.
 
 Next I'll get some information about how utilities expenditures are organized using the stub file.
 
@@ -659,7 +659,7 @@ utilities_hg |> kable(booktabs = TRUE)
 
 ```
 
-I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both "I" and "D" in the survey colum of the stub file if expenditures are collected through both instruments.
+I also want to know what survey instruments the expenditures are collected through for published estimates. My stub file is the integrated stub file, so I should see both "I" and "D" in the survey column of the stub file if expenditures are collected through both instruments.
 
 ```{r}
 #| label: check-utilities-instruments
@@ -668,7 +668,7 @@ utilities_hg |> distinct(survey) |> kable(booktabs = TRUE)
 
 ```
 
-It seems utlities expenditures are collected only through the Interview survey, so I'll only need to use Interview data files to calculate estimates.
+It seems utilities expenditures are collected only through the Interview survey, so I'll only need to use Interview data files to calculate estimates.
 
 ```{r}
 #| label: fam-type-utilities
