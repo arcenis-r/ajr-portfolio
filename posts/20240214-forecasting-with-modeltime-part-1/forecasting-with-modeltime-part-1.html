@@ -189,7 +189,7 @@ div.csl-indent {
   <li><a href="#additional-data" id="toc-additional-data" class="nav-link" data-scroll-target="#additional-data">Additional data</a></li>
   <li><a href="#loading-packages" id="toc-loading-packages" class="nav-link" data-scroll-target="#loading-packages">Loading Packages</a></li>
   <li><a href="#getting-case-shiller-hpi-data" id="toc-getting-case-shiller-hpi-data" class="nav-link" data-scroll-target="#getting-case-shiller-hpi-data">Getting Case-Shiller HPI data</a></li>
-  <li><a href="#getting-unemploymnet-rat-and-gas-price-data-from-fred" id="toc-getting-unemploymnet-rat-and-gas-price-data-from-fred" class="nav-link" data-scroll-target="#getting-unemploymnet-rat-and-gas-price-data-from-fred">Getting unemploymnet rat and gas price data from FRED</a></li>
+  <li><a href="#getting-unemployment-rate-and-gas-price-data-from-fred" id="toc-getting-unemployment-rate-and-gas-price-data-from-fred" class="nav-link" data-scroll-target="#getting-unemployment-rate-and-gas-price-data-from-fred">Getting unemployment rate and gas price data from FRED</a></li>
   <li><a href="#getting-cps-data" id="toc-getting-cps-data" class="nav-link" data-scroll-target="#getting-cps-data">Getting CPS data</a></li>
   <li><a href="#getting-population-data" id="toc-getting-population-data" class="nav-link" data-scroll-target="#getting-population-data">Getting population data</a></li>
   <li><a href="#merge-data-and-check" id="toc-merge-data-and-check" class="nav-link" data-scroll-target="#merge-data-and-check">Merge data and check</a></li>
@@ -1335,8 +1335,8 @@ Statistical Area Definitions
 </div>
 </div>
 </section>
-<section id="getting-unemploymnet-rat-and-gas-price-data-from-fred" class="level2">
-<h2 class="anchored" data-anchor-id="getting-unemploymnet-rat-and-gas-price-data-from-fred">Getting unemploymnet rat and gas price data from FRED</h2>
+<section id="getting-unemployment-rate-and-gas-price-data-from-fred" class="level2">
+<h2 class="anchored" data-anchor-id="getting-unemployment-rate-and-gas-price-data-from-fred">Getting unemployment rate and gas price data from FRED</h2>
 <p>Next I got series IDs for both average gas prices and unemployment rates for all four cities and got the data for the appropriate time span.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1406,7 +1406,7 @@ Statistical Area Definitions
 </section>
 <section id="getting-cps-data" class="level2">
 <h2 class="anchored" data-anchor-id="getting-cps-data">Getting CPS data</h2>
-<p>Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this woluldn’t be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.</p>
+<p>Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this wouldn’t be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.</p>
 <p>The first step was to get the MSA codes that corresponded to my cities of interest and check that I had a unique set across all of my years of interest. The data for these MSA codes came from the U.S. Census’s technical documentation page and MSA definitions only change once every few years.</p>
 <div class="cell">
 <details class="code-fold">
@@ -3527,7 +3527,7 @@ Statistical Area Definitions
 <li><p><code>status_married</code>: Proportion of the population that is married; including separated</p></li>
 <li><p><code>status_nev_mar</code>: Proportion of the population that has never been married</p></li>
 <li><p><code>status_other</code>: Proportion of the population not categorized as either <code>status_married</code> or <code>status_nev_mar</code></p></li>
-<li><p><code>hispanic</code>: Proportion of the population that reported hispanic ethnicity</p></li>
+<li><p><code>hispanic</code>: Proportion of the population that reported Hispanic ethnicity</p></li>
 <li><p><code>pop_chg</code>: Population change from one month to the next</p></li>
 </ul>
 <p>Once I skimmed the data, I took a closer look at the percent of <code>avg_gas_price</code> values that were missing for each city.</p>
@@ -5160,7 +5160,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-13"><a href="#cb20-13"></a></span>
 <span id="cb20-14"><a href="#cb20-14"></a><span class="fu">## Introduction</span></span>
 <span id="cb20-15"><a href="#cb20-15"></a></span>
-<span id="cb20-16"><a href="#cb20-16"></a><span class="co">[</span><span class="ot">![Image by [Images Money](https://www.flickr.com/photos/59937401@N07/)</span><span class="co">](images/5474453551_afc6ded9af_w.jpg)</span>{fig-alt="Monopoly houses on top of increasingly tall stacks of coins" fig-align="center"}](https://www.flickr.com/photos/59937401@N07/5474453551)</span>
+<span id="cb20-16"><a href="#cb20-16"></a><span class="co">[</span><span class="al">![Image by \[Images Money\](https://www.flickr.com/photos/59937401\@N07/)](images/5474453551_afc6ded9af_w.jpg)</span><span class="ot">{fig-alt="Monopoly houses on top of increasingly tall stacks of coins" fig-align="center"}</span><span class="co">](https://www.flickr.com/photos/59937401@N07/5474453551)</span></span>
 <span id="cb20-17"><a href="#cb20-17"></a></span>
 <span id="cb20-18"><a href="#cb20-18"></a>U.S. housing prices have been <span class="co">[</span><span class="ot">all over the news</span><span class="co">](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/)</span> in recent times, which comes as no surprise given recent concerns about <span class="co">[</span><span class="ot">inflation and interest rates</span><span class="co">](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158)</span>. With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at <span class="co">[</span><span class="ot">Business Science</span><span class="co">](https://www.business-science.io/)</span> have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>. When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.</span>
 <span id="cb20-19"><a href="#cb20-19"></a></span>
@@ -5271,7 +5271,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-130"><a href="#cb20-130"></a></span>
 <span id="cb20-131"><a href="#cb20-131"></a><span class="in">```</span></span>
 <span id="cb20-132"><a href="#cb20-132"></a></span>
-<span id="cb20-133"><a href="#cb20-133"></a><span class="fu">## Getting unemploymnet rat and gas price data from FRED</span></span>
+<span id="cb20-133"><a href="#cb20-133"></a><span class="fu">## Getting unemployment rate and gas price data from FRED</span></span>
 <span id="cb20-134"><a href="#cb20-134"></a></span>
 <span id="cb20-135"><a href="#cb20-135"></a>Next I got series IDs for both average gas prices and unemployment rates for all four cities and got the data for the appropriate time span.</span>
 <span id="cb20-136"><a href="#cb20-136"></a></span>
@@ -5344,7 +5344,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-205"><a href="#cb20-205"></a></span>
 <span id="cb20-206"><a href="#cb20-206"></a><span class="fu">## Getting CPS data</span></span>
 <span id="cb20-207"><a href="#cb20-207"></a></span>
-<span id="cb20-208"><a href="#cb20-208"></a>Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this woluldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.</span>
+<span id="cb20-208"><a href="#cb20-208"></a>Getting CPS data at the MSA level is a little more complicated than it is getting data series from FRED. CPS data can contain well over 100K rows for each month because the microdata are released at the household level and each data set has hundreds of variables. It also requires filtering and grouping the data by MSA code, which means getting the MSA codes that correspond to each MSA in my analysis. However, I knew that MSAs can change over time as population shifts. I felt confident that this wouldn't be the case for my chosen cities because of their population sizes, but I wanted to check anyway. Finally, I did thought that pulling in all of that data at once then filtering and aggregating would be computationally inefficient and slow, so, instead, I wrote a function to perform all of the necessary operations and ran it in parallel. I chose the method that I did because most of the time was spent connecting to the CPS API. Once data are imported, the computations are fairly simple.</span>
 <span id="cb20-209"><a href="#cb20-209"></a></span>
 <span id="cb20-210"><a href="#cb20-210"></a>The first step was to get the MSA codes that corresponded to my cities of interest and check that I had a unique set across all of my years of interest. The data for these MSA codes came from the U.S. Census's technical documentation page and MSA definitions only change once every few years.</span>
 <span id="cb20-211"><a href="#cb20-211"></a></span>
@@ -5644,7 +5644,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb20-525"><a href="#cb20-525"></a></span>
 <span id="cb20-526"><a href="#cb20-526"></a><span class="ss">-   </span><span class="in">`status_other`</span>: Proportion of the population not categorized as either <span class="in">`status_married`</span> or <span class="in">`status_nev_mar`</span></span>
 <span id="cb20-527"><a href="#cb20-527"></a></span>
-<span id="cb20-528"><a href="#cb20-528"></a><span class="ss">-   </span><span class="in">`hispanic`</span>: Proportion of the population that reported hispanic ethnicity</span>
+<span id="cb20-528"><a href="#cb20-528"></a><span class="ss">-   </span><span class="in">`hispanic`</span>: Proportion of the population that reported Hispanic ethnicity</span>
 <span id="cb20-529"><a href="#cb20-529"></a></span>
 <span id="cb20-530"><a href="#cb20-530"></a><span class="ss">-   </span><span class="in">`pop_chg`</span>: Population change from one month to the next</span>
 <span id="cb20-531"><a href="#cb20-531"></a></span>
