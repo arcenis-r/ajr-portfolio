@@ -1,9 +1,7 @@
 ---
-title: "Forecasting Case Shiller Index - Part I"
+title: "Forecasting with {modeltime} - Part I"
 subtitle: "Gathering data"
 author: "Arcenis Rojas"
-format: html
-editor: visual
 date: "2/12/2024"
 bibliography: references.bib
 categories:
@@ -41,7 +39,7 @@ Once I chose a data source, the next step was to choose cities. I wanted to comp
 
 ## Additional data
 
-One of the benefits of using [modeltime](https://business-science.github.io/modeltime/) it has functions for running models beyond ARIMA such as Prophet and eXtreme Gradient Boosting (XGB) for time series. Wanting to take advantage of this I wanted to add some features to my data. I decided to add unemployment rates, average gas prices, variables relating to demographic composition, and population for each city at the monthly level. I got the unemployment rate and average gas prices through [fredr](https://sboysel.github.io/fredr/reference/fredr_series_search.html), population data from the U.S. Census's American Community Survey (ACS) using the [tidycensus](https://walker-data.com/tidycensus/) [@tidycensus] package, and other demographic data from the [Current Population Survey (CPS)](https://www.census.gov/programs-surveys/cps.html) (which is a joint program of the U.S. Census and the U.S. Bureau of Labor Statistics) using the [cpsR](https://github.com/matt-saenz/cpsR) [@cpsR] package.
+One of the benefits of using [modeltime](https://business-science.github.io/modeltime/) it has functions for running models beyond ARIMA such as Prophet and eXtreme Gradient Boosting (XGB) for time series. To take advantage of this I wanted to add some features to my data. I chose to add unemployment rates, average gas prices, variables relating to demographic composition, and population for each city at the monthly level. I got the unemployment rate and average gas prices through [fredr](https://sboysel.github.io/fredr/reference/fredr_series_search.html), population data from the U.S. Census's American Community Survey (ACS) using the [tidycensus](https://walker-data.com/tidycensus/) [@tidycensus] package, and other demographic data from the [Current Population Survey (CPS)](https://www.census.gov/programs-surveys/cps.html) (which is a joint program of the U.S. Census and the U.S. Bureau of Labor Statistics) using the [cpsR](https://github.com/matt-saenz/cpsR) [@cpsR] package.
 
 ::: callout-important
 Both `tidycensus` and `cpsR` require a [U.S. Census API key](https://api.census.gov/data/key_signup.html). This post will not go into detail on how to obtain a key or how to set it up for use with the relevant packages.
@@ -83,7 +81,7 @@ I started by getting the appropriate Case-Shiller HPI series IDs for my cities o
 #| label: get-cs-ids
 #| cache: true
 
-case_shiller_ids <- fredr_series_search_text("Case-Shiller") |>
+hpi_ids <- fredr_series_search_text("Case-Shiller") |>
   filter(
     str_detect(
       title,
@@ -95,16 +93,16 @@ case_shiller_ids <- fredr_series_search_text("Case-Shiller") |>
   mutate(city = str_extract(title, "New York|Dallas|San Diego|Detroit")) |>
   select(city, id)
 
-gt(case_shiller_ids)
+gt(hpi_ids)
 ```
 
 Next I read in the Case-Shiller data and kept only the necessary variables.
 
 ```{r}
-#| label: import-case-shiller
+#| label: import-hpi
 #| cache: true
 
-cs_data <- case_shiller_ids |>
+hpi_data <- hpi_ids |>
   mutate(
     data = map(
       id,
@@ -118,9 +116,9 @@ cs_data <- case_shiller_ids |>
   ) |>
   select(-id) |>
   unnest(data) |>
-  select(city, date, case_shiller = value)
+  select(city, date, hpi = value)
 
-gt(cs_data[1:10, ])
+gt(hpi_data[1:10, ])
 
 ```
 
@@ -451,7 +449,7 @@ With all of the data gathered and each data set containing variables for city an
 ```{r}
 #| label: merge-data
 
-econ_data <- list(cs_data, unemp_data, gas_data, cps_data, acs_pop_data) |>
+econ_data <- list(hpi_data, unemp_data, gas_data, cps_data, acs_pop_data) |>
   reduce(inner_join, by = c("city", "date"))
 
 ```
@@ -471,7 +469,7 @@ Overall the data look good except for the `avg_gas_price` variable, which is the
 
 -   `date`: month expressed as the first day of the month
 
--   `case_shiller`: Case-Shiller Home Price Index value
+-   `hpi`: Case-Shiller Home Price Index value
 
 -   `unemp_rate`: Unemployment rate
 
@@ -544,4 +542,19 @@ econ_data <- select(econ_data, !avg_gas_price)
 econ_data |> slice(1:6) |> gt()
 ```
 
-With all this data in hand, the next step is to perform some time series analysis on the Case-Shiller HPI which I'll show in Part 2 of this set of posts.
+Finally, I'd like to visualize the densities of all of the variables by city just to make sure nothing jumps out that might need any correction.
+
+```{r}
+#| label: plot-densities
+
+econ_data |>
+  select(-date) |>
+  pivot_longer(-city, names_to = "variable") |>
+  ggplot(aes(x = value, fill = city)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap("variable", scales = "free") +
+  theme_bw()
+
+```
+
+There are some interesting patterns, particularly in the differences across the age groups, but there's nothing alarming. With all this data in hand, the next step is to perform some time series analysis on the Case-Shiller HPI which I'll show in Part 2 of this set of posts.

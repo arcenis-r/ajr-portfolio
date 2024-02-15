@@ -14,3 +14,5 @@ I hold a B.S. in Applied Economics from [Ithaca College](https://www.ithaca.edu)
 One of the most fun personal projects of mine has been to create the `cepumd` package. You can read more about it [here](./posts/20240124-cepumd-intro/cepumd-intro.qmd).
 
 I also enjoy tutoring econometrics, data science, R, and statistics on Wyzant. [Check out my profile!](https://is.gd/6xUixC)
+
+I built this website using some great, open-source tools including [R](https://www.r-project.org/), [RStudio](https://www.rstudio.com/categories/rstudio-ide/), [GitHub](https://github.com/), and [Quarto](https://quarto.org/). I'm very grateful to all the folks that work on these tools for what they do. I'm also grateful to [Sam Csik](https://samanthacsik.github.io/) for her [blog](https://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/) on how to add a blog to a Quarto website.

@@ -1,0 +1,114 @@
+---
+title: "Forecasting with {modeltime} - Part II"
+subtitle: "Time series analysis"
+author: "Arcenis Rojas"
+date: "2/15/2024"
+bibliography: references.bib
+categories:
+  - time series
+  - economic data
+---
+
+Last time on [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd) I wrote about gathering the data for this project from various sources. Here I'll go into the first part of the analysis which will include visualizing the dependent variable, checking and correcting for non-stationarity, identifying seasonality, and identifying the terms (AR, MA) to use in a S-/ARIMA model.
+
+Besides the usual [tidyverse](https://www.tidyverse.org/) [@tidyverse], in this post I'll be using the [timetk](https://business-science.github.io/timetk/) [@timetk] package – also from the folks at [Business Science](https://www.business-science.io/) – for performing my data analysis.
+
+```{r}
+#| label: load-packages
+
+library(tidyverse)
+library(timetk)
+
+conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("lag", "dplyr")
+```
+
+```{r}
+#| label: import-data
+#| include: false
+
+econ_data <- read_rds("../../common-resources/econ-data.rds")  |>
+  select(city, date, hpi)
+
+source("../../common-resources/gt-bold-head.R")
+
+theme_timetk <- read_rds("../../common-resources/theme-timetk.Rds")
+
+```
+
+## A quick look at the Case-Shiller HPI
+
+In this post I'll only be looking at the Case-Shiller Home Price Index (HPI) for the four cities in my data – San Diego, Dallas, Detroit, and New York City – between January 2006 and December 2022. Here's a quick peek at the data:
+
+```{r}
+#| label: show-hpi-data
+
+gt_bold_head(head(econ_data, 10))
+
+```
+
+Now I'll look visualize the data in a line plot.
+
+```{r}
+#| label: initial-line-plot
+
+econ_data |>
+  ggplot(aes(date, hpi, color = city)) +
+  geom_line() +
+  labs(
+    x = NULL,
+    y = "HPI",
+    color = NULL,
+    title = "Case-Shiller HPI from 2006 through 2022"
+  ) +
+  theme_timetk +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Here one can see that Dallas's HPI did not drop as much during the Great Recession and has had a fast rise relative to those of the other cities ever since. It's also pretty clear that NYC's HPI has experienced a relatively mild increase over the years covered. There's also more volatility between 2010 and 2015 in the HPIs for NYC, Dallas, and Detroit than in San Diego's.
+
+## Time series analysis
+
+The goal of this initial analysis is to find the parameters to use in an ARIMA model, which means that I'll need to ensure my data are [stationary](https://en.wikipedia.org/wiki/Stationary_process). I'll try to get there through the following operations and analyses.
+
+### Preparing the data
+
+Before performing any analysis I'd like to add one column with a lagged, first difference and another with a lagged twelfth difference. To accomplish this I'll use the `tk_augment_differences()` from the [timetk](https://business-science.github.io/timetk/) package. I'll store this data set in a new variable called "hpi_series". I chose these two lagged differences because the lagged, first difference generally any stationarity rooted in a trend and the lagged, twelfth difference should deal with seasonality as my data are monthly observations and I'm operating on the assumption that the housing market cycle is annual.
+
+Below is a snippet of the data.
+
+```{r}
+#| label: add-diff-lag
+
+hpi_series <- econ_data |>
+  select(city, date, hpi) |>
+  group_by(city) |>
+  tk_augment_differences(
+    .value = hpi,
+    .lags = 1,
+    .differences = c(1, 12),
+    .log = FALSE
+  ) |>
+  ungroup()
+
+head(hpi_series, 15) |> gt_bold_head()
+```
+
+And now I can look at line plots of the three different series with the original on the left ; the lagged, first difference in the middle; and the lagged, twelfth difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see.
+
+```{r}
+#| label: plot-lagged-diffs
+
+hpi_series |>
+  pivot_longer(starts_with("hpi"), names_to = "series", values_to = "value") |>
+  group_by(city, series) |>
+  plot_time_series(
+    date,
+    value,
+    .facet_ncol = 3,
+    .title = "Case-Shiller HPI from 2006 through 2022",
+    .interactive = FALSE
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
