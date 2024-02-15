@@ -7,6 +7,12 @@ bibliography: references.bib
 categories:
   - time series
   - economic data
+fig-height: 9
+fig-width: 10
+execute: 
+  warning: false
+  error: false
+  message: false
 ---
 
 Last time on [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd) I wrote about gathering the data for this project from various sources. Here I'll go into the first part of the analysis which will include visualizing the dependent variable, checking and correcting for non-stationarity, identifying seasonality, and identifying the terms (AR, MA) to use in a S-/ARIMA model.
@@ -27,12 +33,34 @@ conflicted::conflict_prefer("lag", "dplyr")
 #| label: import-data
 #| include: false
 
-econ_data <- read_rds("../../common-resources/econ-data.rds")  |>
+econ_data <- read_rds("../../common-resources/econ-data.Rds")  |>
   select(city, date, hpi)
 
 source("../../common-resources/gt-bold-head.R")
 
 theme_timetk <- read_rds("../../common-resources/theme-timetk.Rds")
+
+# Declare a function for making an ADF result table
+make_adf_gt <- function(df) {
+  gt(df) |>
+    tab_style(
+      style = list(
+        cell_text(weight = "bold"),
+        cell_borders(
+          sides = c("top", "bottom"),
+          weight = px(2),
+          style = ("solid")
+        )
+      ),
+      locations = cells_column_labels()
+    ) |>
+    tab_style(
+      style = cell_fill("yellow"),
+      locations = cells_body(rows = p.value < 0.05, columns = p.value)
+    ) |>
+    fmt_number(decimals = 3) |>
+    as_raw_html()
+}
 
 ```
 
@@ -51,6 +79,8 @@ Now I'll look visualize the data in a line plot.
 
 ```{r}
 #| label: initial-line-plot
+#| fig-width: 6
+#| fig-height: 4
 
 econ_data |>
   ggplot(aes(date, hpi, color = city)) +
@@ -73,7 +103,7 @@ The goal of this initial analysis is to find the parameters to use in an ARIMA m
 
 ### Preparing the data
 
-Before performing any analysis I'd like to add one column with a lagged, first difference and another with a lagged twelfth difference. To accomplish this I'll use the `tk_augment_differences()` from the [timetk](https://business-science.github.io/timetk/) package. I'll store this data set in a new variable called "hpi_series". I chose these two lagged differences because the lagged, first difference generally any stationarity rooted in a trend and the lagged, twelfth difference should deal with seasonality as my data are monthly observations and I'm operating on the assumption that the housing market cycle is annual.
+Before performing any analysis I'd like to add one column with a lagged first-difference and another with a lagged twelfth-difference. To accomplish this I'll use the `tk_augment_differences()` from the [timetk](https://business-science.github.io/timetk/) package. I'll store this data set in a new variable called "hpi_series". I chose these two lagged differences because the lagged first-difference generally any stationarity rooted in a trend and the lagged twelfth-difference should deal with seasonality as my data are monthly observations and I'm operating on the assumption that the housing market cycle is annual.
 
 Below is a snippet of the data.
 
@@ -94,7 +124,7 @@ hpi_series <- econ_data |>
 head(hpi_series, 15) |> gt_bold_head()
 ```
 
-And now I can look at line plots of the three different series with the original on the left ; the lagged, first difference in the middle; and the lagged, twelfth difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see.
+And now I can look at line plots of the three different series with the original on the left ; the lagged first-difference in the middle; and the lagged twelfth-difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see. This also provides a sneak peak into what the following analyses will give us.
 
 ```{r}
 #| label: plot-lagged-diffs
@@ -112,3 +142,199 @@ hpi_series |>
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
+
+On might ask "why not use a lagged, log difference?" The below plot shows that using a lagged, log first- and twelfth-differenced series don't change anything compared to the lagged first- and twelfth-differenced series except for generating data with much higher relative amplitude and possibly showing outliers. This might actually introduce heteroskedasticity, which I'd like to avoid.
+
+```{r}
+#| label: plot-lagged-log-diffs
+
+econ_data |>
+  tk_augment_differences(
+    .value = hpi,
+    .lags = 1,
+    .differences = c(1, 12),
+    .log = TRUE
+  ) |>
+  pivot_longer(starts_with("hpi"), names_to = "series", values_to = "value") |>
+  group_by(city, series) |>
+  plot_time_series(
+    date,
+    value,
+    .facet_ncol = 3,
+    .title = "Case-Shiller HPI from 2006 through 2022",
+    .interactive = FALSE
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+### Time series decomposition
+
+The following plot shows the Seasonal-Trend decomposition using Loess (STL), which is a common tool to determine how much of a time series' movement is due to a trend versus that which is due to it's seasonality. Again, here I'll assume an annual seasonal cycle.
+
+```{r}
+#| label: stl
+
+hpi_series |>
+  group_by(city) |>
+  plot_stl_diagnostics(
+    date,
+    hpi,
+    .feature_set = c("observed", "season", "trend", "remainder"),
+    .interactive = FALSE,
+    .frequency = 12
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+According to this plot most of the movement in the HPI is determined by the trend and very little by seasonality.
+
+### Augmented Dickey-Fuller Test
+
+The Augmented Dickey-Fuller Test (ADF) is commonly run to evaluate whether a time series is stationary or not. The null hypothesis of the ADF is that the time series is non-stationary, so want to reject the null hypothesis to be able to assume the alternative, i.e., that the series is stationary. The following table shows that one can reject the null hypothesis for every city but San Diego with just a lagged first-difference, but with the lagged twelfth-difference all four series can be thought of as stationary.
+
+```{r}
+#| label: show-adf
+#| warning: false
+
+hpi_adf <- hpi_series |>
+  pivot_longer(!c(city, date), names_to = "variable") |>
+  group_by(city, variable) |>
+  nest(data = c(date, value)) |>
+  mutate(
+    adf_test = map(
+      data,
+      \(x) drop_na(x, value) |>
+        pull(value) |>
+        tseries::adf.test() |>
+        broom::tidy() |>
+        select(statistic, p.value)
+    )
+  ) |>
+  select(-data) |>
+  unnest(adf_test) |>
+  ungroup(variable)
+
+hpi_adf |>
+  group_by(city) |>
+  group_nest() |>
+  mutate(data_gt = map(data, make_adf_gt)) |>
+  select(!data) |>
+  pivot_wider(names_from = city, values_from = data_gt) |>
+  gt_bold_head()
+
+```
+
+### ACF / PACF plots
+
+The Autocorrelation Function (ACF) calculates the correlation of a value, e.g., the most recent value of the HPI, with previous values in the same series. Knowing this is very useful for determining how many Moving Average (the "MA" in ARIMA) lags to use in an ARIMA mode. The Partial Autocorrelation Function (PACF) calculates the correlation of a value with previous values in the same series after accounting for intervening correlations. This is useful to help us determine how many lags to use for the Autoregressive (the "AR" in ARIMA) part of an ARIMA model. Below are the ACF and PACF plots for the HPI series (no lagged differences) for all four cities. The timetk::`plot_acf_diagnostics()` function plots ACF on top and PACF on bottom, which is conventional. Values outside of the red, dashed lines indicate statistically significant correlations.
+
+```{r}
+#| label: plot-acf1
+#| fig-width: 8
+#| fig-height: 4
+
+hpi_series |>
+  group_by(city) |>
+  plot_acf_diagnostics(
+    date,
+    hpi,
+    .lags = 60,
+    .title = "HPI Lag Diagnostics",
+    .interactive = FALSE,
+    .white_noise_line_color = "red"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+It's clear from the ACF plot that the trend is causing a lot of the autocorrelation in each city. Next is the same plot, but for the first-differenced values.
+
+```{r}
+#| label: plot-acf2
+#| fig-width: 8
+#| fig-height: 4
+
+hpi_series |>
+  group_by(city) |>
+  plot_acf_diagnostics(
+    date,
+    hpi_lag1_diff1,
+    .lags = 60,
+    .title = "First-Differenced HPI Lag Diagnostics",
+    .interactive = FALSE,
+    .white_noise_line_color = "red"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+The trend's influence is significantly decreased here, but there are still some strong seasonal patterns in the data. Below is a look at the twelfth-differenced series.
+
+```{r}
+#| label: plot-acf3
+#| fig-width: 8
+#| fig-height: 4
+
+hpi_series |>
+  group_by(city) |>
+  plot_acf_diagnostics(
+    date,
+    hpi_lag1_diff12,
+    .lags = 60,
+    .title = "Twelfth-Differenced HPI Lag Diagnostics",
+    .interactive = FALSE,
+    .white_noise_line_color = "red"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Looking at this plot over 36 months it still appears that there is a small seasonal effect in Dallas, San Diego, and Detroit with Detroit's possibly being a shorter season. Considering the infinite number of things that could affect one of these data series one could look at hundreds of plots like this with different combinations of lags and differences for any one series and never find a perfect one. This plot is pretty good. From this plot it looks like I'm going to us an AR(3) model. San Diego's PACF suggests that I should use two for that city, but I'm looking for one value for all four cities. The MA component is a little more challenging. It looks like I would use MA lags of 5 or 6 for Dallas, 8 for San Diego, 4 for NYC, and 4 or 5 for Detroit. I'm going to use MA(5) for my ARIMA.
+
+### Seasonality
+
+It's been pretty clear up to this point that seasonality is an important consideration with this data series and it's something that I will expect to handle in the modeling portion of the analysis in a later post. If I wanted to handle seasonality in a conventional model I might run a SARIMA model, but I'm going to keep this part simple and only run ARIMA knowing that I'm partially ignoring the seasonality and only dealing with it by differencing. With that said, I'll show two more plots here to demonstrate the `timetk::plot_seasonal_diagnostics()` . The first plot shows seasonal diagnostics for the unadjusted series and the second one for the twelfth-differenced series.
+
+```{r}
+#| label: seas-diag1
+
+hpi_series |>
+  plot_seasonal_diagnostics(
+    date,
+    hpi,
+    .facet_vars = city,
+    .interactive = FALSE,
+    .title = "HPI Seasonal Diagnostics"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+This plot shows a clear pattern of HPI values being lowest in the first quarter across all four cities, highest in the second and third quarters for San Diego, and highest in the quarter for New York and December. From this data it seems that the peak in Dallas is December. This seasonality can obscure the findings of an ARIMA model.
+
+```{r}
+#| label: seas-diag2
+
+hpi_series |>
+  plot_seasonal_diagnostics(
+    date,
+    hpi_lag1_diff12,
+    .facet_vars = city,
+    .interactive = FALSE,
+    .title = "Twelfth-Differenced HPI Seasonal Diagnostics"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+```
+
+In this plot the patterns are generally gone across the quarterly plots. Even the trend is mostly gone from the annual plot.
+
+In the next post I'll use the AR and MA values from this post to run ARIMA models for all four cities using a global modeling process and an iterative modeling process with [modeltime](https://business-science.github.io/modeltime/).
