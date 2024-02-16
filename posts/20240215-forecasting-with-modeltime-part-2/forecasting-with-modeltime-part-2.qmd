@@ -5,14 +5,11 @@ author: "Arcenis Rojas"
 date: "2/15/2024"
 bibliography: references.bib
 categories:
-  - time series
-  - economic data
+  - time series analysis
+  - econometrics
+  - data viz
 fig-height: 9
 fig-width: 10
-execute: 
-  warning: false
-  error: false
-  message: false
 ---
 
 Last time on [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd) I wrote about gathering the data for this project from various sources. Here I'll go into the first part of the analysis which will include visualizing the dependent variable, checking and correcting for non-stationarity, identifying seasonality, and identifying the terms (AR, MA) to use in a S-/ARIMA model.

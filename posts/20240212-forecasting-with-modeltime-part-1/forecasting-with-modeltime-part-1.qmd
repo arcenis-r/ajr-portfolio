@@ -5,8 +5,10 @@ author: "Arcenis Rojas"
 date: "2/12/2024"
 bibliography: references.bib
 categories:
-  - time series
-  - economic data
+  - time series analysis
+  - REST api
+  - data viz
+  - data acquisition
 ---
 
 ## Introduction
