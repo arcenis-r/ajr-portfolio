@@ -253,26 +253,30 @@ div.csl-indent {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">gt_bold_head</span>(<span class="fu">head</span>(econ_data, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>econ_data <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">slice_min</span>(date, <span class="at">n =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="aycltrkhhu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#aycltrkhhu table {
+<div id="tlwilcsnoh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tlwilcsnoh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#aycltrkhhu thead, #aycltrkhhu tbody, #aycltrkhhu tfoot, #aycltrkhhu tr, #aycltrkhhu td, #aycltrkhhu th {
+#tlwilcsnoh thead, #tlwilcsnoh tbody, #tlwilcsnoh tfoot, #tlwilcsnoh tr, #tlwilcsnoh td, #tlwilcsnoh th {
   border-style: none;
 }
 
-#aycltrkhhu p {
+#tlwilcsnoh p {
   margin: 0;
   padding: 0;
 }
 
-#aycltrkhhu .gt_table {
+#tlwilcsnoh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -298,12 +302,12 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_caption {
+#tlwilcsnoh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#aycltrkhhu .gt_title {
+#tlwilcsnoh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -315,7 +319,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#aycltrkhhu .gt_subtitle {
+#tlwilcsnoh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -327,7 +331,7 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#aycltrkhhu .gt_heading {
+#tlwilcsnoh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -339,13 +343,13 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_bottom_border {
+#tlwilcsnoh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_col_headings {
+#tlwilcsnoh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -360,7 +364,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_col_heading {
+#tlwilcsnoh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -380,7 +384,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#aycltrkhhu .gt_column_spanner_outer {
+#tlwilcsnoh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -392,15 +396,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#aycltrkhhu .gt_column_spanner_outer:first-child {
+#tlwilcsnoh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#aycltrkhhu .gt_column_spanner_outer:last-child {
+#tlwilcsnoh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#aycltrkhhu .gt_column_spanner {
+#tlwilcsnoh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -412,11 +416,11 @@ div.csl-indent {
   width: 100%;
 }
 
-#aycltrkhhu .gt_spanner_row {
+#tlwilcsnoh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#aycltrkhhu .gt_group_heading {
+#tlwilcsnoh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -442,7 +446,7 @@ div.csl-indent {
   text-align: left;
 }
 
-#aycltrkhhu .gt_empty_group_heading {
+#tlwilcsnoh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -457,15 +461,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#aycltrkhhu .gt_from_md > :first-child {
+#tlwilcsnoh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#aycltrkhhu .gt_from_md > :last-child {
+#tlwilcsnoh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#aycltrkhhu .gt_row {
+#tlwilcsnoh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -484,7 +488,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#aycltrkhhu .gt_stub {
+#tlwilcsnoh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -497,7 +501,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#aycltrkhhu .gt_stub_row_group {
+#tlwilcsnoh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -511,15 +515,15 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#aycltrkhhu .gt_row_group_first td {
+#tlwilcsnoh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#aycltrkhhu .gt_row_group_first th {
+#tlwilcsnoh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#aycltrkhhu .gt_summary_row {
+#tlwilcsnoh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -529,16 +533,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#aycltrkhhu .gt_first_summary_row {
+#tlwilcsnoh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_first_summary_row.thick {
+#tlwilcsnoh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#aycltrkhhu .gt_last_summary_row {
+#tlwilcsnoh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -548,7 +552,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_grand_summary_row {
+#tlwilcsnoh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -558,7 +562,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#aycltrkhhu .gt_first_grand_summary_row {
+#tlwilcsnoh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -568,7 +572,7 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_last_grand_summary_row_top {
+#tlwilcsnoh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -578,11 +582,11 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_striped {
+#tlwilcsnoh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#aycltrkhhu .gt_table_body {
+#tlwilcsnoh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -591,7 +595,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_footnotes {
+#tlwilcsnoh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -605,7 +609,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_footnote {
+#tlwilcsnoh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -614,7 +618,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#aycltrkhhu .gt_sourcenotes {
+#tlwilcsnoh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -628,7 +632,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#aycltrkhhu .gt_sourcenote {
+#tlwilcsnoh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -636,63 +640,63 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#aycltrkhhu .gt_left {
+#tlwilcsnoh .gt_left {
   text-align: left;
 }
 
-#aycltrkhhu .gt_center {
+#tlwilcsnoh .gt_center {
   text-align: center;
 }
 
-#aycltrkhhu .gt_right {
+#tlwilcsnoh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#aycltrkhhu .gt_font_normal {
+#tlwilcsnoh .gt_font_normal {
   font-weight: normal;
 }
 
-#aycltrkhhu .gt_font_bold {
+#tlwilcsnoh .gt_font_bold {
   font-weight: bold;
 }
 
-#aycltrkhhu .gt_font_italic {
+#tlwilcsnoh .gt_font_italic {
   font-style: italic;
 }
 
-#aycltrkhhu .gt_super {
+#tlwilcsnoh .gt_super {
   font-size: 65%;
 }
 
-#aycltrkhhu .gt_footnote_marks {
+#tlwilcsnoh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#aycltrkhhu .gt_asterisk {
+#tlwilcsnoh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#aycltrkhhu .gt_indent_1 {
+#tlwilcsnoh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#aycltrkhhu .gt_indent_2 {
+#tlwilcsnoh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#aycltrkhhu .gt_indent_3 {
+#tlwilcsnoh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#aycltrkhhu .gt_indent_4 {
+#tlwilcsnoh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#aycltrkhhu .gt_indent_5 {
+#tlwilcsnoh .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -722,39 +726,49 @@ div.csl-indent {
 <td class="gt_row gt_right" headers="hpi">121.5217</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-04-01</td>
-<td class="gt_row gt_right" headers="hpi">122.3996</td>
+<td class="gt_row gt_left" headers="city">Detroit</td>
+<td class="gt_row gt_right" headers="date">2006-01-01</td>
+<td class="gt_row gt_right" headers="hpi">126.6627</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-05-01</td>
-<td class="gt_row gt_right" headers="hpi">123.2863</td>
+<td class="gt_row gt_left" headers="city">Detroit</td>
+<td class="gt_row gt_right" headers="date">2006-02-01</td>
+<td class="gt_row gt_right" headers="hpi">126.3886</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-06-01</td>
-<td class="gt_row gt_right" headers="hpi">124.4985</td>
+<td class="gt_row gt_left" headers="city">Detroit</td>
+<td class="gt_row gt_right" headers="date">2006-03-01</td>
+<td class="gt_row gt_right" headers="hpi">126.1218</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-07-01</td>
-<td class="gt_row gt_right" headers="hpi">125.3672</td>
+<td class="gt_row gt_left" headers="city">New York</td>
+<td class="gt_row gt_right" headers="date">2006-01-01</td>
+<td class="gt_row gt_right" headers="hpi">213.4958</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-08-01</td>
-<td class="gt_row gt_right" headers="hpi">125.7007</td>
+<td class="gt_row gt_left" headers="city">New York</td>
+<td class="gt_row gt_right" headers="date">2006-02-01</td>
+<td class="gt_row gt_right" headers="hpi">214.4696</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-09-01</td>
-<td class="gt_row gt_right" headers="hpi">125.1859</td>
+<td class="gt_row gt_left" headers="city">New York</td>
+<td class="gt_row gt_right" headers="date">2006-03-01</td>
+<td class="gt_row gt_right" headers="hpi">214.3266</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="city">Dallas</td>
-<td class="gt_row gt_right" headers="date">2006-10-01</td>
-<td class="gt_row gt_right" headers="hpi">124.5813</td>
+<td class="gt_row gt_left" headers="city">San Diego</td>
+<td class="gt_row gt_right" headers="date">2006-01-01</td>
+<td class="gt_row gt_right" headers="hpi">247.4588</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="city">San Diego</td>
+<td class="gt_row gt_right" headers="date">2006-02-01</td>
+<td class="gt_row gt_right" headers="hpi">247.8891</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="city">San Diego</td>
+<td class="gt_row gt_right" headers="date">2006-03-01</td>
+<td class="gt_row gt_right" headers="hpi">248.0924</td>
 </tr>
 </tbody>
 </table>
@@ -812,23 +826,23 @@ div.csl-indent {
 <span id="cb4-12"><a href="#cb4-12"></a><span class="fu">head</span>(hpi_series, <span class="dv">15</span>) <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="sopvcuoiek" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#sopvcuoiek table {
+<div id="eivfltazlt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eivfltazlt table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#sopvcuoiek thead, #sopvcuoiek tbody, #sopvcuoiek tfoot, #sopvcuoiek tr, #sopvcuoiek td, #sopvcuoiek th {
+#eivfltazlt thead, #eivfltazlt tbody, #eivfltazlt tfoot, #eivfltazlt tr, #eivfltazlt td, #eivfltazlt th {
   border-style: none;
 }
 
-#sopvcuoiek p {
+#eivfltazlt p {
   margin: 0;
   padding: 0;
 }
 
-#sopvcuoiek .gt_table {
+#eivfltazlt .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -854,12 +868,12 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_caption {
+#eivfltazlt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#sopvcuoiek .gt_title {
+#eivfltazlt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -871,7 +885,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#sopvcuoiek .gt_subtitle {
+#eivfltazlt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -883,7 +897,7 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#sopvcuoiek .gt_heading {
+#eivfltazlt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -895,13 +909,13 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_bottom_border {
+#eivfltazlt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_col_headings {
+#eivfltazlt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -916,7 +930,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_col_heading {
+#eivfltazlt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -936,7 +950,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#sopvcuoiek .gt_column_spanner_outer {
+#eivfltazlt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -948,15 +962,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#sopvcuoiek .gt_column_spanner_outer:first-child {
+#eivfltazlt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sopvcuoiek .gt_column_spanner_outer:last-child {
+#eivfltazlt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sopvcuoiek .gt_column_spanner {
+#eivfltazlt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -968,11 +982,11 @@ div.csl-indent {
   width: 100%;
 }
 
-#sopvcuoiek .gt_spanner_row {
+#eivfltazlt .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#sopvcuoiek .gt_group_heading {
+#eivfltazlt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -998,7 +1012,7 @@ div.csl-indent {
   text-align: left;
 }
 
-#sopvcuoiek .gt_empty_group_heading {
+#eivfltazlt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1013,15 +1027,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#sopvcuoiek .gt_from_md > :first-child {
+#eivfltazlt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sopvcuoiek .gt_from_md > :last-child {
+#eivfltazlt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sopvcuoiek .gt_row {
+#eivfltazlt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1040,7 +1054,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#sopvcuoiek .gt_stub {
+#eivfltazlt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1053,7 +1067,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#sopvcuoiek .gt_stub_row_group {
+#eivfltazlt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1067,15 +1081,15 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#sopvcuoiek .gt_row_group_first td {
+#eivfltazlt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#sopvcuoiek .gt_row_group_first th {
+#eivfltazlt .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#sopvcuoiek .gt_summary_row {
+#eivfltazlt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1085,16 +1099,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#sopvcuoiek .gt_first_summary_row {
+#eivfltazlt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_first_summary_row.thick {
+#eivfltazlt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#sopvcuoiek .gt_last_summary_row {
+#eivfltazlt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1104,7 +1118,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_grand_summary_row {
+#eivfltazlt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1114,7 +1128,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#sopvcuoiek .gt_first_grand_summary_row {
+#eivfltazlt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1124,7 +1138,7 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_last_grand_summary_row_top {
+#eivfltazlt .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1134,11 +1148,11 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_striped {
+#eivfltazlt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sopvcuoiek .gt_table_body {
+#eivfltazlt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1147,7 +1161,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_footnotes {
+#eivfltazlt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1161,7 +1175,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_footnote {
+#eivfltazlt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1170,7 +1184,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#sopvcuoiek .gt_sourcenotes {
+#eivfltazlt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1184,7 +1198,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#sopvcuoiek .gt_sourcenote {
+#eivfltazlt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1192,63 +1206,63 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#sopvcuoiek .gt_left {
+#eivfltazlt .gt_left {
   text-align: left;
 }
 
-#sopvcuoiek .gt_center {
+#eivfltazlt .gt_center {
   text-align: center;
 }
 
-#sopvcuoiek .gt_right {
+#eivfltazlt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sopvcuoiek .gt_font_normal {
+#eivfltazlt .gt_font_normal {
   font-weight: normal;
 }
 
-#sopvcuoiek .gt_font_bold {
+#eivfltazlt .gt_font_bold {
   font-weight: bold;
 }
 
-#sopvcuoiek .gt_font_italic {
+#eivfltazlt .gt_font_italic {
   font-style: italic;
 }
 
-#sopvcuoiek .gt_super {
+#eivfltazlt .gt_super {
   font-size: 65%;
 }
 
-#sopvcuoiek .gt_footnote_marks {
+#eivfltazlt .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#sopvcuoiek .gt_asterisk {
+#eivfltazlt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#sopvcuoiek .gt_indent_1 {
+#eivfltazlt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#sopvcuoiek .gt_indent_2 {
+#eivfltazlt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#sopvcuoiek .gt_indent_3 {
+#eivfltazlt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#sopvcuoiek .gt_indent_4 {
+#eivfltazlt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#sopvcuoiek .gt_indent_5 {
+#eivfltazlt .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1490,23 +1504,23 @@ div.csl-indent {
 <span id="cb8-25"><a href="#cb8-25"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="uepidzqiix" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#uepidzqiix table {
+<div id="tyeuilnirn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tyeuilnirn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#uepidzqiix thead, #uepidzqiix tbody, #uepidzqiix tfoot, #uepidzqiix tr, #uepidzqiix td, #uepidzqiix th {
+#tyeuilnirn thead, #tyeuilnirn tbody, #tyeuilnirn tfoot, #tyeuilnirn tr, #tyeuilnirn td, #tyeuilnirn th {
   border-style: none;
 }
 
-#uepidzqiix p {
+#tyeuilnirn p {
   margin: 0;
   padding: 0;
 }
 
-#uepidzqiix .gt_table {
+#tyeuilnirn .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1532,12 +1546,12 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_caption {
+#tyeuilnirn .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#uepidzqiix .gt_title {
+#tyeuilnirn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1549,7 +1563,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#uepidzqiix .gt_subtitle {
+#tyeuilnirn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1561,7 +1575,7 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#uepidzqiix .gt_heading {
+#tyeuilnirn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1573,13 +1587,13 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_bottom_border {
+#tyeuilnirn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_col_headings {
+#tyeuilnirn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1594,7 +1608,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_col_heading {
+#tyeuilnirn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1614,7 +1628,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#uepidzqiix .gt_column_spanner_outer {
+#tyeuilnirn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1626,15 +1640,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#uepidzqiix .gt_column_spanner_outer:first-child {
+#tyeuilnirn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uepidzqiix .gt_column_spanner_outer:last-child {
+#tyeuilnirn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uepidzqiix .gt_column_spanner {
+#tyeuilnirn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1646,11 +1660,11 @@ div.csl-indent {
   width: 100%;
 }
 
-#uepidzqiix .gt_spanner_row {
+#tyeuilnirn .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#uepidzqiix .gt_group_heading {
+#tyeuilnirn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1676,7 +1690,7 @@ div.csl-indent {
   text-align: left;
 }
 
-#uepidzqiix .gt_empty_group_heading {
+#tyeuilnirn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1691,15 +1705,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#uepidzqiix .gt_from_md > :first-child {
+#tyeuilnirn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uepidzqiix .gt_from_md > :last-child {
+#tyeuilnirn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uepidzqiix .gt_row {
+#tyeuilnirn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1718,7 +1732,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#uepidzqiix .gt_stub {
+#tyeuilnirn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1731,7 +1745,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#uepidzqiix .gt_stub_row_group {
+#tyeuilnirn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1745,15 +1759,15 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#uepidzqiix .gt_row_group_first td {
+#tyeuilnirn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uepidzqiix .gt_row_group_first th {
+#tyeuilnirn .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#uepidzqiix .gt_summary_row {
+#tyeuilnirn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1763,16 +1777,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#uepidzqiix .gt_first_summary_row {
+#tyeuilnirn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_first_summary_row.thick {
+#tyeuilnirn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uepidzqiix .gt_last_summary_row {
+#tyeuilnirn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1782,7 +1796,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_grand_summary_row {
+#tyeuilnirn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1792,7 +1806,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#uepidzqiix .gt_first_grand_summary_row {
+#tyeuilnirn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1802,7 +1816,7 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_last_grand_summary_row_top {
+#tyeuilnirn .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1812,11 +1826,11 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_striped {
+#tyeuilnirn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uepidzqiix .gt_table_body {
+#tyeuilnirn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1825,7 +1839,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_footnotes {
+#tyeuilnirn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1839,7 +1853,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_footnote {
+#tyeuilnirn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1848,7 +1862,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#uepidzqiix .gt_sourcenotes {
+#tyeuilnirn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1862,7 +1876,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#uepidzqiix .gt_sourcenote {
+#tyeuilnirn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1870,63 +1884,63 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#uepidzqiix .gt_left {
+#tyeuilnirn .gt_left {
   text-align: left;
 }
 
-#uepidzqiix .gt_center {
+#tyeuilnirn .gt_center {
   text-align: center;
 }
 
-#uepidzqiix .gt_right {
+#tyeuilnirn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uepidzqiix .gt_font_normal {
+#tyeuilnirn .gt_font_normal {
   font-weight: normal;
 }
 
-#uepidzqiix .gt_font_bold {
+#tyeuilnirn .gt_font_bold {
   font-weight: bold;
 }
 
-#uepidzqiix .gt_font_italic {
+#tyeuilnirn .gt_font_italic {
   font-style: italic;
 }
 
-#uepidzqiix .gt_super {
+#tyeuilnirn .gt_super {
   font-size: 65%;
 }
 
-#uepidzqiix .gt_footnote_marks {
+#tyeuilnirn .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#uepidzqiix .gt_asterisk {
+#tyeuilnirn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uepidzqiix .gt_indent_1 {
+#tyeuilnirn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#uepidzqiix .gt_indent_2 {
+#tyeuilnirn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#uepidzqiix .gt_indent_3 {
+#tyeuilnirn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#uepidzqiix .gt_indent_4 {
+#tyeuilnirn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#uepidzqiix .gt_indent_5 {
+#tyeuilnirn .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1948,7 +1962,7 @@ div.csl-indent {
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_center" headers="Dallas"><div id="yyzclshwif" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<td class="gt_row gt_center" headers="Dallas"><div id="aejrewhddb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false" data-bgcolor="#FFFFFF">
 <thead style="border-style: none;">
 <tr class="header gt_col_headings" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
@@ -1976,7 +1990,7 @@ div.csl-indent {
 </tbody>
 </table>
 </div></td>
-<td class="gt_row gt_center" headers="Detroit"><div id="eogcvcvaeg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<td class="gt_row gt_center" headers="Detroit"><div id="iuuapygsme" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false" data-bgcolor="#FFFFFF">
 <thead style="border-style: none;">
 <tr class="header gt_col_headings" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
@@ -2004,7 +2018,7 @@ div.csl-indent {
 </tbody>
 </table>
 </div></td>
-<td class="gt_row gt_center" headers="New York"><div id="fknrwyrjrm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<td class="gt_row gt_center" headers="New York"><div id="dzhclnandu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false" data-bgcolor="#FFFFFF">
 <thead style="border-style: none;">
 <tr class="header gt_col_headings" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
@@ -2032,7 +2046,7 @@ div.csl-indent {
 </tbody>
 </table>
 </div></td>
-<td class="gt_row gt_center" headers="San Diego"><div id="bdrgglqdmi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<td class="gt_row gt_center" headers="San Diego"><div id="jhfmplatfu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false" data-bgcolor="#FFFFFF">
 <thead style="border-style: none;">
 <tr class="header gt_col_headings" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
@@ -2790,273 +2804,277 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb14-77"><a href="#cb14-77"></a><span class="in">```{r}</span></span>
 <span id="cb14-78"><a href="#cb14-78"></a><span class="co">#| label: show-hpi-data</span></span>
 <span id="cb14-79"><a href="#cb14-79"></a></span>
-<span id="cb14-80"><a href="#cb14-80"></a><span class="fu">gt_bold_head</span>(<span class="fu">head</span>(econ_data, <span class="dv">10</span>))</span>
-<span id="cb14-81"><a href="#cb14-81"></a></span>
-<span id="cb14-82"><a href="#cb14-82"></a><span class="in">```</span></span>
-<span id="cb14-83"><a href="#cb14-83"></a></span>
-<span id="cb14-84"><a href="#cb14-84"></a>Now I'll look visualize the data in a line plot.</span>
+<span id="cb14-80"><a href="#cb14-80"></a>econ_data <span class="sc">|&gt;</span></span>
+<span id="cb14-81"><a href="#cb14-81"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-82"><a href="#cb14-82"></a>  <span class="fu">slice_min</span>(date, <span class="at">n =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-83"><a href="#cb14-83"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-84"><a href="#cb14-84"></a>  <span class="fu">gt_bold_head</span>()</span>
 <span id="cb14-85"><a href="#cb14-85"></a></span>
-<span id="cb14-88"><a href="#cb14-88"></a><span class="in">```{r}</span></span>
-<span id="cb14-89"><a href="#cb14-89"></a><span class="co">#| label: initial-line-plot</span></span>
-<span id="cb14-90"><a href="#cb14-90"></a><span class="co">#| fig-width: 6</span></span>
-<span id="cb14-91"><a href="#cb14-91"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb14-92"><a href="#cb14-92"></a></span>
-<span id="cb14-93"><a href="#cb14-93"></a>econ_data <span class="sc">|&gt;</span></span>
-<span id="cb14-94"><a href="#cb14-94"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, hpi, <span class="at">color =</span> city)) <span class="sc">+</span></span>
-<span id="cb14-95"><a href="#cb14-95"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb14-96"><a href="#cb14-96"></a>  <span class="fu">labs</span>(</span>
-<span id="cb14-97"><a href="#cb14-97"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb14-98"><a href="#cb14-98"></a>    <span class="at">y =</span> <span class="st">"HPI"</span>,</span>
-<span id="cb14-99"><a href="#cb14-99"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
-<span id="cb14-100"><a href="#cb14-100"></a>    <span class="at">title =</span> <span class="st">"Case-Shiller HPI from 2006 through 2022"</span></span>
-<span id="cb14-101"><a href="#cb14-101"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-102"><a href="#cb14-102"></a>  theme_timetk <span class="sc">+</span></span>
-<span id="cb14-103"><a href="#cb14-103"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-104"><a href="#cb14-104"></a><span class="in">```</span></span>
-<span id="cb14-105"><a href="#cb14-105"></a></span>
-<span id="cb14-106"><a href="#cb14-106"></a>Here one can see that Dallas's HPI did not drop as much during the Great Recession and has had a fast rise relative to those of the other cities ever since. It's also pretty clear that NYC's HPI has experienced a relatively mild increase over the years covered. There's also more volatility between 2010 and 2015 in the HPIs for NYC, Dallas, and Detroit than in San Diego's.</span>
-<span id="cb14-107"><a href="#cb14-107"></a></span>
-<span id="cb14-108"><a href="#cb14-108"></a><span class="fu">## Time series analysis</span></span>
+<span id="cb14-86"><a href="#cb14-86"></a><span class="in">```</span></span>
+<span id="cb14-87"><a href="#cb14-87"></a></span>
+<span id="cb14-88"><a href="#cb14-88"></a>Now I'll look visualize the data in a line plot.</span>
+<span id="cb14-89"><a href="#cb14-89"></a></span>
+<span id="cb14-92"><a href="#cb14-92"></a><span class="in">```{r}</span></span>
+<span id="cb14-93"><a href="#cb14-93"></a><span class="co">#| label: initial-line-plot</span></span>
+<span id="cb14-94"><a href="#cb14-94"></a><span class="co">#| fig-width: 6</span></span>
+<span id="cb14-95"><a href="#cb14-95"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb14-96"><a href="#cb14-96"></a></span>
+<span id="cb14-97"><a href="#cb14-97"></a>econ_data <span class="sc">|&gt;</span></span>
+<span id="cb14-98"><a href="#cb14-98"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, hpi, <span class="at">color =</span> city)) <span class="sc">+</span></span>
+<span id="cb14-99"><a href="#cb14-99"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb14-100"><a href="#cb14-100"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-101"><a href="#cb14-101"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-102"><a href="#cb14-102"></a>    <span class="at">y =</span> <span class="st">"HPI"</span>,</span>
+<span id="cb14-103"><a href="#cb14-103"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb14-104"><a href="#cb14-104"></a>    <span class="at">title =</span> <span class="st">"Case-Shiller HPI from 2006 through 2022"</span></span>
+<span id="cb14-105"><a href="#cb14-105"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-106"><a href="#cb14-106"></a>  theme_timetk <span class="sc">+</span></span>
+<span id="cb14-107"><a href="#cb14-107"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb14-108"><a href="#cb14-108"></a><span class="in">```</span></span>
 <span id="cb14-109"><a href="#cb14-109"></a></span>
-<span id="cb14-110"><a href="#cb14-110"></a>The goal of this initial analysis is to find the parameters to use in an ARIMA model, which means that I'll need to ensure my data are <span class="co">[</span><span class="ot">stationary</span><span class="co">](https://en.wikipedia.org/wiki/Stationary_process)</span>. I'll try to get there through the following operations and analyses.</span>
+<span id="cb14-110"><a href="#cb14-110"></a>Here one can see that Dallas's HPI did not drop as much during the Great Recession and has had a fast rise relative to those of the other cities ever since. It's also pretty clear that NYC's HPI has experienced a relatively mild increase over the years covered. There's also more volatility between 2010 and 2015 in the HPIs for NYC, Dallas, and Detroit than in San Diego's.</span>
 <span id="cb14-111"><a href="#cb14-111"></a></span>
-<span id="cb14-112"><a href="#cb14-112"></a><span class="fu">### Preparing the data</span></span>
+<span id="cb14-112"><a href="#cb14-112"></a><span class="fu">## Time series analysis</span></span>
 <span id="cb14-113"><a href="#cb14-113"></a></span>
-<span id="cb14-114"><a href="#cb14-114"></a>Before performing any analysis I'd like to add one column with a lagged first-difference and another with a lagged twelfth-difference. To accomplish this I'll use the <span class="in">`tk_augment_differences()`</span> from the <span class="co">[</span><span class="ot">timetk</span><span class="co">](https://business-science.github.io/timetk/)</span> package. I'll store this data set in a new variable called "hpi_series". I chose these two lagged differences because the lagged first-difference generally any stationarity rooted in a trend and the lagged twelfth-difference should deal with seasonality as my data are monthly observations and I'm operating on the assumption that the housing market cycle is annual.</span>
+<span id="cb14-114"><a href="#cb14-114"></a>The goal of this initial analysis is to find the parameters to use in an ARIMA model, which means that I'll need to ensure my data are <span class="co">[</span><span class="ot">stationary</span><span class="co">](https://en.wikipedia.org/wiki/Stationary_process)</span>. I'll try to get there through the following operations and analyses.</span>
 <span id="cb14-115"><a href="#cb14-115"></a></span>
-<span id="cb14-116"><a href="#cb14-116"></a>Below is a snippet of the data.</span>
+<span id="cb14-116"><a href="#cb14-116"></a><span class="fu">### Preparing the data</span></span>
 <span id="cb14-117"><a href="#cb14-117"></a></span>
-<span id="cb14-120"><a href="#cb14-120"></a><span class="in">```{r}</span></span>
-<span id="cb14-121"><a href="#cb14-121"></a><span class="co">#| label: add-diff-lag</span></span>
-<span id="cb14-122"><a href="#cb14-122"></a></span>
-<span id="cb14-123"><a href="#cb14-123"></a>hpi_series <span class="ot">&lt;-</span> econ_data <span class="sc">|&gt;</span></span>
-<span id="cb14-124"><a href="#cb14-124"></a>  <span class="fu">select</span>(city, date, hpi) <span class="sc">|&gt;</span></span>
-<span id="cb14-125"><a href="#cb14-125"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb14-126"><a href="#cb14-126"></a>  <span class="fu">tk_augment_differences</span>(</span>
-<span id="cb14-127"><a href="#cb14-127"></a>    <span class="at">.value =</span> hpi,</span>
-<span id="cb14-128"><a href="#cb14-128"></a>    <span class="at">.lags =</span> <span class="dv">1</span>,</span>
-<span id="cb14-129"><a href="#cb14-129"></a>    <span class="at">.differences =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">12</span>),</span>
-<span id="cb14-130"><a href="#cb14-130"></a>    <span class="at">.log =</span> <span class="cn">FALSE</span></span>
-<span id="cb14-131"><a href="#cb14-131"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb14-132"><a href="#cb14-132"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb14-133"><a href="#cb14-133"></a></span>
-<span id="cb14-134"><a href="#cb14-134"></a><span class="fu">head</span>(hpi_series, <span class="dv">15</span>) <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span>
-<span id="cb14-135"><a href="#cb14-135"></a><span class="in">```</span></span>
-<span id="cb14-136"><a href="#cb14-136"></a></span>
-<span id="cb14-137"><a href="#cb14-137"></a>And now I can look at line plots of the three different series with the original on the left ; the lagged first-difference in the middle; and the lagged twelfth-difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see. This also provides a sneak peak into what the following analyses will give us.</span>
-<span id="cb14-138"><a href="#cb14-138"></a></span>
-<span id="cb14-141"><a href="#cb14-141"></a><span class="in">```{r}</span></span>
-<span id="cb14-142"><a href="#cb14-142"></a><span class="co">#| label: plot-lagged-diffs</span></span>
-<span id="cb14-143"><a href="#cb14-143"></a></span>
-<span id="cb14-144"><a href="#cb14-144"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-145"><a href="#cb14-145"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"hpi"</span>), <span class="at">names_to =</span> <span class="st">"series"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb14-146"><a href="#cb14-146"></a>  <span class="fu">group_by</span>(city, series) <span class="sc">|&gt;</span></span>
-<span id="cb14-147"><a href="#cb14-147"></a>  <span class="fu">plot_time_series</span>(</span>
-<span id="cb14-148"><a href="#cb14-148"></a>    date,</span>
-<span id="cb14-149"><a href="#cb14-149"></a>    value,</span>
-<span id="cb14-150"><a href="#cb14-150"></a>    <span class="at">.facet_ncol =</span> <span class="dv">3</span>,</span>
-<span id="cb14-151"><a href="#cb14-151"></a>    <span class="at">.title =</span> <span class="st">"Case-Shiller HPI from 2006 through 2022"</span>,</span>
-<span id="cb14-152"><a href="#cb14-152"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span></span>
-<span id="cb14-153"><a href="#cb14-153"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-154"><a href="#cb14-154"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-155"><a href="#cb14-155"></a></span>
-<span id="cb14-156"><a href="#cb14-156"></a><span class="in">```</span></span>
-<span id="cb14-157"><a href="#cb14-157"></a></span>
-<span id="cb14-158"><a href="#cb14-158"></a>On might ask "why not use a lagged, log difference?" The below plot shows that using a lagged, log first- and twelfth-differenced series don't change anything compared to the lagged first- and twelfth-differenced series except for generating data with much higher relative amplitude and possibly showing outliers. This might actually introduce heteroskedasticity, which I'd like to avoid.</span>
+<span id="cb14-118"><a href="#cb14-118"></a>Before performing any analysis I'd like to add one column with a lagged first-difference and another with a lagged twelfth-difference. To accomplish this I'll use the <span class="in">`tk_augment_differences()`</span> from the <span class="co">[</span><span class="ot">timetk</span><span class="co">](https://business-science.github.io/timetk/)</span> package. I'll store this data set in a new variable called "hpi_series". I chose these two lagged differences because the lagged first-difference generally any stationarity rooted in a trend and the lagged twelfth-difference should deal with seasonality as my data are monthly observations and I'm operating on the assumption that the housing market cycle is annual.</span>
+<span id="cb14-119"><a href="#cb14-119"></a></span>
+<span id="cb14-120"><a href="#cb14-120"></a>Below is a snippet of the data.</span>
+<span id="cb14-121"><a href="#cb14-121"></a></span>
+<span id="cb14-124"><a href="#cb14-124"></a><span class="in">```{r}</span></span>
+<span id="cb14-125"><a href="#cb14-125"></a><span class="co">#| label: add-diff-lag</span></span>
+<span id="cb14-126"><a href="#cb14-126"></a></span>
+<span id="cb14-127"><a href="#cb14-127"></a>hpi_series <span class="ot">&lt;-</span> econ_data <span class="sc">|&gt;</span></span>
+<span id="cb14-128"><a href="#cb14-128"></a>  <span class="fu">select</span>(city, date, hpi) <span class="sc">|&gt;</span></span>
+<span id="cb14-129"><a href="#cb14-129"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-130"><a href="#cb14-130"></a>  <span class="fu">tk_augment_differences</span>(</span>
+<span id="cb14-131"><a href="#cb14-131"></a>    <span class="at">.value =</span> hpi,</span>
+<span id="cb14-132"><a href="#cb14-132"></a>    <span class="at">.lags =</span> <span class="dv">1</span>,</span>
+<span id="cb14-133"><a href="#cb14-133"></a>    <span class="at">.differences =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">12</span>),</span>
+<span id="cb14-134"><a href="#cb14-134"></a>    <span class="at">.log =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-135"><a href="#cb14-135"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb14-136"><a href="#cb14-136"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb14-137"><a href="#cb14-137"></a></span>
+<span id="cb14-138"><a href="#cb14-138"></a><span class="fu">head</span>(hpi_series, <span class="dv">15</span>) <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span>
+<span id="cb14-139"><a href="#cb14-139"></a><span class="in">```</span></span>
+<span id="cb14-140"><a href="#cb14-140"></a></span>
+<span id="cb14-141"><a href="#cb14-141"></a>And now I can look at line plots of the three different series with the original on the left ; the lagged first-difference in the middle; and the lagged twelfth-difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see. This also provides a sneak peak into what the following analyses will give us.</span>
+<span id="cb14-142"><a href="#cb14-142"></a></span>
+<span id="cb14-145"><a href="#cb14-145"></a><span class="in">```{r}</span></span>
+<span id="cb14-146"><a href="#cb14-146"></a><span class="co">#| label: plot-lagged-diffs</span></span>
+<span id="cb14-147"><a href="#cb14-147"></a></span>
+<span id="cb14-148"><a href="#cb14-148"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-149"><a href="#cb14-149"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"hpi"</span>), <span class="at">names_to =</span> <span class="st">"series"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-150"><a href="#cb14-150"></a>  <span class="fu">group_by</span>(city, series) <span class="sc">|&gt;</span></span>
+<span id="cb14-151"><a href="#cb14-151"></a>  <span class="fu">plot_time_series</span>(</span>
+<span id="cb14-152"><a href="#cb14-152"></a>    date,</span>
+<span id="cb14-153"><a href="#cb14-153"></a>    value,</span>
+<span id="cb14-154"><a href="#cb14-154"></a>    <span class="at">.facet_ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb14-155"><a href="#cb14-155"></a>    <span class="at">.title =</span> <span class="st">"Case-Shiller HPI from 2006 through 2022"</span>,</span>
+<span id="cb14-156"><a href="#cb14-156"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-157"><a href="#cb14-157"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-158"><a href="#cb14-158"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
 <span id="cb14-159"><a href="#cb14-159"></a></span>
-<span id="cb14-162"><a href="#cb14-162"></a><span class="in">```{r}</span></span>
-<span id="cb14-163"><a href="#cb14-163"></a><span class="co">#| label: plot-lagged-log-diffs</span></span>
-<span id="cb14-164"><a href="#cb14-164"></a></span>
-<span id="cb14-165"><a href="#cb14-165"></a>econ_data <span class="sc">|&gt;</span></span>
-<span id="cb14-166"><a href="#cb14-166"></a>  <span class="fu">tk_augment_differences</span>(</span>
-<span id="cb14-167"><a href="#cb14-167"></a>    <span class="at">.value =</span> hpi,</span>
-<span id="cb14-168"><a href="#cb14-168"></a>    <span class="at">.lags =</span> <span class="dv">1</span>,</span>
-<span id="cb14-169"><a href="#cb14-169"></a>    <span class="at">.differences =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">12</span>),</span>
-<span id="cb14-170"><a href="#cb14-170"></a>    <span class="at">.log =</span> <span class="cn">TRUE</span></span>
-<span id="cb14-171"><a href="#cb14-171"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb14-172"><a href="#cb14-172"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"hpi"</span>), <span class="at">names_to =</span> <span class="st">"series"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb14-173"><a href="#cb14-173"></a>  <span class="fu">group_by</span>(city, series) <span class="sc">|&gt;</span></span>
-<span id="cb14-174"><a href="#cb14-174"></a>  <span class="fu">plot_time_series</span>(</span>
-<span id="cb14-175"><a href="#cb14-175"></a>    date,</span>
-<span id="cb14-176"><a href="#cb14-176"></a>    value,</span>
-<span id="cb14-177"><a href="#cb14-177"></a>    <span class="at">.facet_ncol =</span> <span class="dv">3</span>,</span>
-<span id="cb14-178"><a href="#cb14-178"></a>    <span class="at">.title =</span> <span class="st">"Case-Shiller HPI from 2006 through 2022"</span>,</span>
-<span id="cb14-179"><a href="#cb14-179"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span></span>
-<span id="cb14-180"><a href="#cb14-180"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-181"><a href="#cb14-181"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-182"><a href="#cb14-182"></a></span>
-<span id="cb14-183"><a href="#cb14-183"></a><span class="in">```</span></span>
-<span id="cb14-184"><a href="#cb14-184"></a></span>
-<span id="cb14-185"><a href="#cb14-185"></a><span class="fu">### Time series decomposition</span></span>
+<span id="cb14-160"><a href="#cb14-160"></a><span class="in">```</span></span>
+<span id="cb14-161"><a href="#cb14-161"></a></span>
+<span id="cb14-162"><a href="#cb14-162"></a>On might ask "why not use a lagged, log difference?" The below plot shows that using a lagged, log first- and twelfth-differenced series don't change anything compared to the lagged first- and twelfth-differenced series except for generating data with much higher relative amplitude and possibly showing outliers. This might actually introduce heteroskedasticity, which I'd like to avoid.</span>
+<span id="cb14-163"><a href="#cb14-163"></a></span>
+<span id="cb14-166"><a href="#cb14-166"></a><span class="in">```{r}</span></span>
+<span id="cb14-167"><a href="#cb14-167"></a><span class="co">#| label: plot-lagged-log-diffs</span></span>
+<span id="cb14-168"><a href="#cb14-168"></a></span>
+<span id="cb14-169"><a href="#cb14-169"></a>econ_data <span class="sc">|&gt;</span></span>
+<span id="cb14-170"><a href="#cb14-170"></a>  <span class="fu">tk_augment_differences</span>(</span>
+<span id="cb14-171"><a href="#cb14-171"></a>    <span class="at">.value =</span> hpi,</span>
+<span id="cb14-172"><a href="#cb14-172"></a>    <span class="at">.lags =</span> <span class="dv">1</span>,</span>
+<span id="cb14-173"><a href="#cb14-173"></a>    <span class="at">.differences =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">12</span>),</span>
+<span id="cb14-174"><a href="#cb14-174"></a>    <span class="at">.log =</span> <span class="cn">TRUE</span></span>
+<span id="cb14-175"><a href="#cb14-175"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb14-176"><a href="#cb14-176"></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"hpi"</span>), <span class="at">names_to =</span> <span class="st">"series"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-177"><a href="#cb14-177"></a>  <span class="fu">group_by</span>(city, series) <span class="sc">|&gt;</span></span>
+<span id="cb14-178"><a href="#cb14-178"></a>  <span class="fu">plot_time_series</span>(</span>
+<span id="cb14-179"><a href="#cb14-179"></a>    date,</span>
+<span id="cb14-180"><a href="#cb14-180"></a>    value,</span>
+<span id="cb14-181"><a href="#cb14-181"></a>    <span class="at">.facet_ncol =</span> <span class="dv">3</span>,</span>
+<span id="cb14-182"><a href="#cb14-182"></a>    <span class="at">.title =</span> <span class="st">"Case-Shiller HPI from 2006 through 2022"</span>,</span>
+<span id="cb14-183"><a href="#cb14-183"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span></span>
+<span id="cb14-184"><a href="#cb14-184"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-185"><a href="#cb14-185"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
 <span id="cb14-186"><a href="#cb14-186"></a></span>
-<span id="cb14-187"><a href="#cb14-187"></a>The following plot shows the Seasonal-Trend decomposition using Loess (STL), which is a common tool to determine how much of a time series' movement is due to a trend versus that which is due to it's seasonality. Again, here I'll assume an annual seasonal cycle.</span>
+<span id="cb14-187"><a href="#cb14-187"></a><span class="in">```</span></span>
 <span id="cb14-188"><a href="#cb14-188"></a></span>
-<span id="cb14-191"><a href="#cb14-191"></a><span class="in">```{r}</span></span>
-<span id="cb14-192"><a href="#cb14-192"></a><span class="co">#| label: stl</span></span>
-<span id="cb14-193"><a href="#cb14-193"></a></span>
-<span id="cb14-194"><a href="#cb14-194"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-195"><a href="#cb14-195"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb14-196"><a href="#cb14-196"></a>  <span class="fu">plot_stl_diagnostics</span>(</span>
-<span id="cb14-197"><a href="#cb14-197"></a>    date,</span>
-<span id="cb14-198"><a href="#cb14-198"></a>    hpi,</span>
-<span id="cb14-199"><a href="#cb14-199"></a>    <span class="at">.feature_set =</span> <span class="fu">c</span>(<span class="st">"observed"</span>, <span class="st">"season"</span>, <span class="st">"trend"</span>, <span class="st">"remainder"</span>),</span>
-<span id="cb14-200"><a href="#cb14-200"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-201"><a href="#cb14-201"></a>    <span class="at">.frequency =</span> <span class="dv">12</span></span>
-<span id="cb14-202"><a href="#cb14-202"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-203"><a href="#cb14-203"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-204"><a href="#cb14-204"></a></span>
-<span id="cb14-205"><a href="#cb14-205"></a><span class="in">```</span></span>
-<span id="cb14-206"><a href="#cb14-206"></a></span>
-<span id="cb14-207"><a href="#cb14-207"></a>According to this plot most of the movement in the HPI is determined by the trend and very little by seasonality.</span>
+<span id="cb14-189"><a href="#cb14-189"></a><span class="fu">### Time series decomposition</span></span>
+<span id="cb14-190"><a href="#cb14-190"></a></span>
+<span id="cb14-191"><a href="#cb14-191"></a>The following plot shows the Seasonal-Trend decomposition using Loess (STL), which is a common tool to determine how much of a time series' movement is due to a trend versus that which is due to it's seasonality. Again, here I'll assume an annual seasonal cycle.</span>
+<span id="cb14-192"><a href="#cb14-192"></a></span>
+<span id="cb14-195"><a href="#cb14-195"></a><span class="in">```{r}</span></span>
+<span id="cb14-196"><a href="#cb14-196"></a><span class="co">#| label: stl</span></span>
+<span id="cb14-197"><a href="#cb14-197"></a></span>
+<span id="cb14-198"><a href="#cb14-198"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-199"><a href="#cb14-199"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-200"><a href="#cb14-200"></a>  <span class="fu">plot_stl_diagnostics</span>(</span>
+<span id="cb14-201"><a href="#cb14-201"></a>    date,</span>
+<span id="cb14-202"><a href="#cb14-202"></a>    hpi,</span>
+<span id="cb14-203"><a href="#cb14-203"></a>    <span class="at">.feature_set =</span> <span class="fu">c</span>(<span class="st">"observed"</span>, <span class="st">"season"</span>, <span class="st">"trend"</span>, <span class="st">"remainder"</span>),</span>
+<span id="cb14-204"><a href="#cb14-204"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb14-205"><a href="#cb14-205"></a>    <span class="at">.frequency =</span> <span class="dv">12</span></span>
+<span id="cb14-206"><a href="#cb14-206"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-207"><a href="#cb14-207"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
 <span id="cb14-208"><a href="#cb14-208"></a></span>
-<span id="cb14-209"><a href="#cb14-209"></a><span class="fu">### Augmented Dickey-Fuller Test</span></span>
+<span id="cb14-209"><a href="#cb14-209"></a><span class="in">```</span></span>
 <span id="cb14-210"><a href="#cb14-210"></a></span>
-<span id="cb14-211"><a href="#cb14-211"></a>The Augmented Dickey-Fuller Test (ADF) is commonly run to evaluate whether a time series is stationary or not. The null hypothesis of the ADF is that the time series is non-stationary, so want to reject the null hypothesis to be able to assume the alternative, i.e., that the series is stationary. The following table shows that one can reject the null hypothesis for every city but San Diego with just a lagged first-difference, but with the lagged twelfth-difference all four series can be thought of as stationary.</span>
+<span id="cb14-211"><a href="#cb14-211"></a>According to this plot most of the movement in the HPI is determined by the trend and very little by seasonality.</span>
 <span id="cb14-212"><a href="#cb14-212"></a></span>
-<span id="cb14-215"><a href="#cb14-215"></a><span class="in">```{r}</span></span>
-<span id="cb14-216"><a href="#cb14-216"></a><span class="co">#| label: show-adf</span></span>
-<span id="cb14-217"><a href="#cb14-217"></a><span class="co">#| warning: false</span></span>
-<span id="cb14-218"><a href="#cb14-218"></a></span>
-<span id="cb14-219"><a href="#cb14-219"></a>hpi_adf <span class="ot">&lt;-</span> hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-220"><a href="#cb14-220"></a>  <span class="fu">pivot_longer</span>(<span class="sc">!</span><span class="fu">c</span>(city, date), <span class="at">names_to =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb14-221"><a href="#cb14-221"></a>  <span class="fu">group_by</span>(city, variable) <span class="sc">|&gt;</span></span>
-<span id="cb14-222"><a href="#cb14-222"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="fu">c</span>(date, value)) <span class="sc">|&gt;</span></span>
-<span id="cb14-223"><a href="#cb14-223"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb14-224"><a href="#cb14-224"></a>    <span class="at">adf_test =</span> <span class="fu">map</span>(</span>
-<span id="cb14-225"><a href="#cb14-225"></a>      data,</span>
-<span id="cb14-226"><a href="#cb14-226"></a>      \(x) <span class="fu">drop_na</span>(x, value) <span class="sc">|&gt;</span></span>
-<span id="cb14-227"><a href="#cb14-227"></a>        <span class="fu">pull</span>(value) <span class="sc">|&gt;</span></span>
-<span id="cb14-228"><a href="#cb14-228"></a>        tseries<span class="sc">::</span><span class="fu">adf.test</span>() <span class="sc">|&gt;</span></span>
-<span id="cb14-229"><a href="#cb14-229"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">|&gt;</span></span>
-<span id="cb14-230"><a href="#cb14-230"></a>        <span class="fu">select</span>(statistic, p.value)</span>
-<span id="cb14-231"><a href="#cb14-231"></a>    )</span>
-<span id="cb14-232"><a href="#cb14-232"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb14-233"><a href="#cb14-233"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
-<span id="cb14-234"><a href="#cb14-234"></a>  <span class="fu">unnest</span>(adf_test) <span class="sc">|&gt;</span></span>
-<span id="cb14-235"><a href="#cb14-235"></a>  <span class="fu">ungroup</span>(variable)</span>
-<span id="cb14-236"><a href="#cb14-236"></a></span>
-<span id="cb14-237"><a href="#cb14-237"></a>hpi_adf <span class="sc">|&gt;</span></span>
-<span id="cb14-238"><a href="#cb14-238"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb14-239"><a href="#cb14-239"></a>  <span class="fu">group_nest</span>() <span class="sc">|&gt;</span></span>
-<span id="cb14-240"><a href="#cb14-240"></a>  <span class="fu">mutate</span>(<span class="at">data_gt =</span> <span class="fu">map</span>(data, make_adf_gt)) <span class="sc">|&gt;</span></span>
-<span id="cb14-241"><a href="#cb14-241"></a>  <span class="fu">select</span>(<span class="sc">!</span>data) <span class="sc">|&gt;</span></span>
-<span id="cb14-242"><a href="#cb14-242"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> data_gt) <span class="sc">|&gt;</span></span>
-<span id="cb14-243"><a href="#cb14-243"></a>  <span class="fu">gt_bold_head</span>()</span>
-<span id="cb14-244"><a href="#cb14-244"></a></span>
-<span id="cb14-245"><a href="#cb14-245"></a><span class="in">```</span></span>
-<span id="cb14-246"><a href="#cb14-246"></a></span>
-<span id="cb14-247"><a href="#cb14-247"></a><span class="fu">### ACF / PACF plots</span></span>
+<span id="cb14-213"><a href="#cb14-213"></a><span class="fu">### Augmented Dickey-Fuller Test</span></span>
+<span id="cb14-214"><a href="#cb14-214"></a></span>
+<span id="cb14-215"><a href="#cb14-215"></a>The Augmented Dickey-Fuller Test (ADF) is commonly run to evaluate whether a time series is stationary or not. The null hypothesis of the ADF is that the time series is non-stationary, so want to reject the null hypothesis to be able to assume the alternative, i.e., that the series is stationary. The following table shows that one can reject the null hypothesis for every city but San Diego with just a lagged first-difference, but with the lagged twelfth-difference all four series can be thought of as stationary.</span>
+<span id="cb14-216"><a href="#cb14-216"></a></span>
+<span id="cb14-219"><a href="#cb14-219"></a><span class="in">```{r}</span></span>
+<span id="cb14-220"><a href="#cb14-220"></a><span class="co">#| label: show-adf</span></span>
+<span id="cb14-221"><a href="#cb14-221"></a><span class="co">#| warning: false</span></span>
+<span id="cb14-222"><a href="#cb14-222"></a></span>
+<span id="cb14-223"><a href="#cb14-223"></a>hpi_adf <span class="ot">&lt;-</span> hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-224"><a href="#cb14-224"></a>  <span class="fu">pivot_longer</span>(<span class="sc">!</span><span class="fu">c</span>(city, date), <span class="at">names_to =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-225"><a href="#cb14-225"></a>  <span class="fu">group_by</span>(city, variable) <span class="sc">|&gt;</span></span>
+<span id="cb14-226"><a href="#cb14-226"></a>  <span class="fu">nest</span>(<span class="at">data =</span> <span class="fu">c</span>(date, value)) <span class="sc">|&gt;</span></span>
+<span id="cb14-227"><a href="#cb14-227"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-228"><a href="#cb14-228"></a>    <span class="at">adf_test =</span> <span class="fu">map</span>(</span>
+<span id="cb14-229"><a href="#cb14-229"></a>      data,</span>
+<span id="cb14-230"><a href="#cb14-230"></a>      \(x) <span class="fu">drop_na</span>(x, value) <span class="sc">|&gt;</span></span>
+<span id="cb14-231"><a href="#cb14-231"></a>        <span class="fu">pull</span>(value) <span class="sc">|&gt;</span></span>
+<span id="cb14-232"><a href="#cb14-232"></a>        tseries<span class="sc">::</span><span class="fu">adf.test</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-233"><a href="#cb14-233"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-234"><a href="#cb14-234"></a>        <span class="fu">select</span>(statistic, p.value)</span>
+<span id="cb14-235"><a href="#cb14-235"></a>    )</span>
+<span id="cb14-236"><a href="#cb14-236"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb14-237"><a href="#cb14-237"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
+<span id="cb14-238"><a href="#cb14-238"></a>  <span class="fu">unnest</span>(adf_test) <span class="sc">|&gt;</span></span>
+<span id="cb14-239"><a href="#cb14-239"></a>  <span class="fu">ungroup</span>(variable)</span>
+<span id="cb14-240"><a href="#cb14-240"></a></span>
+<span id="cb14-241"><a href="#cb14-241"></a>hpi_adf <span class="sc">|&gt;</span></span>
+<span id="cb14-242"><a href="#cb14-242"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-243"><a href="#cb14-243"></a>  <span class="fu">group_nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-244"><a href="#cb14-244"></a>  <span class="fu">mutate</span>(<span class="at">data_gt =</span> <span class="fu">map</span>(data, make_adf_gt)) <span class="sc">|&gt;</span></span>
+<span id="cb14-245"><a href="#cb14-245"></a>  <span class="fu">select</span>(<span class="sc">!</span>data) <span class="sc">|&gt;</span></span>
+<span id="cb14-246"><a href="#cb14-246"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> data_gt) <span class="sc">|&gt;</span></span>
+<span id="cb14-247"><a href="#cb14-247"></a>  <span class="fu">gt_bold_head</span>()</span>
 <span id="cb14-248"><a href="#cb14-248"></a></span>
-<span id="cb14-249"><a href="#cb14-249"></a>The Autocorrelation Function (ACF) calculates the correlation of a value, e.g., the most recent value of the HPI, with previous values in the same series. Knowing this is very useful for determining how many Moving Average (the "MA" in ARIMA) lags to use in an ARIMA mode. The Partial Autocorrelation Function (PACF) calculates the correlation of a value with previous values in the same series after accounting for intervening correlations. This is useful to help us determine how many lags to use for the Autoregressive (the "AR" in ARIMA) part of an ARIMA model. Below are the ACF and PACF plots for the HPI series (no lagged differences) for all four cities. The timetk::<span class="in">`plot_acf_diagnostics()`</span> function plots ACF on top and PACF on bottom, which is conventional. Values outside of the red, dashed lines indicate statistically significant correlations.</span>
+<span id="cb14-249"><a href="#cb14-249"></a><span class="in">```</span></span>
 <span id="cb14-250"><a href="#cb14-250"></a></span>
-<span id="cb14-253"><a href="#cb14-253"></a><span class="in">```{r}</span></span>
-<span id="cb14-254"><a href="#cb14-254"></a><span class="co">#| label: plot-acf1</span></span>
-<span id="cb14-255"><a href="#cb14-255"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb14-256"><a href="#cb14-256"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb14-257"><a href="#cb14-257"></a></span>
-<span id="cb14-258"><a href="#cb14-258"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-259"><a href="#cb14-259"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb14-260"><a href="#cb14-260"></a>  <span class="fu">plot_acf_diagnostics</span>(</span>
-<span id="cb14-261"><a href="#cb14-261"></a>    date,</span>
-<span id="cb14-262"><a href="#cb14-262"></a>    hpi,</span>
-<span id="cb14-263"><a href="#cb14-263"></a>    <span class="at">.lags =</span> <span class="dv">60</span>,</span>
-<span id="cb14-264"><a href="#cb14-264"></a>    <span class="at">.title =</span> <span class="st">"HPI Lag Diagnostics"</span>,</span>
-<span id="cb14-265"><a href="#cb14-265"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-266"><a href="#cb14-266"></a>    <span class="at">.white_noise_line_color =</span> <span class="st">"red"</span></span>
-<span id="cb14-267"><a href="#cb14-267"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-268"><a href="#cb14-268"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-269"><a href="#cb14-269"></a></span>
-<span id="cb14-270"><a href="#cb14-270"></a><span class="in">```</span></span>
-<span id="cb14-271"><a href="#cb14-271"></a></span>
-<span id="cb14-272"><a href="#cb14-272"></a>It's clear from the ACF plot that the trend is causing a lot of the autocorrelation in each city. Next is the same plot, but for the first-differenced values.</span>
+<span id="cb14-251"><a href="#cb14-251"></a><span class="fu">### ACF / PACF plots</span></span>
+<span id="cb14-252"><a href="#cb14-252"></a></span>
+<span id="cb14-253"><a href="#cb14-253"></a>The Autocorrelation Function (ACF) calculates the correlation of a value, e.g., the most recent value of the HPI, with previous values in the same series. Knowing this is very useful for determining how many Moving Average (the "MA" in ARIMA) lags to use in an ARIMA mode. The Partial Autocorrelation Function (PACF) calculates the correlation of a value with previous values in the same series after accounting for intervening correlations. This is useful to help us determine how many lags to use for the Autoregressive (the "AR" in ARIMA) part of an ARIMA model. Below are the ACF and PACF plots for the HPI series (no lagged differences) for all four cities. The timetk::<span class="in">`plot_acf_diagnostics()`</span> function plots ACF on top and PACF on bottom, which is conventional. Values outside of the red, dashed lines indicate statistically significant correlations.</span>
+<span id="cb14-254"><a href="#cb14-254"></a></span>
+<span id="cb14-257"><a href="#cb14-257"></a><span class="in">```{r}</span></span>
+<span id="cb14-258"><a href="#cb14-258"></a><span class="co">#| label: plot-acf1</span></span>
+<span id="cb14-259"><a href="#cb14-259"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb14-260"><a href="#cb14-260"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb14-261"><a href="#cb14-261"></a></span>
+<span id="cb14-262"><a href="#cb14-262"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-263"><a href="#cb14-263"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-264"><a href="#cb14-264"></a>  <span class="fu">plot_acf_diagnostics</span>(</span>
+<span id="cb14-265"><a href="#cb14-265"></a>    date,</span>
+<span id="cb14-266"><a href="#cb14-266"></a>    hpi,</span>
+<span id="cb14-267"><a href="#cb14-267"></a>    <span class="at">.lags =</span> <span class="dv">60</span>,</span>
+<span id="cb14-268"><a href="#cb14-268"></a>    <span class="at">.title =</span> <span class="st">"HPI Lag Diagnostics"</span>,</span>
+<span id="cb14-269"><a href="#cb14-269"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb14-270"><a href="#cb14-270"></a>    <span class="at">.white_noise_line_color =</span> <span class="st">"red"</span></span>
+<span id="cb14-271"><a href="#cb14-271"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-272"><a href="#cb14-272"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
 <span id="cb14-273"><a href="#cb14-273"></a></span>
-<span id="cb14-276"><a href="#cb14-276"></a><span class="in">```{r}</span></span>
-<span id="cb14-277"><a href="#cb14-277"></a><span class="co">#| label: plot-acf2</span></span>
-<span id="cb14-278"><a href="#cb14-278"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb14-279"><a href="#cb14-279"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb14-280"><a href="#cb14-280"></a></span>
-<span id="cb14-281"><a href="#cb14-281"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-282"><a href="#cb14-282"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb14-283"><a href="#cb14-283"></a>  <span class="fu">plot_acf_diagnostics</span>(</span>
-<span id="cb14-284"><a href="#cb14-284"></a>    date,</span>
-<span id="cb14-285"><a href="#cb14-285"></a>    hpi_lag1_diff1,</span>
-<span id="cb14-286"><a href="#cb14-286"></a>    <span class="at">.lags =</span> <span class="dv">60</span>,</span>
-<span id="cb14-287"><a href="#cb14-287"></a>    <span class="at">.title =</span> <span class="st">"First-Differenced HPI Lag Diagnostics"</span>,</span>
-<span id="cb14-288"><a href="#cb14-288"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-289"><a href="#cb14-289"></a>    <span class="at">.white_noise_line_color =</span> <span class="st">"red"</span></span>
-<span id="cb14-290"><a href="#cb14-290"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-291"><a href="#cb14-291"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-292"><a href="#cb14-292"></a></span>
-<span id="cb14-293"><a href="#cb14-293"></a><span class="in">```</span></span>
-<span id="cb14-294"><a href="#cb14-294"></a></span>
-<span id="cb14-295"><a href="#cb14-295"></a>The trend's influence is significantly decreased here, but there are still some strong seasonal patterns in the data. Below is a look at the twelfth-differenced series.</span>
+<span id="cb14-274"><a href="#cb14-274"></a><span class="in">```</span></span>
+<span id="cb14-275"><a href="#cb14-275"></a></span>
+<span id="cb14-276"><a href="#cb14-276"></a>It's clear from the ACF plot that the trend is causing a lot of the autocorrelation in each city. Next is the same plot, but for the first-differenced values.</span>
+<span id="cb14-277"><a href="#cb14-277"></a></span>
+<span id="cb14-280"><a href="#cb14-280"></a><span class="in">```{r}</span></span>
+<span id="cb14-281"><a href="#cb14-281"></a><span class="co">#| label: plot-acf2</span></span>
+<span id="cb14-282"><a href="#cb14-282"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb14-283"><a href="#cb14-283"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb14-284"><a href="#cb14-284"></a></span>
+<span id="cb14-285"><a href="#cb14-285"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-286"><a href="#cb14-286"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-287"><a href="#cb14-287"></a>  <span class="fu">plot_acf_diagnostics</span>(</span>
+<span id="cb14-288"><a href="#cb14-288"></a>    date,</span>
+<span id="cb14-289"><a href="#cb14-289"></a>    hpi_lag1_diff1,</span>
+<span id="cb14-290"><a href="#cb14-290"></a>    <span class="at">.lags =</span> <span class="dv">60</span>,</span>
+<span id="cb14-291"><a href="#cb14-291"></a>    <span class="at">.title =</span> <span class="st">"First-Differenced HPI Lag Diagnostics"</span>,</span>
+<span id="cb14-292"><a href="#cb14-292"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb14-293"><a href="#cb14-293"></a>    <span class="at">.white_noise_line_color =</span> <span class="st">"red"</span></span>
+<span id="cb14-294"><a href="#cb14-294"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-295"><a href="#cb14-295"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
 <span id="cb14-296"><a href="#cb14-296"></a></span>
-<span id="cb14-299"><a href="#cb14-299"></a><span class="in">```{r}</span></span>
-<span id="cb14-300"><a href="#cb14-300"></a><span class="co">#| label: plot-acf3</span></span>
-<span id="cb14-301"><a href="#cb14-301"></a><span class="co">#| fig-width: 8</span></span>
-<span id="cb14-302"><a href="#cb14-302"></a><span class="co">#| fig-height: 4</span></span>
-<span id="cb14-303"><a href="#cb14-303"></a></span>
-<span id="cb14-304"><a href="#cb14-304"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-305"><a href="#cb14-305"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb14-306"><a href="#cb14-306"></a>  <span class="fu">plot_acf_diagnostics</span>(</span>
-<span id="cb14-307"><a href="#cb14-307"></a>    date,</span>
-<span id="cb14-308"><a href="#cb14-308"></a>    hpi_lag1_diff12,</span>
-<span id="cb14-309"><a href="#cb14-309"></a>    <span class="at">.lags =</span> <span class="dv">60</span>,</span>
-<span id="cb14-310"><a href="#cb14-310"></a>    <span class="at">.title =</span> <span class="st">"Twelfth-Differenced HPI Lag Diagnostics"</span>,</span>
-<span id="cb14-311"><a href="#cb14-311"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-312"><a href="#cb14-312"></a>    <span class="at">.white_noise_line_color =</span> <span class="st">"red"</span></span>
-<span id="cb14-313"><a href="#cb14-313"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-314"><a href="#cb14-314"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb14-315"><a href="#cb14-315"></a></span>
-<span id="cb14-316"><a href="#cb14-316"></a><span class="in">```</span></span>
-<span id="cb14-317"><a href="#cb14-317"></a></span>
-<span id="cb14-318"><a href="#cb14-318"></a>Looking at this plot over 36 months it still appears that there is a small seasonal effect in Dallas, San Diego, and Detroit with Detroit's possibly being a shorter season. Considering the infinite number of things that could affect one of these data series one could look at hundreds of plots like this with different combinations of lags and differences for any one series and never find a perfect one. This plot is pretty good. From this plot it looks like I'm going to us an AR(3) model. San Diego's PACF suggests that I should use two for that city, but I'm looking for one value for all four cities. The MA component is a little more challenging. It looks like I would use MA lags of 5 or 6 for Dallas, 8 for San Diego, 4 for NYC, and 4 or 5 for Detroit. I'm going to use MA(5) for my ARIMA.</span>
+<span id="cb14-297"><a href="#cb14-297"></a><span class="in">```</span></span>
+<span id="cb14-298"><a href="#cb14-298"></a></span>
+<span id="cb14-299"><a href="#cb14-299"></a>The trend's influence is significantly decreased here, but there are still some strong seasonal patterns in the data. Below is a look at the twelfth-differenced series.</span>
+<span id="cb14-300"><a href="#cb14-300"></a></span>
+<span id="cb14-303"><a href="#cb14-303"></a><span class="in">```{r}</span></span>
+<span id="cb14-304"><a href="#cb14-304"></a><span class="co">#| label: plot-acf3</span></span>
+<span id="cb14-305"><a href="#cb14-305"></a><span class="co">#| fig-width: 8</span></span>
+<span id="cb14-306"><a href="#cb14-306"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb14-307"><a href="#cb14-307"></a></span>
+<span id="cb14-308"><a href="#cb14-308"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-309"><a href="#cb14-309"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb14-310"><a href="#cb14-310"></a>  <span class="fu">plot_acf_diagnostics</span>(</span>
+<span id="cb14-311"><a href="#cb14-311"></a>    date,</span>
+<span id="cb14-312"><a href="#cb14-312"></a>    hpi_lag1_diff12,</span>
+<span id="cb14-313"><a href="#cb14-313"></a>    <span class="at">.lags =</span> <span class="dv">60</span>,</span>
+<span id="cb14-314"><a href="#cb14-314"></a>    <span class="at">.title =</span> <span class="st">"Twelfth-Differenced HPI Lag Diagnostics"</span>,</span>
+<span id="cb14-315"><a href="#cb14-315"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb14-316"><a href="#cb14-316"></a>    <span class="at">.white_noise_line_color =</span> <span class="st">"red"</span></span>
+<span id="cb14-317"><a href="#cb14-317"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-318"><a href="#cb14-318"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
 <span id="cb14-319"><a href="#cb14-319"></a></span>
-<span id="cb14-320"><a href="#cb14-320"></a><span class="fu">### Seasonality</span></span>
+<span id="cb14-320"><a href="#cb14-320"></a><span class="in">```</span></span>
 <span id="cb14-321"><a href="#cb14-321"></a></span>
-<span id="cb14-322"><a href="#cb14-322"></a>It's been pretty clear up to this point that seasonality is an important consideration with this data series and it's something that I will expect to handle in the modeling portion of the analysis in a later post. If I wanted to handle seasonality in a conventional model I might run a SARIMA model, but I'm going to keep this part simple and only run ARIMA knowing that I'm partially ignoring the seasonality and only dealing with it by differencing. With that said, I'll show two more plots here to demonstrate the <span class="in">`timetk::plot_seasonal_diagnostics()`</span> . The first plot shows seasonal diagnostics for the unadjusted series and the second one for the twelfth-differenced series.</span>
+<span id="cb14-322"><a href="#cb14-322"></a>Looking at this plot over 36 months it still appears that there is a small seasonal effect in Dallas, San Diego, and Detroit with Detroit's possibly being a shorter season. Considering the infinite number of things that could affect one of these data series one could look at hundreds of plots like this with different combinations of lags and differences for any one series and never find a perfect one. This plot is pretty good. From this plot it looks like I'm going to us an AR(3) model. San Diego's PACF suggests that I should use two for that city, but I'm looking for one value for all four cities. The MA component is a little more challenging. It looks like I would use MA lags of 5 or 6 for Dallas, 8 for San Diego, 4 for NYC, and 4 or 5 for Detroit. I'm going to use MA(5) for my ARIMA.</span>
 <span id="cb14-323"><a href="#cb14-323"></a></span>
-<span id="cb14-326"><a href="#cb14-326"></a><span class="in">```{r}</span></span>
-<span id="cb14-327"><a href="#cb14-327"></a><span class="co">#| label: seas-diag1</span></span>
-<span id="cb14-328"><a href="#cb14-328"></a></span>
-<span id="cb14-329"><a href="#cb14-329"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-330"><a href="#cb14-330"></a>  <span class="fu">plot_seasonal_diagnostics</span>(</span>
-<span id="cb14-331"><a href="#cb14-331"></a>    date,</span>
-<span id="cb14-332"><a href="#cb14-332"></a>    hpi,</span>
-<span id="cb14-333"><a href="#cb14-333"></a>    <span class="at">.facet_vars =</span> city,</span>
-<span id="cb14-334"><a href="#cb14-334"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-335"><a href="#cb14-335"></a>    <span class="at">.title =</span> <span class="st">"HPI Seasonal Diagnostics"</span></span>
-<span id="cb14-336"><a href="#cb14-336"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-337"><a href="#cb14-337"></a>  <span class="fu">theme</span>(</span>
-<span id="cb14-338"><a href="#cb14-338"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb14-339"><a href="#cb14-339"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
-<span id="cb14-340"><a href="#cb14-340"></a>  )</span>
-<span id="cb14-341"><a href="#cb14-341"></a></span>
-<span id="cb14-342"><a href="#cb14-342"></a><span class="in">```</span></span>
-<span id="cb14-343"><a href="#cb14-343"></a></span>
-<span id="cb14-344"><a href="#cb14-344"></a>This plot shows a clear pattern of HPI values being lowest in the first quarter across all four cities, highest in the second and third quarters for San Diego, and highest in the quarter for New York and December. From this data it seems that the peak in Dallas is December. This seasonality can obscure the findings of an ARIMA model.</span>
+<span id="cb14-324"><a href="#cb14-324"></a><span class="fu">### Seasonality</span></span>
+<span id="cb14-325"><a href="#cb14-325"></a></span>
+<span id="cb14-326"><a href="#cb14-326"></a>It's been pretty clear up to this point that seasonality is an important consideration with this data series and it's something that I will expect to handle in the modeling portion of the analysis in a later post. If I wanted to handle seasonality in a conventional model I might run a SARIMA model, but I'm going to keep this part simple and only run ARIMA knowing that I'm partially ignoring the seasonality and only dealing with it by differencing. With that said, I'll show two more plots here to demonstrate the <span class="in">`timetk::plot_seasonal_diagnostics()`</span> . The first plot shows seasonal diagnostics for the unadjusted series and the second one for the twelfth-differenced series.</span>
+<span id="cb14-327"><a href="#cb14-327"></a></span>
+<span id="cb14-330"><a href="#cb14-330"></a><span class="in">```{r}</span></span>
+<span id="cb14-331"><a href="#cb14-331"></a><span class="co">#| label: seas-diag1</span></span>
+<span id="cb14-332"><a href="#cb14-332"></a></span>
+<span id="cb14-333"><a href="#cb14-333"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-334"><a href="#cb14-334"></a>  <span class="fu">plot_seasonal_diagnostics</span>(</span>
+<span id="cb14-335"><a href="#cb14-335"></a>    date,</span>
+<span id="cb14-336"><a href="#cb14-336"></a>    hpi,</span>
+<span id="cb14-337"><a href="#cb14-337"></a>    <span class="at">.facet_vars =</span> city,</span>
+<span id="cb14-338"><a href="#cb14-338"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb14-339"><a href="#cb14-339"></a>    <span class="at">.title =</span> <span class="st">"HPI Seasonal Diagnostics"</span></span>
+<span id="cb14-340"><a href="#cb14-340"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-341"><a href="#cb14-341"></a>  <span class="fu">theme</span>(</span>
+<span id="cb14-342"><a href="#cb14-342"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb14-343"><a href="#cb14-343"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb14-344"><a href="#cb14-344"></a>  )</span>
 <span id="cb14-345"><a href="#cb14-345"></a></span>
-<span id="cb14-348"><a href="#cb14-348"></a><span class="in">```{r}</span></span>
-<span id="cb14-349"><a href="#cb14-349"></a><span class="co">#| label: seas-diag2</span></span>
-<span id="cb14-350"><a href="#cb14-350"></a></span>
-<span id="cb14-351"><a href="#cb14-351"></a>hpi_series <span class="sc">|&gt;</span></span>
-<span id="cb14-352"><a href="#cb14-352"></a>  <span class="fu">plot_seasonal_diagnostics</span>(</span>
-<span id="cb14-353"><a href="#cb14-353"></a>    date,</span>
-<span id="cb14-354"><a href="#cb14-354"></a>    hpi_lag1_diff12,</span>
-<span id="cb14-355"><a href="#cb14-355"></a>    <span class="at">.facet_vars =</span> city,</span>
-<span id="cb14-356"><a href="#cb14-356"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-357"><a href="#cb14-357"></a>    <span class="at">.title =</span> <span class="st">"Twelfth-Differenced HPI Seasonal Diagnostics"</span></span>
-<span id="cb14-358"><a href="#cb14-358"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-359"><a href="#cb14-359"></a>  <span class="fu">theme</span>(</span>
-<span id="cb14-360"><a href="#cb14-360"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb14-361"><a href="#cb14-361"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
-<span id="cb14-362"><a href="#cb14-362"></a>  )</span>
-<span id="cb14-363"><a href="#cb14-363"></a></span>
-<span id="cb14-364"><a href="#cb14-364"></a><span class="in">```</span></span>
-<span id="cb14-365"><a href="#cb14-365"></a></span>
-<span id="cb14-366"><a href="#cb14-366"></a>In this plot the patterns are generally gone across the quarterly plots. Even the trend is mostly gone from the annual plot.</span>
+<span id="cb14-346"><a href="#cb14-346"></a><span class="in">```</span></span>
+<span id="cb14-347"><a href="#cb14-347"></a></span>
+<span id="cb14-348"><a href="#cb14-348"></a>This plot shows a clear pattern of HPI values being lowest in the first quarter across all four cities, highest in the second and third quarters for San Diego, and highest in the quarter for New York and December. From this data it seems that the peak in Dallas is December. This seasonality can obscure the findings of an ARIMA model.</span>
+<span id="cb14-349"><a href="#cb14-349"></a></span>
+<span id="cb14-352"><a href="#cb14-352"></a><span class="in">```{r}</span></span>
+<span id="cb14-353"><a href="#cb14-353"></a><span class="co">#| label: seas-diag2</span></span>
+<span id="cb14-354"><a href="#cb14-354"></a></span>
+<span id="cb14-355"><a href="#cb14-355"></a>hpi_series <span class="sc">|&gt;</span></span>
+<span id="cb14-356"><a href="#cb14-356"></a>  <span class="fu">plot_seasonal_diagnostics</span>(</span>
+<span id="cb14-357"><a href="#cb14-357"></a>    date,</span>
+<span id="cb14-358"><a href="#cb14-358"></a>    hpi_lag1_diff12,</span>
+<span id="cb14-359"><a href="#cb14-359"></a>    <span class="at">.facet_vars =</span> city,</span>
+<span id="cb14-360"><a href="#cb14-360"></a>    <span class="at">.interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb14-361"><a href="#cb14-361"></a>    <span class="at">.title =</span> <span class="st">"Twelfth-Differenced HPI Seasonal Diagnostics"</span></span>
+<span id="cb14-362"><a href="#cb14-362"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-363"><a href="#cb14-363"></a>  <span class="fu">theme</span>(</span>
+<span id="cb14-364"><a href="#cb14-364"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb14-365"><a href="#cb14-365"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb14-366"><a href="#cb14-366"></a>  )</span>
 <span id="cb14-367"><a href="#cb14-367"></a></span>
-<span id="cb14-368"><a href="#cb14-368"></a>In the next post I'll use the AR and MA values from this post to run ARIMA models for all four cities using a global modeling process and an iterative modeling process with <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>.</span>
+<span id="cb14-368"><a href="#cb14-368"></a><span class="in">```</span></span>
+<span id="cb14-369"><a href="#cb14-369"></a></span>
+<span id="cb14-370"><a href="#cb14-370"></a>In this plot the patterns are generally gone across the quarterly plots. Even the trend is mostly gone from the annual plot.</span>
+<span id="cb14-371"><a href="#cb14-371"></a></span>
+<span id="cb14-372"><a href="#cb14-372"></a>In the next post I'll use the AR and MA values from this post to run ARIMA models for all four cities using a global modeling process and an iterative modeling process with <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
