@@ -71,7 +71,11 @@ In this post I'll only be looking at the Case-Shiller Home Price Index (HPI) for
 ```{r}
 #| label: show-hpi-data
 
-gt_bold_head(head(econ_data, 10))
+econ_data |>
+  group_by(city) |>
+  slice_min(date, n = 3) |>
+  ungroup() |>
+  gt_bold_head()
 
 ```
 
