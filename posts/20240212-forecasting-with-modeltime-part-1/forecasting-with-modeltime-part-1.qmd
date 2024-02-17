@@ -9,6 +9,10 @@ categories:
   - REST api
   - data viz
   - data acquisition
+execute:
+  warning: false
+  error: false
+  message: false
 ---
 
 ## Introduction
