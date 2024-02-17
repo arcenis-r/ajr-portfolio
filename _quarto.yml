@@ -29,7 +29,7 @@ format:
     toc_float: true
     link-external-icon: true
     link-external-newwindow: true
-    link-external-filter: ^(?:http:|https:)\/\/arcenis-r\.github\.io\/ajr-portfolio
+    link-external-filter: "^(?:http:|https:)\\/\\/arcenis-r\\.github\\.io\\/ajr-portfolio"
     code-fold: true
     code-overflow: scroll
     code-tools: true
