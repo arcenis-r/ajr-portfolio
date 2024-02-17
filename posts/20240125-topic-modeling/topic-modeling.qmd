@@ -9,7 +9,6 @@ date: "1/25/2024"
 categories:
   - text analysis
   - topic modeling
-  - data science
 ---
 
 ## Introduction

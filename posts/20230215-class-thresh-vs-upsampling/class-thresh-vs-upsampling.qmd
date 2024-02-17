@@ -9,8 +9,7 @@ bibliography: class-thresh-vs-upsampling-references.bib
 date: "2/15/2023"
 categories:
   - machine learning
-  - data science
-  - classification
+  - binary classification
 ---
 
 ## Introduction

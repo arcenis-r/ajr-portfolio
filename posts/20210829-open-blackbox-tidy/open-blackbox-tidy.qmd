@@ -12,8 +12,10 @@ execute:
   warning: false
   error: false
 categories:
-  - data science
   - machine learning
+  - statistical tests
+  - data viz
+  - regression
 ---
 
 ## Introduction / Motivation
