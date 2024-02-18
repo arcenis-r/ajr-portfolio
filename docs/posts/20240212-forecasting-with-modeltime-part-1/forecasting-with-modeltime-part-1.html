@@ -245,8 +245,8 @@ div.csl-indent {
 <figcaption>Image by [Images Money](https://www.flickr.com/photos/59937401@N07/)</figcaption>
 </figure>
 </div>
-<p>U.S. housing prices have been <a href="https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/">all over the news</a> in recent times, which comes as no surprise given recent concerns about <a href="https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158">inflation and interest rates</a>. With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at <a href="https://www.business-science.io/">Business Science</a> have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is <a href="https://business-science.github.io/modeltime/">modeltime</a>. When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.</p>
-<p>I’ve broken this project into four parts:</p>
+<p>I learned about the <a href="https://business-science.github.io/modeltime/">modeltime</a> <span class="citation" data-cites="modeltime">(<a href="#ref-modeltime" role="doc-biblioref">Dancho 2023</a>)</span> package – developed by the folks at <a href="https://www.business-science.io/">Business Science</a> – in 2021 and hadn’t had much chance to use it except for a few small coding exercises. With U.S. housing prices have being <a href="https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/">all over the news</a> in recent times I thought about trying to forecast a housing price metric. My curiosity about housing price trends presented the perfect opportunity to take on a small project using <a href="https://business-science.github.io/modeltime/">modeltime</a>.</p>
+<p>I broke this project into five parts:</p>
 <ol type="1">
 <li><p>Gathering Data</p></li>
 <li><p>Time series analysis</p></li>
@@ -4633,6 +4633,9 @@ Statistical Area Definitions
 <div id="ref-fredr" class="csl-entry" role="listitem">
 Boysel, Sam, and Davis Vaughan. 2021. <span>“Fredr: An r Client for the ’FRED’ API.”</span> <a href="https://CRAN.R-project.org/package=fredr">https://CRAN.R-project.org/package=fredr</a>.
 </div>
+<div id="ref-modeltime" class="csl-entry" role="listitem">
+Dancho, Matt. 2023. <span>“Modeltime: The Tidymodels Extension for Time Series Modeling.”</span> <a href="https://CRAN.R-project.org/package=modeltime">https://CRAN.R-project.org/package=modeltime</a>.
+</div>
 <div id="ref-timetk" class="csl-entry" role="listitem">
 Dancho, Matt, and Davis Vaughan. 2023. <span>“Timetk: A Tool Kit for Working with Time Series.”</span> <a href="https://CRAN.R-project.org/package=timetk">https://CRAN.R-project.org/package=timetk</a>.
 </div>
@@ -5176,9 +5179,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-19"><a href="#cb17-19"></a></span>
 <span id="cb17-20"><a href="#cb17-20"></a><span class="co">[</span><span class="al">![Image by \[Images Money\](https://www.flickr.com/photos/59937401\@N07/)](images/5474453551_afc6ded9af_w.jpg)</span><span class="ot">{fig-alt="Monopoly houses on top of increasingly tall stacks of coins" fig-align="center"}</span><span class="co">](https://www.flickr.com/photos/59937401@N07/5474453551)</span></span>
 <span id="cb17-21"><a href="#cb17-21"></a></span>
-<span id="cb17-22"><a href="#cb17-22"></a>U.S. housing prices have been <span class="co">[</span><span class="ot">all over the news</span><span class="co">](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/)</span> in recent times, which comes as no surprise given recent concerns about <span class="co">[</span><span class="ot">inflation and interest rates</span><span class="co">](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158)</span>. With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at <span class="co">[</span><span class="ot">Business Science</span><span class="co">](https://www.business-science.io/)</span> have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>. When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.</span>
+<span id="cb17-22"><a href="#cb17-22"></a>I learned about the <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span> <span class="co">[</span><span class="ot">@modeltime</span><span class="co">]</span> package – developed by the folks at <span class="co">[</span><span class="ot">Business Science</span><span class="co">](https://www.business-science.io/)</span> – in 2021 and hadn't had much chance to use it except for a few small coding exercises. With U.S. housing prices have being <span class="co">[</span><span class="ot">all over the news</span><span class="co">](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/)</span> in recent times I thought about trying to forecast a housing price metric. My curiosity about housing price trends presented the perfect opportunity to take on a small project using <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/)</span>.</span>
 <span id="cb17-23"><a href="#cb17-23"></a></span>
-<span id="cb17-24"><a href="#cb17-24"></a>I've broken this project into four parts:</span>
+<span id="cb17-24"><a href="#cb17-24"></a>I broke this project into five parts:</span>
 <span id="cb17-25"><a href="#cb17-25"></a></span>
 <span id="cb17-26"><a href="#cb17-26"></a><span class="ss">1.  </span>Gathering Data</span>
 <span id="cb17-27"><a href="#cb17-27"></a></span>
