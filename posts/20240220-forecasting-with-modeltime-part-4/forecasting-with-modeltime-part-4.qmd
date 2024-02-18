@@ -1,0 +1,78 @@
+---
+title: "Forecasting with {modeltime} - Part IV"
+subtitle: "Tuning many global models"
+author: "Arcenis Rojas"
+date: "2/16/2024"
+bibliography: references.bib
+fig-height: 6
+fig-width: 8
+categories:
+  - time series analysis
+  - machine learning
+  - data viz
+  - regression
+  - parallel processing
+---
+
+## Review
+
+Up to this point in the project I acquired data in [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd), performed some standard time series analysis in [Forecasting with {modeltime} - Part II](../20240215-forecasting-with-modeltime-part-2/forecasting-with-modeltime-part-2.qmd), and explored the two types of modeling processes – global and iterative – for multiple time series in [Forecasting with {modeltime} - Part III](../20240216-forecasting-with-modeltime-part-3/forecasting-with-modeltime-part-3.qmd). In this post I'm going to tune multiple models using a global process to select a small number of them that I will run iteratively in the final post. I'll incorporate some of the other variables in the data set that I gathered in the the first post to forecast the Case-Shiller Home Price Index (HPI). As before I'll be using [modeltime](https://business-science.github.io/modeltime/index.html) [@modeltime], [timetk](https://business-science.github.io/timetk/) [@timetk], [tidymodels](https://www.tidymodels.org/) [@tidymodels], [tidyverse](https://www.tidyverse.org/) [@tidyverse], and [gt](#0) [@gt]. Before jumping in, below I show a glimpse of the data that I'll be using.
+
+```{r}
+#| label: load-packages
+
+library(tidyverse)
+library(timetk)
+library(modeltime)
+library(tidymodels)
+library(gt)
+conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("lag", "dplyr")
+tidymodels_prefer()
+```
+
+```{r}
+#| label: import-data
+#| include: false
+
+econ_data <- read_rds("../../common-resources/econ-data.Rds")
+
+source("../../common-resources/gt-bold-head.R")
+
+theme_timetk <- read_rds("../../common-resources/theme-timetk.Rds") 
+
+series_colors <- c("#2c3e50", "red")
+```
+
+```{r}
+#| label: glimpse-data
+
+skimr::skim(econ_data)
+
+```
+
+## Choosing algorithms
+
+As with selecting the cities in the analysis I'm interested in getting a little variation in the algorithms to see how they perform and I want to vary the parameters a bit. To get something of a traditional flavor I'm going to run ARIMA models with three different model formulae:
+
+1\) hpi \~ date
+
+2\) hpi \~ date + unemployment
+
+3\) hpi \~ date + unemployment + demographic variables
+
+I'll also have four specifications for the algorithms. One will be the default auto-ARIMA and the other three will be auto-ARIMA specifications with different season lengths. This will give me twelve different ARIMA models (3 recipes x 4 algorithm specifications).
+
+In much the same way I will have different sets of model specifications for the following:
+
+-   an exponential smoothing algorithm (including a Holt-Winters specification) to allow for weighting the periods exponentially
+
+-   a TBATS algorithm to allow for multiple seasonal components
+
+-   a Prophet-Boost algorithm which combines the benefits of two machine learning algorithms that have won multiple competitions; Prophet is based on an additive model which fits non-linear trends on various seasonal components (learn more about Prophet [here](https://facebook.github.io/prophet/)) and XGBoost which is a tree algorithm
+
+Some of these algorithms allow for covariates and others (like exponential smoothing) do not. In the end I will have a few hundred algorithms to test. In order to do this as fast as I can on my machine, I'll employ [modeltime](https://business-science.github.io/modeltime/index.html)'s parallel processing feature.
+
+## Building workflow objects
+
+### Writing recipes
