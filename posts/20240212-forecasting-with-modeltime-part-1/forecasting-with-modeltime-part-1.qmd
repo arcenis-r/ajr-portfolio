@@ -19,9 +19,9 @@ execute:
 
 [![Image by \[Images Money\](https://www.flickr.com/photos/59937401\@N07/)](images/5474453551_afc6ded9af_w.jpg){fig-alt="Monopoly houses on top of increasingly tall stacks of coins" fig-align="center"}](https://www.flickr.com/photos/59937401@N07/5474453551)
 
-U.S. housing prices have been [all over the news](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/) in recent times, which comes as no surprise given recent concerns about [inflation and interest rates](https://apnews.com/article/inflation-prices-interest-rates-cuts-federal-reserve-ec7773de4159f7e0f071f4e126b50158). With this in mind I thought about trying to forecast a housing price index. Over the last year the folks at [Business Science](https://www.business-science.io/) have been adding lots of tools to their suite of packages for time series analysis in R. One of the more recent packages is [modeltime](https://business-science.github.io/modeltime/). When I learned about this package I wanted an excuse to use it. My curiosity about housing price trends presented the perfect opportunity.
+I learned about the [modeltime](https://business-science.github.io/modeltime/) [@modeltime] package – developed by the folks at [Business Science](https://www.business-science.io/) – in 2021 and hadn't had much chance to use it except for a few small coding exercises. With U.S. housing prices have being [all over the news](https://www.forbes.com/advisor/mortgages/real-estate/housing-market-predictions/) in recent times I thought about trying to forecast a housing price metric. My curiosity about housing price trends presented the perfect opportunity to take on a small project using [modeltime](https://business-science.github.io/modeltime/).
 
-I've broken this project into four parts:
+I broke this project into five parts:
 
 1.  Gathering Data
 

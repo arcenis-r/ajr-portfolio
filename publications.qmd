@@ -19,9 +19,9 @@ Foster, A.C., Rojas, A. (2018). Program participation and spending patterns of f
 
 ## Presentations
 
-Paulin, G., Rojas, A., Taylor, W. (2018). Expenditures with Policy Implications: Results from the Consumer Expenditure Surveys on Housing, Alcohol, Tobacco, and Gambling. *American Council on Consumer Interests*. <https://www.consumerinterests.org/assets/docs/CIA/CIA2018/Paulin%281%29CIA2018.pdf>
-
 Tan, L., Rojas, A. (2019). Exploring the Application of Machine Learning Techniques to Construct R-indicators. *American Association for Public Opinion Research Conference*. <https://www.bls.gov/cex/research_papers/pdf/rojas-r-indicators-aapor-presentation.pdf>
+
+Paulin, G., Rojas, A., Taylor, W. (2018). Expenditures with Policy Implications: Results from the Consumer Expenditure Surveys on Housing, Alcohol, Tobacco, and Gambling. *American Council on Consumer Interests*. <https://www.consumerinterests.org/assets/docs/CIA/CIA2018/Paulin%281%29CIA2018.pdf>
 
 Gillman, D., Hubener, E., Noel, R., Rigg, B., Rojas, A., Tan, L., Wilson, T. (2017). Documenting the Consumer Expenditure Surveys with DDI and Colectica – An Update. *North American Data Documentation Initiative*. <https://doi.org/10.5281/zenodo.556223>
 
