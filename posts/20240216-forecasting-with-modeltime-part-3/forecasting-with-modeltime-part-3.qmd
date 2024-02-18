@@ -543,7 +543,7 @@ patchwork::wrap_plots(
   group_by(city) |>
   plot_modeltime_forecast(
     .interactive = FALSE,
-    .title = "1 Year Forecast into the Future - Global",
+    .title = "1 Year Forecast into the Future - Iterative",
     .facet_ncol = 1
   ) +
   theme(plot.title = element_text(hjust = 0.5))
