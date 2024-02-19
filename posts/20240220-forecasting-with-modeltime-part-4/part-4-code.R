@@ -2,6 +2,8 @@
 # here.
 
 # TODO: separate the code for building the workflowsets for part 5
+# TODO: consider adding a neural-net workflow and an STLM workflow; run the
+#       neural-net on it's own first to test the computation time
 
 # Load required packages
 library(tidyverse)
@@ -24,7 +26,6 @@ econ_splits_global <- econ_data |>
     cumulative = TRUE,
     date_var = date   
   )
-
 
 
 # Recipes ================
@@ -57,11 +58,21 @@ pb_rec <- recipe(
   hpi ~ .,
   data = training(econ_splits_global)
 ) |>
-  step_lag(unemp_rate, population, lag = c(1, 3, 6)) |>
+  update_role(city, new_role = "ID") |>
+  step_center(all_numeric_predictors()) |>
+  step_scale(all_numeric_predictors()) |>
   step_timeseries_signature(date) |>
   step_nzv(all_predictors()) |>
-  step_center(all_numeric_predictors()) |>
-  step_scale(all_numeric_predictors())
+  step_lag(unemp_rate, population, lag = c(1, 3, 6))
+
+steps2rmv <- map(pb_rec$steps, \(x) pluck(x, "id")) |>
+  unlist() |>
+  str_detect("lag") |>
+  which()
+
+nnet_rec <- pb_rec
+
+nnet_rec$steps <- nnet_rec$steps[-steps2rmv]
 
 
 # Model specs =========================
@@ -115,6 +126,17 @@ tbats_spec_grid <- tibble(seasonal_period_2 = c(NULL, seq(6, 18, by = 3))) |>
     seasonal_period_1 = 12
   )
 
+stlm_spec_grid <- expand_grid(
+  seasonal_period_2 = c(NULL, seq(6, 18, by = 3))
+  # engine_name = c("stlm_arima", "stlm_ets")
+) |>
+  create_model_grid(
+    f_model_spec = seasonal_reg,
+    engine_name = "stlm_arima",
+    mode = "regression",
+    seasonal_period_1 = 12
+  )
+
 # Prophet Boost - default
 pb_default <- prophet_boost() |> set_engine("prophet_xgboost")
 
@@ -135,6 +157,23 @@ pb_spec_grid <- expand_grid(
     growth = "linear",
     seasonality_yearly = TRUE,
     mtry = num_features / 3
+  )
+
+nnet_default <- nnetar_reg() |> set_engine("nnetar")
+
+nnet_spec_grid <- expand_grid(
+  non_seasonal_ar = c(NULL, 1:3),
+  seasonal_ar = c(NULL, 1),
+  hidden_units = 1:5,
+  num_networks = c(5, 10, 20),
+  epochs = c(20, 50, 100),
+  penalty = c(0.01, 0.05, 0.1, 0.2)
+) |>
+  create_model_grid(
+    f_model_spec = nnetar_reg,
+    engine_name = "nnetar",
+    mode = "regression",
+    seasonal_period = 12
   )
 
 
@@ -165,22 +204,41 @@ tbats_wfset <- workflow_set(
   cross = TRUE
 )
 
+stlm_wfset <- workflow_set(
+  preproc = list(base_rec = arima_rec1),
+  models = c(stlm_spec = stlm_spec_grid$.models),
+  cross = TRUE
+)
+
 pb_wfset <- workflow_set(
   preproc = list(pb_rec = pb_rec),
   models = c(pb_default = list(pb_default), pb_spec = pb_spec_grid$.models),
   cross = TRUE
 )
 
+nnet_wfset <- workflow_set(
+  preproc = list(nnet_rec = nnet_rec),
+  models = c(
+    nnet_default = list(nnet_default),
+    nnet_spec = nnet_spec_grid$.models
+  ),
+  cross = TRUE
+)
+
 
 # Combine all the workflows ===============
 
-hpi_wfset <- bind_rows(arima_wfset, ets_wfset, tbats_wfset, pb_wfset)
+hpi_wfset <- bind_rows(
+  arima_wfset, ets_wfset, tbats_wfset, stlm_wfset, pb_wfset, nnet_wfset
+)
 
 
 # Run all the models =================
 
+num_cores <- sapply(2:15, \(x) nrow(hpi_wfset) %% x) |> which.max() + 1
+
 # Start parallel processor
-parallel_start(15, .method = "parallel")
+parallel_start(num_cores, .method = "parallel")
 
 # Run all of the models
 hpi_mods <- hpi_wfset |>
