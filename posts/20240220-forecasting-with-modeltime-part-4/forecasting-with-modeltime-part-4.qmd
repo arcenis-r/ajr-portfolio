@@ -81,6 +81,7 @@ The data split object for a global modeling process is different than that for a
 
 ```{r}
 #| label: split-data
+#| warning: true
 
 econ_splits <- econ_data |>
   time_series_split(
