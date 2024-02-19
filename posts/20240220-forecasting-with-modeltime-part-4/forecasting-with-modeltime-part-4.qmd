@@ -16,7 +16,7 @@ categories:
 
 ## Review
 
-Up to this point in the project I acquired data in [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd), performed some standard time series analysis in [Forecasting with {modeltime} - Part II](../20240215-forecasting-with-modeltime-part-2/forecasting-with-modeltime-part-2.qmd), and explored the two types of modeling processes – global and iterative – for multiple time series in [Forecasting with {modeltime} - Part III](../20240216-forecasting-with-modeltime-part-3/forecasting-with-modeltime-part-3.qmd). In this post I'm going to tune multiple models using a global process to select a small number of them that I will run iteratively in the final post. I'll incorporate some of the other variables in the data set that I gathered in the the first post to forecast the Case-Shiller Home Price Index (HPI). As before I'll be using [modeltime](https://business-science.github.io/modeltime/index.html) [@modeltime], [timetk](https://business-science.github.io/timetk/) [@timetk], [tidymodels](https://www.tidymodels.org/) [@tidymodels], [tidyverse](https://www.tidyverse.org/) [@tidyverse], and [gt](#0) [@gt]. Before jumping in, below I show a glimpse of the data that I'll be using.
+Up to this point in the project I acquired data in [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd), performed some standard time series analysis in [Forecasting with {modeltime} - Part II](../20240215-forecasting-with-modeltime-part-2/forecasting-with-modeltime-part-2.qmd), and explored the two types of modeling processes – global and iterative – for multiple time series in [Forecasting with {modeltime} - Part III](../20240216-forecasting-with-modeltime-part-3/forecasting-with-modeltime-part-3.qmd). In this post I'm going to tune multiple models using a global process to select a small number of them that I will run iteratively in the final post. I'll incorporate some of the other variables in the data set that I gathered in the the first post to forecast the Case-Shiller Home Price Index (HPI). Since I'll be creating variations of model specifications, I'm also going to use functions from the Tidymodels [workflowsets](https://workflowsets.tidymodels.org/) [@workflowsets] package to run the models. As before I'll be using [modeltime](https://business-science.github.io/modeltime/index.html) [@modeltime], [timetk](https://business-science.github.io/timetk/) [@timetk], [tidymodels](https://www.tidymodels.org/) [@tidymodels], [tidyverse](https://www.tidyverse.org/) [@tidyverse], and [gt](#0) [@gt]. Before jumping in, below I show a glimpse of the data that I'll be using.
 
 ```{r}
 #| label: load-packages
@@ -75,4 +75,62 @@ Some of these algorithms allow for covariates and others (like exponential smoot
 
 ## Building workflow objects
 
+### Splitting the data
+
+The data split object for a global modeling process is different than that for an iterative modeling process. For the global modeling process I'll use `timetk::time_series_split()` . Below is a look at how the data are split.
+
+```{r}
+#| label: split-data
+
+econ_splits <- econ_data |>
+  time_series_split(
+    assess = "2 year",
+    cumulative = TRUE,
+    date_var = date   
+  )
+
+econ_splits
+```
+
 ### Writing recipes
+
+Here I'll write the three recipes for the ARIMA models and one recipe for the Prophet-Boost model. The exponential smoothing and TBATS models will both use the first of the three ARIMA recipes as neither of these algorithms can handle covariates. You might notice in the code below that I exclude some of the demographic variables like "educ_hs_less". I exclude these variables because I found that including all of the variables for a demographic variable group causes the functions to error out much in the same way that including all of the categories of a factor variable would. Initially I did not expect that I would need contrasts considering that the variable values are ratios, but it seems that the fact that the sum of the ratios for a given variable group, e.g., education, is 1 for each row and for each variable group creates a need for contrasts in the regression (this is my guess).
+
+```{r}
+#| label: write-recs
+
+arima_rec1 <- recipe(hpi ~ date, data = training(econ_splits_global))
+
+arima_rec2 <- recipe(
+  hpi ~ date + unemp_rate,
+  data = training(econ_splits_global)
+) |>
+  step_lag(unemp_rate, lag = c(1, 3, 6)) |>
+  step_center(unemp_rate) |>
+  step_scale(unemp_rate)
+
+rec3_dep_vars <- econ_data |>
+  select(date, unemp_rate:population) |>
+  select(!c(educ_hs_less, status_married, age_36_65)) |>
+  names() |>
+  str_flatten(collapse = " + ")
+
+arima_rec3 <- arima_rec_global3 <- recipe(
+  formula(str_c("hpi", rec3_dep_vars, sep = " ~ ")),
+  data = training(econ_splits_global)
+) |>
+  step_lag(unemp_rate, population, lag = c(1, 3, 6)) |>
+  step_center(all_numeric_predictors()) |>
+  step_scale(all_numeric_predictors())
+
+pb_rec <- recipe(
+  case_shiller ~ .,
+  data = training(econ_splits_global)
+) |>
+  step_lag(unemp_rate, population, lag = c(1, 3, 6)) |>
+  step_timeseries_signature(date) |>
+  step_nzv(all_predictors()) |>
+  step_center(all_numeric_predictors()) |>
+  step_scale(all_numeric_predictors())
+
+```
