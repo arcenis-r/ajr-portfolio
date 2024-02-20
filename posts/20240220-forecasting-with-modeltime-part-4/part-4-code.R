@@ -235,10 +235,16 @@ hpi_wfset <- bind_rows(
 
 # Run all the models =================
 
-num_cores <- sapply(2:15, \(x) nrow(hpi_wfset) %% x) |> which.max() + 1
+num_cores <- tibble(cores = 2:15) |>
+  mutate(remainder = map_int(cores, \(x) nrow(hpi_wfset) %% x)) |>
+  slice_max(remainder, with_ties = TRUE) |>
+  slice_max(cores) |>
+  pull(cores)
 
 # Start parallel processor
 parallel_start(num_cores, .method = "parallel")
+
+hpi_mods_start <- proc.time()
 
 # Run all of the models
 hpi_mods <- hpi_wfset |>
@@ -246,6 +252,11 @@ hpi_mods <- hpi_wfset |>
     data = training(econ_splits_global),
     control = control_fit_workflowset(verbose = TRUE, allow_par = TRUE)
   )
+
+hpi_mods_end <- proc.time()
+
+# Stop the parallel process
+parallel_stop()
 
 # Get model accuracy figures
 hpi_mod_calib <- hpi_mods |>
@@ -258,9 +269,6 @@ hpi_mod_accuracy <- hpi_mod_calib |>
 hpi_local_mod_accuracy <- hpi_mod_calib |>
   modeltime_accuracy(acc_by_id = TRUE) |>
   drop_na(.type)
-
-# Stop the parallel process
-parallel_stop()
 
 
 # Get failures ===============================

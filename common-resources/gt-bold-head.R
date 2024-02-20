@@ -1,7 +1,8 @@
-suppressPackageStartupMessages(library("gt"))
-gt_bold_head <- function(df) {
+if (!"gt" %in% .packages()) suppressPackageStartupMessages(library("gt"))
+
+gt_bold_head <- function(df, grp_col = NULL) {
   df |>
-    gt() |>
+    gt(groupname_col = grp_col) |>
     tab_style(
       style = cell_text(weight = "bold"),
       locations = cells_column_labels()
