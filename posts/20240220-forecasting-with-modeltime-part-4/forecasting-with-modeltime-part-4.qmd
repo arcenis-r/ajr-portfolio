@@ -489,7 +489,7 @@ hpi_mod_calib3 <- hpi_mods |>
 ```{r}
 #| label: combine-calib-tbls
 
-hpi_mod_calib <- bind_rows(hpi_mod_calib1, hpi_mod_calib2)
+hpi_mod_calib <- bind_rows(hpi_mod_calib1, hpi_mod_calib2, hpi_mod_calib3)
 
 ```
 
@@ -628,7 +628,7 @@ hpi_future_forecast |>
 
 ## Choosing models for iterative process
 
-For iterative modeling I'm going to use the 10 best global models and the 3 best local models for each city. The specifications that I'm going to use for iterative modeling in the next post are:
+For iterative modeling I'm going to use the 10 best global models and the 3 best local models for each city (there's some overlap in these lists). The specifications that I'm going to use for iterative modeling in the next post are:
 
 ```{r}
 #| label: store-best-specs
