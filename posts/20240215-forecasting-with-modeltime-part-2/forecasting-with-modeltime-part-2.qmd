@@ -11,10 +11,8 @@ execute:
   error: false
   message: false
 categories:
-  - time series analysis
-  - econometrics
-  - data viz
-  - statistical tests
+  - Time Series
+  - Inferential Statistics
 ---
 
 Last time on [Forecasting with {modeltime} - Part I](../20240212-forecasting-with-modeltime-part-1/forecasting-with-modeltime-part-1.qmd) I wrote about gathering the data for this project from various sources. Here I'll go into the first part of the analysis which will include visualizing the dependent variable, checking and correcting for non-stationarity, identifying seasonality, and identifying the terms (AR, MA) to use in a S-/ARIMA model.
@@ -35,12 +33,12 @@ conflicted::conflict_prefer("lag", "dplyr")
 #| label: import-data
 #| include: false
 
-econ_data <- read_rds("../../common-resources/econ-data.Rds")  |>
+econ_data <- read_rds("../_common-resources/econ-data.Rds")  |>
   select(city, date, hpi)
 
-source("../../common-resources/gt-bold-head.R")
+source("../_common-resources/gt-bold-head.R")
 
-theme_timetk <- read_rds("../../common-resources/theme-timetk.Rds")
+theme_timetk <- read_rds("../_common-resources/theme-timetk.Rds")
 
 # Declare a function for making an ADF result table
 make_adf_gt <- function(df) {
@@ -77,6 +75,7 @@ econ_data |>
   group_by(city) |>
   slice_min(date, n = 3) |>
   ungroup() |>
+  gt() |>
   gt_bold_head()
 
 ```
@@ -127,7 +126,7 @@ hpi_series <- econ_data |>
   ) |>
   ungroup()
 
-head(hpi_series, 15) |> gt_bold_head()
+head(hpi_series, 15) |> gt() |> gt_bold_head()
 ```
 
 And now I can look at line plots of the three different series with the original on the left ; the lagged first-difference in the middle; and the lagged twelfth-difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see. This also provides a sneak peak into what the following analyses will give us.
@@ -228,6 +227,7 @@ hpi_adf |>
   mutate(data_gt = map(data, make_adf_gt)) |>
   select(!data) |>
   pivot_wider(names_from = city, values_from = data_gt) |>
+  gt() |>
   gt_bold_head()
 
 ```

@@ -7,10 +7,9 @@ bibliography: references.bib
 fig-height: 6
 fig-width: 8
 categories:
-  - time series analysis
-  - econometrics
-  - data viz
-  - regression
+  - Time Series
+  - Forecasting
+  - Machine Learning
 ---
 
 In my previous post on this topic – [Forecasting with {modeltime} - Part II](../20240215-forecasting-with-modeltime-part-2/forecasting-with-modeltime-part-2.qmd) – I performed a basic analysis of the Case-Shiller HPI time series for four U.S. cities (Dallas, Detroit, NYC, and San Diego). In this post I'm going to use some of the conclusions from that analysis to build ARIMA models using both a "global" modeling process and an "iterative" modeling process using the [modeltime](https://business-science.github.io/modeltime/index.html) [@modeltime] and [tidymodels](https://www.tidymodels.org/) [@tidymodels] frameworks.
@@ -40,12 +39,12 @@ tidymodels_prefer()
 #| label: import-data
 #| include: false
 
-econ_data <- read_rds("../../common-resources/econ-data.Rds")  |> 
+econ_data <- read_rds("../_common-resources/econ-data.Rds")  |> 
   select(city, date, hpi)
 
-source("../../common-resources/gt-bold-head.R")
+source("../_common-resources/gt-bold-head.R")
 
-theme_timetk <- read_rds("../../common-resources/theme-timetk.Rds") 
+theme_timetk <- read_rds("../_common-resources/theme-timetk.Rds") 
 
 series_colors <- c("#2c3e50", "red")
 ```
@@ -100,7 +99,7 @@ One might be tempted to add lags and differences in the recipe, but this leads t
 
 arima_rec_global <- recipe(hpi ~ date, data = training(econ_splits_global))
 
-arima_rec_global |> summary() |> gt_bold_head()
+arima_rec_global |> summary() |> gt() |> gt_bold_head()
 ```
 
 ... then the model object.
@@ -343,7 +342,7 @@ arima_rec_iterative <- recipe(
   extract_nested_train_split(econ_splits_iterative)
 )
 
-arima_rec_iterative |> summary() |> gt_bold_head()
+arima_rec_iterative |> summary() |> gt() |> gt_bold_head()
 ```
 
 I'll also create a new workflow object that just updates the previous one with the new recipe.

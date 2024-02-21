@@ -2,16 +2,14 @@
 title: "Forecasting with {modeltime} - Part IV"
 subtitle: "Tuning many global models"
 author: "Arcenis Rojas"
-date: "2/16/2024"
+date: "2/20/2024"
 bibliography: references.bib
 fig-height: 6
 fig-width: 8
 categories:
-  - time series analysis
-  - machine learning
-  - data viz
-  - regression
-  - parallel processing
+  - Time Series
+  - Forecasting
+  - Machine Learning
 ---
 
 ## Review
@@ -35,13 +33,9 @@ tidymodels_prefer()
 #| label: import-data
 #| include: false
 
-econ_data <- read_rds("../../common-resources/econ-data.Rds")
+econ_data <- read_rds("../_common-resources/econ-data.Rds")
 
-source("../../common-resources/gt-bold-head.R")
-
-theme_timetk <- read_rds("../../common-resources/theme-timetk.Rds") 
-
-series_colors <- c("#2c3e50", "red")
+source("../_common-resources/gt-bold-head.R")
 ```
 
 ```{r}
@@ -51,9 +45,26 @@ skimr::skim(econ_data)
 
 ```
 
+## Splitting the data
+
+The data split object for a global modeling process is different than that for an iterative modeling process. For the global modeling process I'll use `timetk::time_series_split()` . Below is a look at how the data are split.
+
+```{r}
+#| label: split-data
+
+econ_splits <- econ_data |>
+  time_series_split(
+    assess = "2 year",
+    cumulative = TRUE,
+    date_var = date
+  )
+
+econ_splits
+```
+
 ## Choosing algorithms
 
-As with selecting the cities in the analysis I'm interested in getting a little variation in the algorithms to see how they perform and I want to vary the parameters a bit. To get something of a traditional flavor I'm going to run ARIMA models with three different model formulae:
+As with selecting the cities in the analysis I'm interested in getting a little variation in the algorithms to see how they perform and I want to vary the parameters a bit. To get something of a traditional flavor I'm going to run ARIMA models with three different model formulas:
 
 1\) hpi \~ date
 
@@ -67,39 +78,19 @@ In much the same way I will have different sets of recipes and model specificati
 
 -   an exponential smoothing algorithm (including a Holt-Winters specification) to allow for weighting the periods exponentially
 
--   a TBATS algorithm to allow for multiple seasonal components (TBATS: **T**rigonometric seasonality, **B**ox-Cox transformation, **A**RMA errors, **T**rend and **S**easonal components)
-
 -   an STLM algorithm using an ARIMA engine (STLM: **S**easonal **T**rend Decomposition using **L**oess with **M**ultiple seasonal periods)
 
--   a Prophet-Boost algorithm which combines the benefits of two machine learning algorithms that have won multiple competitions; Prophet is based on an additive model which fits non-linear trends on various seasonal components (learn more about Prophet [here](https://facebook.github.io/prophet/)) and XGBoost which is a tree algorithm
+-   A feed-forward, auto-regressive neural-net algorithm because these tend to have high predictive ability
 
--   A feedforward, auto-regressive neural-net algorithm because these tend to have high predictive ability
-
-Some of these algorithms allow for covariates and others (like exponential smoothing) do not. In the end I will have 1,128 algorithms to test. In order to do this as fast as I can on my machine, I'll employ [modeltime](https://business-science.github.io/modeltime/index.html)'s parallel processing feature. It would definitely be overkill to use waste compute power on five different algorithms, some of which are quite similar, in a real-world application with more time series. But, this is not the the real world and the purpose of this project is to show how to use some of the different tools in [modeltime](https://business-science.github.io/modeltime/index.html), so I'm going with "overkill".
+Some of these algorithms allow for covariates and others (like exponential smoothing) do not. In the end I will have 90 model specifications to test. In order to do speed up the processing I'll employ [modeltime](https://business-science.github.io/modeltime/index.html)'s parallel processing feature.
 
 ## Building workflow objects
 
-### Splitting the data
+Here I'll write the three recipes for the ARIMA models and one for the auto-regressive neural-net model. The exponential smoothing and STLM models will both use the first of the three ARIMA recipes as neither of these algorithms can handle covariates.
 
-The data split object for a global modeling process is different than that for an iterative modeling process. For the global modeling process I'll use `timetk::time_series_split()` . Below is a look at how the data are split.
-
-```{r}
-#| label: split-data
-#| warning: true
-
-econ_splits <- econ_data |>
-  time_series_split(
-    assess = "2 year",
-    cumulative = TRUE,
-    date_var = date   
-  )
-
-econ_splits
-```
+You might notice in the code below that I exclude some of the demographic variables like "educ_hs_less" for the third ARIMA recipe. I exclude these variables because I found that including all of the variables for a demographic variable group causes the functions to error out much in the same way that including all of the categories of a factor variable would. Initially I did not expect that I would need contrasts considering that the variable values are ratios, but it seems that the fact that the sum of the ratios for a given variable group, e.g., education, is 1 for each row and for each variable group creates a need for contrasts in the regression (this is my guess).
 
 ### Writing recipes
-
-Here I'll write the three recipes for the ARIMA models, one recipe for the Prophet-Boost model, and one for a neural-net auto-regressive model. The exponential smoothing, STLM and TBATS models will both use the first of the three ARIMA recipes as neither of these algorithms can handle covariates. You might notice in the code below that I exclude some of the demographic variables like "educ_hs_less". I exclude these variables because I found that including all of the variables for a demographic variable group causes the functions to error out much in the same way that including all of the categories of a factor variable would. Initially I did not expect that I would need contrasts considering that the variable values are ratios, but it seems that the fact that the sum of the ratios for a given variable group, e.g., education, is 1 for each row and for each variable group creates a need for contrasts in the regression (this is my guess).
 
 ::: {.callout-note title="Code Explanations"}
 Some of the code chunks below contain explanations. Lines in explanations will be marked with encircled numbers. Just hover over those numbers to see the corresponding explanation.
@@ -108,17 +99,17 @@ Some of the code chunks below contain explanations. Lines in explanations will b
 ```{r}
 #| label: write-recs
 
-arima_rec1 <- recipe(hpi ~ date, data = training(econ_splits_global)) # <1>
+arima_rec1 <- recipe(hpi ~ date, data = training(econ_splits)) # <1>
 
-arima_rec2 <- recipe(                                                 # <2>
+arima_rec2 <- recipe(                                          # <2>
   hpi ~ date + unemp_rate,
-  data = training(econ_splits_global)
+  data = training(econ_splits)
 ) |>
-  step_center(all_numeric_predictors()) |>                            # <3>
-  step_scale(all_numeric_predictors()) |>                             # <4>
-  step_lag(unemp_rate, lag = c(1, 3, 6))                              # <5>
+  step_center(all_numeric_predictors()) |>                     # <3>
+  step_scale(all_numeric_predictors()) |>                      # <4>
+  step_lag(unemp_rate, lag = c(1, 3, 6))                       # <5>
 
-rec3_dep_vars <- econ_data |>                                         # <6>
+rec3_dep_vars <- econ_data |>                                  # <6>
   select(date, unemp_rate:population) |>
   select(!c(educ_hs_less, status_married, age_36_65)) |>
   names() |>
@@ -126,7 +117,7 @@ rec3_dep_vars <- econ_data |>                                         # <6>
 
 arima_rec3 <- recipe(
   formula(str_c("hpi", rec3_dep_vars, sep = " ~ ")),
-  data = training(econ_splits_global)
+  data = training(econ_splits)
 ) |>
   step_center(all_numeric_predictors()) |>
   step_scale(all_numeric_predictors()) |>
@@ -134,15 +125,14 @@ arima_rec3 <- recipe(
 
 nnet_rec <- recipe(
   hpi ~ .,
-  data = training(econ_splits_global)
+  data = training(econ_splits)
 ) |>
-  update_role(city, new_role = "ID") |>                               # <7>
+  update_role(city, new_role = "ID") |>                         # <7>
   step_center(all_numeric_predictors()) |>
   step_scale(all_numeric_predictors()) |>
-  step_timeseries_signature(date) |>                                  # <8>
-  step_nzv(all_predictors())                                          # <9>
+  step_timeseries_signature(date) |>                            # <8>
+  step_nzv(all_predictors())                                    # <9>
 
-pb_rec <- nnet_rec |> step_lag(unemp_rate, population, lag = c(1, 3, 6))
 ```
 
 1.  Write a base recipe to regress HPI on the date variable
@@ -155,12 +145,12 @@ pb_rec <- nnet_rec |> step_lag(unemp_rate, population, lag = c(1, 3, 6))
 8.  Add a set of variables related to the date such as day of the week of the date, day of the month, number of the week of the year, etc.
 9.  Remove any variables with zero or near-zero variance. An example of this would be a variable indicating the day of the month. Since this is monthly data, all values would be "1", i.e., the first day of the month.
 
-Here is a reminder of what a recipe looks like. This is the Prophet-Boost recipe.
+Here is a reminder of what a recipe looks like. This is the neural-net recipe.
 
 ```{r}
 #| label: show-rec
 
-pb_rec
+nnet_rec
 ```
 
 And this is the data set that gets created by that recipe.
@@ -168,12 +158,12 @@ And this is the data set that gets created by that recipe.
 ```{r}
 #| label: show-rec-juiced
 
-pb_rec |> prep() |> juice() |> gt_bold_head()
+nnet_rec |> prep() |> juice() |> slice(1:5) |> gt() |> gt_bold_head()
 ```
 
 ### Specifying models
 
-In this next step I'll specify the model objects for each algorithm along with the search grids for their various hyperparameters.
+In this next step I'll specify the model objects for each algorithm along with the search grids for their various hyperparameters. I chose to keep only some of the combinations of the exponential smoothing specifications to limit the number of models being run that are likely to fail.
 
 ```{r}
 #| label: specify-models
@@ -199,9 +189,8 @@ gamma_vals <- map_dbl(
 )
 
 ets_spec_grid <- expand_grid(                                                   # <5>
-  smooth_level = alpha_vals,
-  smooth_trend = beta_vals,
-  smooth_seasonal = gamma_vals,
+  smooth_level = alpha_vals[-2],
+  smooth_seasonal = gamma_vals[2:3],
   seasonal_period = seq(9, 18, by = 3)
 ) |>
   create_model_grid(
@@ -210,15 +199,8 @@ ets_spec_grid <- expand_grid(                                                   
     mode = "regression",
     error = "auto",
     trend = "auto",
-    season = "auto"
-  )
-
-tbats_spec_grid <- tibble(seasonal_period_2 = c(NULL, seq(6, 18, by = 3))) |>
-  create_model_grid(
-    f_model_spec = seasonal_reg,
-    engine_name = "tbats",
-    mode = "regression",
-    seasonal_period_1 = 12
+    season = "auto",
+    smooth_trend = beta_vals[3]
   )
 
 stlm_spec_grid <- expand_grid(
@@ -231,39 +213,21 @@ stlm_spec_grid <- expand_grid(
     seasonal_period_1 = 12
   )
 
-pb_default <- prophet_boost() |> set_engine("prophet_xgboost")
-
-num_features <- pb_rec |> prep() |> juice() |> select(!c(hpi, city)) |> ncol()  # <6>
-
-pb_spec_grid <- expand_grid(
-  learn_rate = c(.1, .05, .025, .01, .001),
-  changepoint_num = c(3, 5, 10, 10),
-  trees = c(100, 500, 1000, 1500)
-) |>
-  create_model_grid(
-    f_model_spec = prophet_boost,
-    engine_name = "prophet_xgboost",
-    mode = "regression",
-    growth = "linear",
-    seasonality_yearly = TRUE,
-    mtry = (num_features - 2) / 3
-  )
-
 nnet_default <- nnetar_reg() |> set_engine("nnetar")
 
 nnet_spec_grid <- expand_grid(
-  non_seasonal_ar = c(NULL, 1:3),
-  seasonal_ar = c(NULL, 1),
-  hidden_units = 1:5,
-  num_networks = c(5, 10, 20),
-  epochs = c(20, 50, 100),
-  penalty = c(0.01, 0.05, 0.1, 0.2)
+  non_seasonal_ar = 1:3,
+  hidden_units = 3:5,
+  num_networks = c(20, 25),
+  penalty = c(0.2, 0.25)
 ) |>
   create_model_grid(
     f_model_spec = nnetar_reg,
     engine_name = "nnetar",
     mode = "regression",
-    seasonal_period = 12
+    seasonal_period = 12,
+    epochs = 100,
+    seasonal_ar = 1
   )
 ```
 
@@ -272,14 +236,13 @@ nnet_spec_grid <- expand_grid(
 3.  `create_model_grid()` allows one to set static arguments to combine them with the arguments that vary. This is meant to serve a similar purpose as `tune::tune_grid()` from Tidymodels.
 4.  Set a random seed for reproducibility and generate vectors for the `smooth_level`, `smooth_trend`, and `smooth_seasonal` arguments. In `forecast::ets()` these are `alpha`, `beta`, and `gamma` respectively.
 5.  Use `tidyr::expand_grid()` to get all combinations of the included vectors.
-6.  Get the total number of predictors (exclude HPI \[outcome\] and city \[ID, grouping\])
 
 Below is what a model grid looks like.
 
 ```{r}
 #| label: show-mod-grid
 
-ets_spec_grid
+ets_spec_grid |> slice(1:5)
 ```
 
 This is a glimpse of a model specification.
@@ -297,17 +260,17 @@ A `workflowset` is, you guessed it, a set of workflows. Mechanically it is a ver
 ```{r}
 #| label: make-workflowsets
 
-arima_wfset <- workflow_set(                                                    # <1>
-  preproc = list(                                                               # <2>
+arima_wfset <- workflow_set(                # <1>
+  preproc = list(                           # <2>
     base_rec = arima_rec1,
     econ_rec = arima_rec2,
     demog_rec = arima_rec3
   ),
-  models = c(                                                                   # <3>
+  models = c(                               # <3>
     arima_default = list(arima_default),
     arima_spec = arima_spec_grid$.models
   ),
-  cross = TRUE                                                                  # <4>
+  cross = TRUE                              # <4>
 )
 
 ets_wfset <- workflow_set(
@@ -316,21 +279,9 @@ ets_wfset <- workflow_set(
   cross = TRUE
 )
 
-tbats_wfset <- workflow_set(
-  preproc = list(base_rec = arima_rec1),
-  models = c(tbats_spec = tbats_spec_grid$.models),
-  cross = TRUE
-)
-
 stlm_wfset <- workflow_set(
   preproc = list(base_rec = arima_rec1),
   models = c(stlm_spec = stlm_spec_grid$.models),
-  cross = TRUE
-)
-
-pb_wfset <- workflow_set(
-  preproc = list(pb_rec = pb_rec),
-  models = c(pb_default = list(pb_default), pb_spec = pb_spec_grid$.models),
   cross = TRUE
 )
 
@@ -345,20 +296,18 @@ nnet_wfset <- workflow_set(
 ```
 
 1.  Call `workflowsets::workflowset()`
-2.  Provide a named list of recipes to use in the workflowset; naming the elements at this stage makes it easier to match up the elements of the final table containing the trained models with the original recipes and model specifications
+2.  Provide a named list of recipes to use in the `workflowset`; naming the elements at this stage makes it easier to match up the elements of the final table containing the trained models with the original recipes and model specifications
 3.  Provide a named list of model specifications by pulling the ".models" column from each grid
 4.  Indicate that all recipes should be combined with all model specifications
 
 The individual specifications in the final model table will be named using a combination of the name of the recipe and the name of the model specification given in the respective lists with a count added whenever there are duplicate names. For example, arima_spec_grid has four model specifications in it. The ones that are combined with the first ARIMA recipe (named "base_rec") will be named BASE_REC_ARIMA_SPEC1, BASE_REC_ARIMA_SPEC2, BASE_REC_ARIMA_SPEC3, and BASE_REC_ARIMA_SPEC4.
 
-With all of the model-specific workflowsets created, now it's time to put them all together.
+With all of the model-specific workflow sets created, now it's time to put them all together.
 
 ```{r}
 #| label: bind-workflowsets
 
-hpi_wfset <- bind_rows(
-  arima_wfset, ets_wfset, tbats_wfset, stlm_wfset, pb_wfset, nnet_wfset
-)
+hpi_wfset <- bind_rows(arima_wfset, ets_wfset, stlm_wfset, nnet_wfset)
 
 hpi_wfset |> slice(1:5)
 ```
@@ -369,41 +318,44 @@ That's all the heavy lifting. Now it's time to let the computer processors do th
 
 ```{r}
 #| label: run-models
+#| output: false
 #| cache: true
 
-avail_cores <- unname(parallelly::availableCores() - 1)                         # <1>
-num_cores <- (                                                                  # <2>
-  sapply(avail_cores:1, \(x) nrow(hpi_wfset) %% x) |>
-    which.max() - (avail_cores + 1)
-) * (-1)
+avail_cores <- unname(parallelly::availableCores() - 1)                     # <1>
+modulo_vec <- sapply(avail_cores:2, \(x) nrow(hpi_wfset) %% x)              
+num_cores <- max(                                                           # <2>
+  max(which(modulo_vec == max(modulo_vec))),
+    max(which(modulo_vec == 0))
+) + 1
 
-parallel_start(num_cores, .method = "parallel")                                 # <3>
+cl <- parallel::makePSOCKcluster(num_cores)                                 # <3>
+doParallel::registerDoParallel(cl)                                          # <3>
+invisible(                                                                  # <3>
+  parallel::clusterCall(cl, function(x) .libPaths(x), .libPaths())          # <3>
+)                                                                           # <3>
+parallel::clusterEvalQ(cl, set.seed(500))                                   # <3>
 
 hpi_mods_start <- proc.time()
 
-hpi_mods <- hpi_wfset |>                                                        # <4>
-  modeltime_fit_workflowset(                                                    # <5>
-    data = training(econ_splits_global),                                        # <6>
-    control = control_fit_workflowset(verbose = TRUE, allow_par = TRUE)         # <7>
+hpi_mods <- hpi_wfset |>                                                    # <4>
+  modeltime_fit_workflowset(                                                # <5>
+    data = training(econ_splits),                                           # <6>
+    control = control_fit_workflowset(verbose = FALSE, allow_par = TRUE)    # <7>
   )
 
 hpi_mods_end <- proc.time()
 
-parallel_stop()                                                                 # <8>
-closeAllConnections()                                                           # <9>
-
-hpi_mods |> slice(1)
+parallel::stopCluster(cl)                                                   # <8>
 ```
 
 1.  Get the number of cores available and leave one out for common tasks like running the operating system
 2.  Calculate the number of cores to use in order to maximize efficiency
-3.  Use `modeltime::parallel_start()` to create the parallel procession cluster (uses the `parallel` package on the back end)
-4.  Call the workflowset object containing all the workflows to run
+3.  Set up the cluster for parallel processing
+4.  Call the `workflowset` object containing all the workflows to run
 5.  Use `modeltime::modeltime_fit_workflowset()` to fit all of the models
 6.  Use the training portion of the split object to train the models
 7.  Set some controls for the model fitting function
 8.  Stop the parallel cluster from running
-9.  Close all connections to external sources, e.g., parallel cluster nodes
 
 ```{r}
 #| label: show-fitting-time
@@ -412,10 +364,10 @@ fit_time <- (hpi_mods_end - hpi_mods_start) |>
   enframe("time_metric", "seconds") |>
   drop_na(seconds)
 
-fit_time |> gt_bold_head()
+fit_time |> gt() |> gt_bold_head()
 ```
 
-About `r fit_time |> filter(name == "elapsed") |> pull(seconds)` seconds elapsed during model-fitting with parallel processing. Not too bad. Unfortunately, though, some of the models failed (I suppressed error printing). So, before calibrating the models I'm going to drop those from the model output data set. But first I'll investigate the model failures a little.
+About `r fit_time |> filter(time_metric == "elapsed") |> pull(seconds)` seconds elapsed during model-fitting with parallel processing. Not too bad. Unfortunately, though, some of the models failed (I suppressed error printing). So, before calibrating the models I'm going to drop those from the model output data set. But first I'll investigate the model failures a little.
 
 ## Investigating failed models
 
@@ -431,6 +383,7 @@ mod_fail_df <- hpi_mods |>
 mod_fail_df |>
   group_by(mod_fail) |>
   slice_min(.model_id, n = 3) |>
+  gt(groupname_col = NULL) |>
   gt_bold_head()
 ```
 
@@ -448,10 +401,10 @@ failure_spec_df <- mod_fail_df |>
   ) |>
   separate_wider_regex(spec, patterns = c(spec = "SPEC", spec_num = "\\d+"))
 
-failure_spec_df |> distinct(rec_name, algo, spec) |> gt_bold_head()
+failure_spec_df |> distinct(rec_name, algo, spec) |> gt() |> gt_bold_head()
 ```
 
-The good news is that it was only 1 algorithm. Now I want to get the numbers of the specifications that failed so that I can pull up the details on those specifications.
+Since the failures occurred with only one algorithm they'll be easy to isolate. Now I want to get the numbers of the specifications that failed so that I can pull up the details on those specifications.
 
 ```{r}
 #| label: get-failed-spec-nums
@@ -465,11 +418,12 @@ ets_failed <- ets_spec_grid |>
   select(!.models)
 
 ets_failed |>
-  count(smooth_level, smooth_trend) |>
+  count(smooth_level) |>
+  gt() |>
   gt_bold_head()
 ```
 
-The above table shows that a lot of the failures are due mostly to particular specifications of either `smooth_level` = 6.68e-05 or `smooth_trend` = 0.144. Overall there were `r nrow(failure_spec_df)` out of `r nrow(ets_spec_grid)` failed exponential smoothing models. That's not terrible. I'm going to remove these specifications from the trained model data set and move on to model evaluation.
+Overall there were `r nrow(failure_spec_df)` out of `r nrow(ets_spec_grid)` failed exponential smoothing models. That's not terrible. I'm going to remove these specifications from the trained model data set and move on to model evaluation.
 
 ## Model evaluation
 
@@ -482,7 +436,12 @@ To evaluate the models first I need to calibrate them. I'll remove the failed mo
 hpi_mods <- hpi_mods |> slice(which(!mod_fail_df$mod_fail))
 
 hpi_mod_calib <- hpi_mods |>
-  modeltime_calibrate(testing(econ_splits_global), id = "city")
+  modeltime_calibrate(testing(econ_splits), id = "city", quiet = TRUE)
+
+```
+
+```{r}
+#| label: get-mod-accuracy
 
 hpi_mod_accuracy <- hpi_mod_calib |>
   modeltime_accuracy() |>
@@ -497,67 +456,114 @@ best_global_table <- hpi_mod_accuracy |>
 
 best_local_table <- hpi_local_mod_accuracy |>
   group_by(city) |>
-  slice_min(smape, n = 5)
+  slice_min(smape, n = 3)
 
 best_global_table |>
-  table_modeltime_accuracy(.interactive = FALSE)
+  table_modeltime_accuracy(
+    .interactive = FALSE,
+    .title = "Global Accuracy"
+  ) |>
+  gt_bold_head() |>
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_title()
+  )
+
 ```
 
-Next is a table with the best 5 models calibrated to each city.
+Next is a table with the best 3 models calibrated to each city.
 
 ```{r}
 #| label: show-best-local-mods
 
 best_local_table|>
-  table_modeltime_accuracy(.interactive = FALSE)
+  table_modeltime_accuracy(
+    .interactive = FALSE,
+    .title = "Accuracy by City"
+  ) |>
+  gt_bold_head() |>
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_title()
+  ) |>
+  tab_style(
+    style = list(cell_text(weight = "bold"), cell_fill(color = "lightgray")),
+    locations = cells_group()
+  ) |>
+  tab_style(
+    style = cell_borders(
+      sides = c("top", "bottom"),
+      weight = px(2),
+      style = ("solid")
+    ),
+    locations = cells_group()
+  )
+
 ```
 
-There's a pretty good mix of models across the two tables including ARIMA, ETS (lots of this one), STLM, and neural-net. Among the ARIMA models there were some with the basic recipe and some with the recipe that included both economic and demographic variables.
+There's a pretty good mix of models across the two tables including ARIMA, ETS (lots of this one), STLM, and neural-net. Among the ARIMA models there were some with the basic recipe and some with the recipe that included both economic and demographic variables. At the local level there are different models
 
 Just for fun, here are the 5 worst-performing models (global).
 
 ```{r}
 #| label: show-worst-mods
 
-hpi_mod_accuracy |> slice_max(smape, n = 5) |> gt_bold_head()
+hpi_mod_accuracy |>
+  slice_max(smape, n = 5, with_ties = FALSE) |>
+  gt() |>
+  gt_bold_head()
+
 ```
 
-![](images/chandler-wrong.png){fig-alt="Chandler Bing: \"Could I be more wrong\"" fig-align="center" width="400"}
+## Forecasting with global models
 
-Interestingly all of the worst performing models at the global level were nerual-net models, but at the level of individual time series neural-nets were among the best.
+Below are forecasts for each city using the top 3 global models.
 
-For iterative modeling I'm going to use the 10 best global models, the best local model for each city, and I'm going to keep the best performing Prophet-Boost and TBATS models (at the global level) just to see if maybe they perform better in iterative modeling. The specifications that are going to the next round are:
+```{r}
+#| label: forecast-global
+#| fig-width: 8
+#| fig-height: 8
+
+top_3_global <- best_global_table |> slice_min(smape, n = 3) |> pull(.model_id)
+
+hpi_refit <- hpi_mod_calib |>
+  filter(.model_id %in% top_3_global) |>
+  modeltime_refit(data = econ_data) 
+
+hpi_future <- econ_data |>
+  group_by(city) |>
+  future_frame(.length_out = 12, .bind_data = FALSE, .date_var = date)
+
+hpi_future_forecast <- hpi_refit |>
+  modeltime_forecast(
+    new_data = hpi_future,
+    actual_data = econ_data,
+    conf_by_id = TRUE
+  )
+
+hpi_future_forecast |>
+  group_by(city) |>
+  plot_modeltime_forecast(
+    .interactive = FALSE,
+    .title = "1 Year Forecast into the Future - Global",
+    .facet_ncol = 1
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+## Choosing models for iterative process
+
+For iterative modeling I'm going to use the 10 best global models and the 3 best local models for each city. The specifications that I'm going to use for iterative modeling in the next post are:
 
 ```{r}
 #| label: store-best-specs
 
-best_mod_desc <- best_local_table |>
-  pull(.model_desc) |>
-  intersect(best_global_table$.model_desc) |>
-  c(
-    best_global_table |> slice_min(smape, n = 3) |> pull(.model_desc),
-    best_local_table |>
-      group_by(city) |>
-      slice_min(smape, n = 1) |>
-      pull(.model_desc)
-  ) |>
-  unique()
+best_global_table |>
+  slice_min(smape, n = 5) |>
+  bind_rows(best_local_table) |>
+  distinct(.model_desc) |>
+  gt() |>
+  gt_bold_head()
 
-best_mod_desc <- best_mod_desc |>
-  append(
-    hpi_mod_accuracy |>
-      filter(str_detect(.model_desc, "PB_|TBATS_")) |>
-      separate_wider_delim(
-        .model_desc,
-        delim = "_",
-        names = c("rec_name", "rec", "algo", "spec"),
-        cols_remove = FALSE
-      ) |>
-      group_by(algo) |>
-      slice_min(smape, n = 1) |>
-      pull(.model_desc)
-  ) |>
-  sort()
-
-best_mod_desc
 ```

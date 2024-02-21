@@ -7,8 +7,8 @@ execute:
   error: false
 date: "1/25/2024"
 categories:
-  - text analysis
-  - topic modeling
+  - Text Analysis
+  - Topic Modeling
 ---
 
 ## Introduction

@@ -8,8 +8,8 @@ execute:
 bibliography: class-thresh-vs-upsampling-references.bib
 date: "2/15/2023"
 categories:
-  - machine learning
-  - binary classification
+  - Machine Learning
+  - Classification
 ---
 
 ## Introduction

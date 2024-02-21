@@ -12,10 +12,8 @@ execute:
   warning: false
   error: false
 categories:
-  - machine learning
-  - statistical tests
-  - data viz
-  - regression
+  - Machine Learning
+  - Prediction
 ---
 
 ## Introduction / Motivation

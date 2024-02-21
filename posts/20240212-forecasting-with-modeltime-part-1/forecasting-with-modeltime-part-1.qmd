@@ -5,10 +5,9 @@ author: "Arcenis Rojas"
 date: "2/12/2024"
 bibliography: references.bib
 categories:
-  - time series analysis
-  - REST api
-  - data viz
-  - data acquisition
+  - Time Series
+  - Data Acquisition
+  - Data Wrangling
 execute:
   warning: false
   error: false
@@ -79,6 +78,13 @@ conflicted::conflict_prefer("lag", "dplyr")
 conflicted::conflict_prefer("between", "dplyr")
 ```
 
+```{r}
+#| label: get-tbl-func
+#| include: false
+
+source("../_common-resources/gt-bold-head.R")
+```
+
 ## Getting Case-Shiller HPI data
 
 I started by getting the appropriate Case-Shiller HPI series IDs for my cities of interest.
@@ -99,7 +105,7 @@ hpi_ids <- fredr_series_search_text("Case-Shiller") |>
   mutate(city = str_extract(title, "New York|Dallas|San Diego|Detroit")) |>
   select(city, id)
 
-gt(hpi_ids)
+gt(hpi_ids) |> gt_bold_head()
 ```
 
 Next I read in the Case-Shiller data and kept only the necessary variables.
@@ -124,7 +130,7 @@ hpi_data <- hpi_ids |>
   unnest(data) |>
   select(city, date, hpi = value)
 
-gt(hpi_data[1:10, ])
+hpi_data[1:10, ] |> gt() |> gt_bold_head()
 
 ```
 
@@ -246,7 +252,7 @@ msa_code_tbl <- tribble(
   distinct(msa_code_data) |>
   unnest(msa_code_data)
 
-gt(msa_code_tbl)
+msa_code_tbl |> gt() |> gt_bold_head()
 ```
 
 In the next step I defined the function for importing, filtering, and aggregating CPS data.
@@ -350,7 +356,7 @@ This is what the CPS data looked like.
 ```{r}
 #| label: show-cps-data
 
-gt(head(cps_data))
+head(cps_data) |> gt() |> gt_bold_head()
 
 ```
 
@@ -445,7 +451,7 @@ acs_pop_data <- expand_grid(
   ungroup() |>
   select(!population)
 
-gt(head(acs_pop_data))
+head(acs_pop_data) |> gt() |> gt_bold_head()
 ```
 
 ## Merge data and check
@@ -534,7 +540,8 @@ Evidently data were missing only for San Diego. Below are the start and end date
 econ_data |>
   filter(city %in% "San Diego", !is.na(avg_gas_price)) |>
   summarise(start_date = min(date), end_date = max(date)) |>
-  gt()
+  gt() |>
+  gt_bold_head()
 
 ```
 
@@ -545,7 +552,7 @@ As it turns out, reports of average gas price data for San Diego start in Januar
 
 econ_data <- select(econ_data, !avg_gas_price)
 
-econ_data |> slice(1:6) |> gt()
+econ_data |> slice(1:6) |> gt() |> gt_bold_head()
 ```
 
 Finally, I'd like to visualize the densities of all of the variables by city just to make sure nothing jumps out that might need any correction.
