@@ -353,6 +353,8 @@ hpi_mods <- hpi_wfset |>                                                    # <4
 hpi_mods_end <- proc.time()
 
 parallel::stopCluster(cl)                                                   # <8>
+rm(cl)
+gc()
 
 ```
 
@@ -446,15 +448,21 @@ I broke up the code for calibrating the models below into two separate chunks to
 :::
 
 ```{r}
-#| label: calibrate-mods1
-#| cache: true
+#| label: filter-mods
 
 hpi_mods <- hpi_mods |> slice(which(!mod_fail_df$mod_fail))
 
-hpi_mods1_idx <- 1:(nrow(hpi_mods) * 0.5)
+num_mods <- nrow(hpi_mods)
+hpi_mod_idx <- split(1:num_mods, ceiling(seq_along(1:num_mods) / 3))
+
+```
+
+```{r}
+#| label: calibrate-mods1
+#| cache: true
 
 hpi_mod_calib1 <- hpi_mods |>
-  slice(hpi_mods1_idx) |>
+  slice(hpi_mod_idx[[1]]) |>
   modeltime_calibrate(testing(econ_splits), id = "city", quiet = TRUE)
 
 ```
@@ -464,12 +472,24 @@ hpi_mod_calib1 <- hpi_mods |>
 #| cache: true
 
 hpi_mod_calib2 <- hpi_mods |>
-  slice(!hpi_mods1_idx) |>
+  slice(hpi_mod_idx[[2]]) |>
+  modeltime_calibrate(testing(econ_splits), id = "city", quiet = TRUE)
+```
+
+```{r}
+#| label: calibrate-mods3
+#| cache: true
+
+hpi_mod_calib3 <- hpi_mods |>
+  slice(hpi_mod_idx[[3]]) |>
   modeltime_calibrate(testing(econ_splits), id = "city", quiet = TRUE)
 
-hpi_mod_calid <- bind_rows(hpi_mod_calib1, hpi_mod_calib2)
+```
 
-rm(hpi_mod_calib1, hpi_mod_calib2)
+```{r}
+#| label: combine-calib-tbls
+
+hpi_mod_calib <- bind_rows(hpi_mod_calib1, hpi_mod_calib2)
 
 ```
 
