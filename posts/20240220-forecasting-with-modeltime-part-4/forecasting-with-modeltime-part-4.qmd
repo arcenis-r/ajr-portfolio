@@ -453,7 +453,7 @@ I broke up the code for calibrating the models below into two separate chunks to
 hpi_mods <- hpi_mods |> slice(which(!mod_fail_df$mod_fail))
 
 num_mods <- nrow(hpi_mods)
-hpi_mod_idx <- split(1:num_mods, ceiling(seq_along(1:num_mods) / 3))
+hpi_mod_idx <- split(1:num_mods, ceiling(seq_along(1:num_mods) / (num_mods / 3)))
 
 ```
 
