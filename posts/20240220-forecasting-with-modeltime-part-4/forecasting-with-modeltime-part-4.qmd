@@ -36,6 +36,7 @@ tidymodels_prefer()
 econ_data <- read_rds("../_common-resources/econ-data.Rds")
 
 source("../_common-resources/gt-bold-head.R")
+
 ```
 
 ```{r}
@@ -60,6 +61,7 @@ econ_splits <- econ_data |>
   )
 
 econ_splits
+
 ```
 
 ## Choosing algorithms
@@ -151,6 +153,7 @@ Here is a reminder of what a recipe looks like. This is the neural-net recipe.
 #| label: show-rec
 
 nnet_rec
+
 ```
 
 And this is the data set that gets created by that recipe.
@@ -159,6 +162,7 @@ And this is the data set that gets created by that recipe.
 #| label: show-rec-juiced
 
 nnet_rec |> prep() |> juice() |> slice(1:5) |> gt() |> gt_bold_head()
+
 ```
 
 ### Specifying models
@@ -229,6 +233,7 @@ nnet_spec_grid <- expand_grid(
     epochs = 100,
     seasonal_ar = 1
   )
+
 ```
 
 1.  Specify an ARIMA regression model using the "auto_arima" engine with all default arguments
@@ -293,6 +298,7 @@ nnet_wfset <- workflow_set(
   ),
   cross = TRUE
 )
+
 ```
 
 1.  Call `workflowsets::workflowset()`
@@ -310,6 +316,7 @@ With all of the model-specific workflow sets created, now it's time to put them 
 hpi_wfset <- bind_rows(arima_wfset, ets_wfset, stlm_wfset, nnet_wfset)
 
 hpi_wfset |> slice(1:5)
+
 ```
 
 That's all the heavy lifting. Now it's time to let the computer processors do their part and run the models.
@@ -346,6 +353,7 @@ hpi_mods <- hpi_wfset |>                                                    # <4
 hpi_mods_end <- proc.time()
 
 parallel::stopCluster(cl)                                                   # <8>
+
 ```
 
 1.  Get the number of cores available and leave one out for common tasks like running the operating system
@@ -365,6 +373,7 @@ fit_time <- (hpi_mods_end - hpi_mods_start) |>
   drop_na(seconds)
 
 fit_time |> gt() |> gt_bold_head()
+
 ```
 
 About `r fit_time |> filter(time_metric == "elapsed") |> pull(seconds)` seconds elapsed during model-fitting with parallel processing. Not too bad. Unfortunately, though, some of the models failed (I suppressed error printing). So, before calibrating the models I'm going to drop those from the model output data set. But first I'll investigate the model failures a little.
@@ -385,6 +394,7 @@ mod_fail_df |>
   slice_min(.model_id, n = 3) |>
   gt(groupname_col = NULL) |>
   gt_bold_head()
+
 ```
 
 Now I want to see the distinct names of the recipes and algorithms (model specifications) that failed.
@@ -402,6 +412,7 @@ failure_spec_df <- mod_fail_df |>
   separate_wider_regex(spec, patterns = c(spec = "SPEC", spec_num = "\\d+"))
 
 failure_spec_df |> distinct(rec_name, algo, spec) |> gt() |> gt_bold_head()
+
 ```
 
 Since the failures occurred with only one algorithm they'll be easy to isolate. Now I want to get the numbers of the specifications that failed so that I can pull up the details on those specifications.
@@ -421,6 +432,7 @@ ets_failed |>
   count(smooth_level) |>
   gt() |>
   gt_bold_head()
+
 ```
 
 Overall there were `r nrow(failure_spec_df)` out of `r nrow(ets_spec_grid)` failed exponential smoothing models. That's not terrible. I'm going to remove these specifications from the trained model data set and move on to model evaluation.
@@ -429,14 +441,35 @@ Overall there were `r nrow(failure_spec_df)` out of `r nrow(ets_spec_grid)` fail
 
 To evaluate the models first I need to calibrate them. I'll remove the failed models, calibrate the successful ones, and store accuracy tables here. Below are the 10 best-performing global models, i.e., the ones that performed best on the batched series with all four cities. I defined "best" as the models with the lowest SMAPE (Scaled Mean Average Percent Error) values.
 
+::: {.callout-note collapse="true" title="Breaking up calibration step"}
+I broke up the code for calibrating the models below into two separate chunks to keep the file sizes of cached files a bit smaller. I cached the output to make the page easier to render. This step of splitting up the `modeltime_table` for calibration is not typically necessary.
+:::
+
 ```{r}
-#| label: calibrate-mods
+#| label: calibrate-mods1
 #| cache: true
 
 hpi_mods <- hpi_mods |> slice(which(!mod_fail_df$mod_fail))
 
-hpi_mod_calib <- hpi_mods |>
+hpi_mods1_idx <- 1:(nrow(hpi_mods) * 0.5)
+
+hpi_mod_calib1 <- hpi_mods |>
+  slice(hpi_mods1_idx) |>
   modeltime_calibrate(testing(econ_splits), id = "city", quiet = TRUE)
+
+```
+
+```{r}
+#| label: calibrate-mods2
+#| cache: true
+
+hpi_mod_calib2 <- hpi_mods |>
+  slice(!hpi_mods1_idx) |>
+  modeltime_calibrate(testing(econ_splits), id = "city", quiet = TRUE)
+
+hpi_mod_calid <- bind_rows(hpi_mod_calib1, hpi_mod_calib2)
+
+rm(hpi_mod_calib1, hpi_mod_calib2)
 
 ```
 

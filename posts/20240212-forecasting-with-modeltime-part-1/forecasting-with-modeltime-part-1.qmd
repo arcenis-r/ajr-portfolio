@@ -76,6 +76,7 @@ library(multidplyr)
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("lag", "dplyr")
 conflicted::conflict_prefer("between", "dplyr")
+
 ```
 
 ```{r}
@@ -106,6 +107,7 @@ hpi_ids <- fredr_series_search_text("Case-Shiller") |>
   select(city, id)
 
 gt(hpi_ids) |> gt_bold_head()
+
 ```
 
 Next I read in the Case-Shiller data and kept only the necessary variables.
@@ -253,6 +255,7 @@ msa_code_tbl <- tribble(
   unnest(msa_code_data)
 
 msa_code_tbl |> gt() |> gt_bold_head()
+
 ```
 
 In the next step I defined the function for importing, filtering, and aggregating CPS data.
@@ -340,6 +343,7 @@ cps_data <- cps_grid |>
   unite("date", yr, mo, sep = "-") |>
   mutate(date = ym(date)) |>
   relocate(city, date)
+
 ```
 
 ```{r}
@@ -452,6 +456,7 @@ acs_pop_data <- expand_grid(
   select(!population)
 
 head(acs_pop_data) |> gt() |> gt_bold_head()
+
 ```
 
 ## Merge data and check
@@ -553,6 +558,7 @@ As it turns out, reports of average gas price data for San Diego start in Januar
 econ_data <- select(econ_data, !avg_gas_price)
 
 econ_data |> slice(1:6) |> gt() |> gt_bold_head()
+
 ```
 
 Finally, I'd like to visualize the densities of all of the variables by city just to make sure nothing jumps out that might need any correction.

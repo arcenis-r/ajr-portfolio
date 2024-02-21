@@ -33,6 +33,7 @@ library(gt)
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("lag", "dplyr")
 tidymodels_prefer()
+
 ```
 
 ```{r}
@@ -47,6 +48,7 @@ source("../_common-resources/gt-bold-head.R")
 theme_timetk <- read_rds("../_common-resources/theme-timetk.Rds") 
 
 series_colors <- c("#2c3e50", "red")
+
 ```
 
 ## Differences between global and iterative modeling
@@ -84,6 +86,7 @@ econ_splits_global <- econ_data |>
   )
 
 str(econ_splits_global)
+
 ```
 
 ### Specifying a modeling workflow and fit the model
@@ -100,6 +103,7 @@ One might be tempted to add lags and differences in the recipe, but this leads t
 arima_rec_global <- recipe(hpi ~ date, data = training(econ_splits_global))
 
 arima_rec_global |> summary() |> gt() |> gt_bold_head()
+
 ```
 
 ... then the model object.
@@ -119,6 +123,7 @@ arima_spec <- arima_reg(         # <1>
   set_engine("arima")            # <7>
 
 arima_spec
+
 ```
 
 1.  Call the API for building ARIMA models
@@ -139,6 +144,7 @@ arima_wflow_global <- workflow() |>   # <1>
   add_recipe(arima_rec_global)        # <3>
 
 arima_wflow_global
+
 ```
 
 1.  Create a container for a `workflow` object
@@ -159,6 +165,7 @@ arima_fit_global <- arima_wflow_global |>
 global_fit_end <- proc.time()
 
 arima_fit_global
+
 ```
 
 ### Model evaluation
@@ -173,6 +180,7 @@ I'm showing the model time table using a `print()` method rather than as a `gt` 
 arima_mtt_global <- modeltime_table(arima_fit_global)
 
 arima_mtt_global
+
 ```
 
 This table contains the model and some additional information about it. I'll now use this table to calibrate the global model to the individual time series with
@@ -185,6 +193,7 @@ arima_calib_global <- arima_mtt_global |>
   modeltime_calibrate(new_data = testing(econ_splits_global), id = "city")
 
 arima_calib_global
+
 ```
 
 With the calibration done I can now look at the accuracy of the model both at a global level and at an individual model level.
@@ -199,6 +208,7 @@ Getting the accuracy is done by the same function: `modeltime_accuracy()`. Wheth
 arima_calib_global |>
   modeltime_accuracy(acc_by_id = FALSE) |>  
   table_modeltime_accuracy(.interactive = FALSE)
+
 ```
 
 #### Local model accuracy
@@ -210,6 +220,7 @@ arima_calib_global |>
 arima_calib_global |>
   modeltime_accuracy(acc_by_id = TRUE) |>
   table_modeltime_accuracy(.interactive = FALSE)
+
 ```
 
 For comparison you can jump ahead to see the [iterative model accuracy table @tbl-acc-iterative].
@@ -236,6 +247,7 @@ arima_calib_global |>                            # <1>
     .facet_ncol = 2
   ) +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 1.  Call up the object containing the calibrated models
@@ -264,6 +276,7 @@ arima_refit_global <- modeltime_refit(arima_calib_global, data = econ_data)
 global_refit_end <- proc.time()
 
 arima_refit_global
+
 ```
 
 The next step is to build a container for the data that has all the correct dates and ID columns. This is done with `timetk::future_frame()` .
@@ -277,6 +290,7 @@ The next step is to build a container for the data that has all the correct date
 arima_future_global <- econ_data |>
   group_by(city) |>
   future_frame(.length_out = 12, .bind_data = FALSE, .date_var = date)
+
 ```
 
 And finally one can generate a plot of the forecasts with `modeltime_forecast()` and plot the time series with `plot_modeltime_forecast()` . Better not forget to group by series!
@@ -299,6 +313,7 @@ forecast_future_global |>
     .facet_ncol = 2
   ) +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 ## Building an iterative ARIMA model
@@ -328,6 +343,7 @@ econ_splits_iterative <- econ_data |>
   split_nested_timeseries(.length_test = 24)
 
 econ_splits_iterative
+
 ```
 
 ### Specifying a modeling workflow and fit the model
@@ -343,6 +359,7 @@ arima_rec_iterative <- recipe(
 )
 
 arima_rec_iterative |> summary() |> gt() |> gt_bold_head()
+
 ```
 
 I'll also create a new workflow object that just updates the previous one with the new recipe.
@@ -354,6 +371,7 @@ arima_wflow_iterative <- arima_wflow_global |>
   update_recipe(arima_rec_iterative)
 
 arima_wflow_iterative
+
 ```
 
 And now I'll fit the model to all four cities iteratively using `modeltime_nested_fit()` .
@@ -370,6 +388,7 @@ arima_fit_iterative <- econ_splits_iterative |>
 iterative_fit_end <- proc.time()
 
 arima_fit_iterative
+
 ```
 
 ### Model evaluation
@@ -383,6 +402,7 @@ arima_fit_iterative
 arima_fit_iterative |>
   extract_nested_test_accuracy() |>
   table_modeltime_accuracy(.interactive = FALSE)
+
 ```
 
 You can jump back to compare this with the [global model accuracy table @tbl-acc-global-local].
@@ -404,6 +424,7 @@ arima_fit_iterative |>
     .facet_ncol = 2
   ) +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 You can jump back to compare this with the [global model accuracy plot @fig-acc-global].
@@ -428,6 +449,7 @@ arima_refit_iterative <- arima_fit_iterative |>
 iterative_refit_end <- proc.time()
 
 arima_refit_iterative
+
 ```
 
 Since the future data container was already created in the splitting object, I can go right to forecasting the future here.
@@ -446,6 +468,7 @@ forecast_future_iterative |>
     .facet_ncol = 2
   ) +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 ## Comparison
@@ -489,6 +512,7 @@ bind_rows(global_fit_time, iterative_fit_time) |>
   scale_fill_manual(values = c("red", "blue")) +
   theme_timetk +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 ```{r}
@@ -520,6 +544,7 @@ bind_rows(global_refit_time, iterative_refit_time) |>
   scale_fill_manual(values = c("red", "blue")) +
   theme_timetk +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 Besides these operational differences, the processes yield different levels of accuracy due to differences in the data on which they are trained (or to which they are initially fit). It's also clear that the differences in models can yield some very big differences in forecasts. Global models have performed well in competitions that involved thousands of time series, so it's possible that the variance across the four time series in this analysis is too high to make global modeling worthwhile.
@@ -547,6 +572,7 @@ patchwork::wrap_plots(
   ) +
   theme(plot.title = element_text(hjust = 0.5))
 )
+
 ```
 
 In the next post I'll run a global modeling process with a few different algorithms and specifications to get a few hundred models and find which ones run best.

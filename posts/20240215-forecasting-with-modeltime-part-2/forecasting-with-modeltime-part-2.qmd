@@ -27,6 +27,7 @@ library(timetk)
 
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("lag", "dplyr")
+
 ```
 
 ```{r}
@@ -98,6 +99,7 @@ econ_data |>
   ) +
   theme_timetk +
   theme(plot.title = element_text(hjust = 0.5))
+
 ```
 
 Here one can see that Dallas's HPI did not drop as much during the Great Recession and has had a fast rise relative to those of the other cities ever since. It's also pretty clear that NYC's HPI has experienced a relatively mild increase over the years covered. There's also more volatility between 2010 and 2015 in the HPIs for NYC, Dallas, and Detroit than in San Diego's.
@@ -127,6 +129,7 @@ hpi_series <- econ_data |>
   ungroup()
 
 head(hpi_series, 15) |> gt() |> gt_bold_head()
+
 ```
 
 And now I can look at line plots of the three different series with the original on the left ; the lagged first-difference in the middle; and the lagged twelfth-difference on the right with a the cities in the different rows. From left to right the plots go from being highly regular (seasonal and trending) to being less regular in the middle (only seasonal) and highly irregular on the right. That irregularity is indicative of stationarity, which is what I want to see. This also provides a sneak peak into what the following analyses will give us.
