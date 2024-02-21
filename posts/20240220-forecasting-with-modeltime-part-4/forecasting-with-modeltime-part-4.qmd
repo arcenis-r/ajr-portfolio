@@ -501,7 +501,32 @@ best_local_table|>
 
 ```
 
-There's a pretty good mix of models across the two tables including ARIMA, ETS (lots of this one), STLM, and neural-net. Among the ARIMA models there were some with the basic recipe and some with the recipe that included both economic and demographic variables. At the local level there are different models
+There's a pretty good mix of models across the two tables including ARIMA, ETS (lots of this one), STLM, and neural-net. Among the ARIMA models there were some with the basic recipe and some with the recipe that included both economic and demographic variables.
+
+Below are plots of forecasts of the test data period for each city using the best 3 global models.
+
+```{r}
+#| label: fig-acc
+
+top_3_global <- best_global_table |> slice_min(smape, n = 3) |> pull(.model_id)
+
+hpi_mod_calib |>
+  filter(.model_id %in% top_3_global) |>                            
+  modeltime_forecast(                            
+    new_data = testing(econ_splits),      
+    actual_data = econ_data,                     
+    conf_by_id = TRUE,                           
+    keep_data = TRUE                             
+  ) |>
+  group_by(city) |>                             
+  plot_modeltime_forecast(                      
+    .interactive = FALSE,
+    .title = "Forecast of Test Data",
+    .facet_ncol = 2
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
 
 Just for fun, here are the 5 worst-performing models (global).
 
@@ -523,8 +548,6 @@ Below are forecasts for each city using the top 3 global models.
 #| label: forecast-global
 #| fig-width: 8
 #| fig-height: 8
-
-top_3_global <- best_global_table |> slice_min(smape, n = 3) |> pull(.model_id)
 
 hpi_refit <- hpi_mod_calib |>
   filter(.model_id %in% top_3_global) |>
