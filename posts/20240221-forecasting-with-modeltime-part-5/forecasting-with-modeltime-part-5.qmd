@@ -115,6 +115,7 @@ I'll first prepare a parallel processing cluster and set a random seed for each 
 
 ```{r}
 #| label: fit-models
+#| output: false
 #| cache: true
 
 cl <- makePSOCKcluster(nrow(part4_mods))
@@ -144,7 +145,13 @@ hpi_wflowset <- modeltime_nested_fit(
 stopCluster(cl)
 rm(cl)
 
-hpi_wflowset
+```
+
+```{r}
+#| label: show-hpi-wfset
+
+hpi_wflowset |> as_tibble()
+
 ```
 
 Notice that this object is grouped by city whereas the [corresponding object for the global modeling process](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html#fitting-the-models){target="_blank"} is listed by model. This happens because `modeltime_nested_fit()` calls a split object that has the data grouped by ID already. All of the functions in the [modeltime Nested Forecasting](https://business-science.github.io/modeltime/articles/nested-forecasting.html) workflow geared toward doing things at the level of the ID variable, which is "city" in this case. Each row contains a `mdl_time_tbl` object in the ".modeltime_tables" column for each row which has one row for each model that was fit to the data of the ID in that row. This `mdl_time_tbl` object contains calibration data, which gets created during the iterative modeling process. Below is an example.
