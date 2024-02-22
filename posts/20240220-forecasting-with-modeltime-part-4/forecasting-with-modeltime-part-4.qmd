@@ -27,6 +27,7 @@ library(gt)
 conflicted::conflict_prefer("filter", "dplyr")
 conflicted::conflict_prefer("lag", "dplyr")
 tidymodels_prefer()
+
 ```
 
 ```{r}
@@ -340,19 +341,19 @@ doParallel::registerDoParallel(cl)                                          # <3
 invisible(                                                                  # <3>
   parallel::clusterCall(cl, function(x) .libPaths(x), .libPaths())          # <3>
 )                                                                           # <3>
-parallel::clusterEvalQ(cl, set.seed(500))                                   # <3>
+parallel::clusterEvalQ(cl, set.seed(500))                                   # <4>
 
 hpi_mods_start <- proc.time()
 
-hpi_mods <- hpi_wfset |>                                                    # <4>
-  modeltime_fit_workflowset(                                                # <5>
-    data = training(econ_splits),                                           # <6>
-    control = control_fit_workflowset(verbose = FALSE, allow_par = TRUE)    # <7>
+hpi_mods <- hpi_wfset |>                                                    # <5>
+  modeltime_fit_workflowset(                                                # <6>
+    data = training(econ_splits),                                           # <7>
+    control = control_fit_workflowset(verbose = FALSE, allow_par = TRUE)    # <8>
   )
 
 hpi_mods_end <- proc.time()
 
-parallel::stopCluster(cl)                                                   # <8>
+parallel::stopCluster(cl)                                                   # <9>
 rm(cl)
 gc()
 
@@ -360,12 +361,13 @@ gc()
 
 1.  Get the number of cores available and leave one out for common tasks like running the operating system
 2.  Calculate the number of cores to use in order to maximize efficiency
-3.  Set up the cluster for parallel processing
-4.  Call the `workflowset` object containing all the workflows to run
-5.  Use `modeltime::modeltime_fit_workflowset()` to fit all of the models
-6.  Use the training portion of the split object to train the models
-7.  Set some controls for the model fitting function
-8.  Stop the parallel cluster from running
+3.  Set up the cluster for parallel processing; I copied this code from `modeltime::parallel_start()`
+4.  Set the same random seed for each node
+5.  Call the `workflowset` object containing all the workflows to run
+6.  Use `modeltime::modeltime_fit_workflowset()` to fit all of the models
+7.  Use the training portion of the split object to train the models
+8.  Set some controls for the model fitting function
+9.  Stop the parallel cluster from running
 
 ```{r}
 #| label: show-fitting-time

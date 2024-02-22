@@ -1,0 +1,396 @@
+---
+title: "Forecasting with {modeltime} - Part V"
+subtitle: "Selecting the best model for each city"
+author: "Arcenis Rojas"
+date: "2/22/2024"
+bibliography: references.bib
+categories:
+  - Time Series
+  - Forecasting
+  - Machine Learning
+---
+
+This is the final (planned) post for this series on the [modeltime](https://business-science.github.io/modeltime/index.html) [@modeltime] package I will identify the best model to forecast the Case-Shiller Home Price Index using an iterative modeling process. The models to work with will be the 11 models that I identified through the global modeling process in [Forecasting with {modeltime} - Part IV](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.qmd). Additionally I'll be using [parallel](https://rdocumentation.org/packages/parallel/versions/3.6.2) [@parallel] for parallel processing, [tidymodels](https://www.tidymodels.org/) [@tidymodels] for a modeling framework, [tidyverse](https://www.tidyverse.org/) [@tidyverse] for data wrangling and visualization, and [gt](#0) [@gt] for table output.
+
+```{r}
+#| label: load-packages
+
+library(tidyverse)
+library(timetk)
+library(modeltime)
+library(tidymodels)
+library(parallel)
+library(gt)
+conflicted::conflict_prefer("filter", "dplyr")
+conflicted::conflict_prefer("lag", "dplyr")
+tidymodels_prefer()
+
+```
+
+```{r}
+#| label: import-data
+#| include: false
+
+modEnv <- new.env()
+source("build-global-models.R", local = modEnv)
+source("../_common-resources/gt-bold-head.R")
+
+theme_timetk <- read_rds("../_common-resources/theme-timetk.Rds")
+
+econ_data <- modEnv$econ_data
+part4_mods <- modEnv$part4_mods
+hpi_global_wfset <- modEnv$hpi_wfset
+rm(modEnv)
+
+```
+
+Below is a look at the names of the model specifications from the last post.
+
+```{r}
+#| label: show-mod-names
+
+part4_mods |> gt() |> gt_bold_head()
+
+```
+
+And this is what the `workflowset` object looked like.
+
+```{r}
+#| label: show-wfset
+
+hpi_global_wfset
+
+```
+
+## Filtering workflows
+
+I'll first filter the set of workflows to the 11 that I want to keep.
+
+```{r}
+#| label: filter-wflows 
+
+mod_ids <- str_to_lower(part4_mods$.model_desc)
+
+hpi_global_wfset <- hpi_global_wfset |>
+  filter(wflow_id %in% mod_ids)
+
+```
+
+These are all of the necessary workflows including recipes and model specifications.
+
+## Splitting the data
+
+Next up is creating the data split object. This is a different set of functions than what I used to split the data for the global modeling process. In this workflow the future dates get added for each city up front.
+
+```{r}
+#| label: split-data
+
+econ_splits <- econ_data |>
+  extend_timeseries(
+    .id_var = city,
+    .date_var = date,
+    .length_future = 12
+  ) |>
+  nest_timeseries(
+    .id_var = city,
+    .length_future = 12,
+    .length_actual = 17 * 12
+  ) |>
+  split_nested_timeseries(.length_test = 24)
+
+econ_splits
+```
+
+With these two objects prepared I can now fit the models iteratively for each city.
+
+## Fit models
+
+I'll first prepare a parallel processing cluster and set a random seed for each node then fit the models.
+
+::: callout-note
+`modeltime_nested_fit()` requires that models be specified individually rather than as a `workflowset` object.
+:::
+
+```{r}
+#| label: fit-models
+#| cache: true
+
+cl <- makePSOCKcluster(nrow(part4_mods))
+doParallel::registerDoParallel(cl)
+invisible(
+  clusterCall(cl, function(x) .libPaths(x), .libPaths())
+)
+print(cl)
+clusterEvalQ(cl, set.seed(500))
+
+hpi_wflowset <- modeltime_nested_fit(
+  econ_splits,
+  hpi_global_wfset |> extract_workflow(mod_ids[1]),
+  hpi_global_wfset |> extract_workflow(mod_ids[2]),
+  hpi_global_wfset |> extract_workflow(mod_ids[3]),
+  hpi_global_wfset |> extract_workflow(mod_ids[4]),
+  hpi_global_wfset |> extract_workflow(mod_ids[5]),
+  hpi_global_wfset |> extract_workflow(mod_ids[6]),
+  hpi_global_wfset |> extract_workflow(mod_ids[7]),
+  hpi_global_wfset |> extract_workflow(mod_ids[8]),
+  hpi_global_wfset |> extract_workflow(mod_ids[9]),
+  hpi_global_wfset |> extract_workflow(mod_ids[10]),
+  hpi_global_wfset |> extract_workflow(mod_ids[11]),
+  control = control_nested_fit(verbose = TRUE, allow_par = TRUE)
+)
+
+stopCluster(cl)
+rm(cl)
+
+hpi_wflowset
+```
+
+Notice that this object is grouped by city whereas the [corresponding object for the global modeling process](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html#fitting-the-models){target="_blank"} is listed by model. This happens because `modeltime_nested_fit()` calls a split object that has the data grouped by ID already. All of the functions in the [modeltime Nested Forecasting](https://business-science.github.io/modeltime/articles/nested-forecasting.html) workflow geared toward doing things at the level of the ID variable, which is "city" in this case. Each row contains a `mdl_time_tbl` object in the ".modeltime_tables" column for each row which has one row for each model that was fit to the data of the ID in that row. This `mdl_time_tbl` object contains calibration data, which gets created during the iterative modeling process. Below is an example.
+
+```{r}
+#| label: show-mdl-time-tbl
+
+hpi_wflowset |> slice(1) |> pluck(".modeltime_tables", 1)
+
+```
+
+## Selecting the best models
+
+`{modeltime}` has the `modeltime_nested_select_best()` for selecting the best model for each ID in a nested model table. It requires the specification of a metric for determining which model is "best". As before, I'll use the Scaled Mean Average Percent Error (SMAPE).
+
+```{r}
+#| label: select-best-mods
+
+hpi_best <- hpi_wflowset |>
+  modeltime_nested_select_best(
+    metric = "smape",
+    minimize = TRUE,
+    filter_test_forecasts = TRUE
+  )
+
+hpi_best
+```
+
+Notice that after selecting the best model it's only the ".modeltime_tables" column that changes. It now contains a table with one single row corresponding to the model that yielded the best value of the selected metric.
+
+## View accuracy best models
+
+One gets the accuracy from a nested `modeltime` table by using `extract_nested_test_accuracy()` . Interestingly, this function shows the accuracy of all models even if it's run with the table of the "best" models. So below I'll use `group_by()` to get the accuracy for the best model for each city.
+
+```{r}
+#| label: tbl-show-acc
+
+hpi_wflowset |>
+  extract_nested_test_accuracy() |>
+  group_by(city) |>
+  slice_min(smape, n = 1) |>
+  ungroup() |>
+  table_modeltime_accuracy(.interactive = FALSE) |>
+  gt_bold_head()
+
+```
+
+Next are the forecasts against the test data.
+
+```{r}
+#| label: fig-test-forecasts
+
+fcst_pal <- c(                                                     # <1>
+  "#2c3e50", "#FF0000", "#00FFFF", "#FFFF00", "#0000FF", "#00FF00",
+  "#FF00FF", "#FF8000", "#0080FF", "#80FF00", "#8000FF", "#00FF80",
+  "#FF0080"
+)
+
+hpi_best |>
+  extract_nested_test_forecast() |>
+  group_by(city) |>
+  plot_modeltime_forecast(.interactive = FALSE) +
+  scale_color_manual(values = fcst_pal)
+
+```
+
+1.  Create a color palette for plotting.
+
+For Dallas, Detroit, and New York the 11th model in the original workflow which is a Seasonal Decomposition ARIMA model and for San Diego it's the 6th model which is just called "REGRESSION". I'll show the table of model names here here with a "model_num" column indicating model number.
+
+```{r}
+part4_mods |>
+  mutate(model_num = row_number()) |>
+  gt() |>
+  gt_bold_head()
+```
+
+We can see that the 11th model is an STLM model and the 6th model is the first ARIMA specification with the "DEMOG" recipe (this is the one that included economic and demographic covariates).
+
+The plot for San Diego does not include a margin of error and it's listed as having an error in the legend. This is something that can be traced to the calibration. First I'll extract the ".modeltime_tables".
+
+```{r}
+#| label: investigate-error1
+
+hpi_wflowset |>
+  filter(city %in% "San Diego") |>
+  pluck(".modeltime_tables", 1)
+
+```
+
+I can see that the 6th model does contain calibration data, so this isn't the problem. Now I'll extract the calibration data just for this model to see what's going on.
+
+```{r}
+#| label: investigate-error2
+
+hpi_wflowset |>
+  filter(city %in% "San Diego") |>
+  pluck(".modeltime_tables", 1) |>
+  filter(.model_id == 6) |>
+  pluck(".calibration_data", 1)
+
+```
+
+Gaaaahhhh! It's the missing data created by the lags in the recipe for this model. It might be interesting to run this model again without those lags, but I'll be happy just to know why there is no margin of error for this one. Interestingly, though, it looks like the STLM did a pretty good job with Detroit and New York.
+
+Now it's on to forecasting the future.
+
+## Forecasting future HPI
+
+The first step in forecasting is re-fitting the models to the full data set including the test portion. I'll do this with `modeltime_nested_refit()` . I'll immediately use that refit object to plot the forecasts.
+
+```{r}
+#| label: refit-best-mods
+
+hpi_refit <- hpi_best |>
+  modeltime_nested_refit(control = control_nested_refit(verbose = FALSE))
+
+hpi_refit |>
+  extract_nested_future_forecast() |>
+  group_by(city) |>
+  plot_modeltime_forecast(.interactive = FALSE) +
+  scale_color_manual(values = fcst_pal)
+
+```
+
+It looks like the missing values due to the lags prevented the ARIMA from generating forecasts, but the other forecasts look quite believable and much better than the forecasts made by the global process.
+
+## Comparing forecasts to what really happened
+
+I used data that ended in December 2022 because that's the most recent data I had for some demographic variables. This isn't a problem for the STLM since this model doesn't rely on demographic covariates, but there is HPI data through September of 2023, and the forecasts go through December of 2023. So, here I'll just get the HPI data for 2023 for Dallas, Detroit, and New York.
+
+```{r}
+#| label: get-hpi2023-data
+#| cache: true
+
+case_shiller_ids <- fredr::fredr_series_search_text("Case-Shiller") |>
+  filter(
+    str_detect(
+      title,
+      "TX-Dallas|NY-New York|MI-Detroit Home Price Index"
+    ),
+    seasonal_adjustment_short %in% "NSA",
+    frequency %in% "Monthly"
+  ) |>
+  mutate(city = str_extract(title, "New York|Dallas|San Diego|Detroit")) |>
+  select(city, id)
+
+# Get Case Shiller data for 2023
+hpi_data <- case_shiller_ids |>
+  mutate(
+    data = map(
+      id,
+      \(x) fredr::fredr(
+        series_id = x,
+        observation_start = ymd("2020-01-01"),
+        observation_end = ymd("2023-12-31"),
+        frequency = "m"
+      )
+    )
+  ) |>
+  select(-id) |>
+  unnest(data) |>
+  select(city, date, hpi = value)
+
+hpi_data |>
+  pivot_wider(names_from = city, values_from = hpi) |>
+  filter(year(date) == 2023) |>
+  gt() |>
+  gt_bold_head()
+
+```
+
+Now I can make a table of accuracy statistics for these series.
+
+```{r}
+#| label: hpi2023-acc
+
+hpi_data |>
+  left_join(
+    hpi_refit |>
+      filter(!city %in% "San Diego") |>
+      extract_nested_future_forecast() |>
+      filter(.key %in% "prediction") |>
+      unite("model_name", .model_id, .model_desc) |>
+      select(!.key),
+    by = c("city", "date" = ".index")
+  ) |>
+  group_nest(city) |>
+  mutate(
+    smape = map_dbl(
+      data,
+      \(x) smape(x, hpi, .value) |> pull(.estimate)
+    ),
+    rmse = map_dbl(
+      data,
+      \(x) rmse(x, hpi, .value) |> pull(.estimate)
+    ),
+    rsq = map_dbl(
+      data,
+      \(x) rsq(x, hpi, .value) |> pull(.estimate)
+    )
+  ) |>
+  select(-data) |>
+  ungroup() |>
+  gt() |>
+  gt_bold_head()
+
+```
+
+These are some pretty low (good) values of SMAPE. Let's see what these look like in plots.
+
+```{r}
+#| label: hpi2023-forecast-plot
+
+hpi_data |>
+  mutate(model_name = "ACTUAL") |>
+  rename(.value = hpi) |>
+  bind_rows(
+    hpi_refit |>
+      extract_nested_future_forecast() |>
+      filter(.key %in% "prediction", !city %in% "San Diego") |>
+      unite("model_name", .model_id, .model_desc) |>
+      select(!.key) |>
+      rename(date = .index)
+  ) |>
+  mutate(
+    model_name = fct_relevel(model_name, "ACTUAL"),
+    lwidth = if_else(model_name %in% "ACTUAL", 1, 2)
+  ) |>
+  ggplot(aes(x = date, group = model_name, color = model_name)) +
+  geom_line(aes(y = .value, linewidth = lwidth)) +
+  geom_ribbon(aes(ymin = .conf_lo, ymax = .conf_hi), alpha = 0.2, color = NA) +
+  scale_color_manual(values = fcst_pal) +
+  scale_y_continuous(expand = c(0.5, 0.5)) +
+  scale_linewidth(range = c(0.5, 1)) +
+  facet_wrap(~ city, scales = "free_y", ncol = 1) +
+  labs(
+    color = NULL,
+    x = NULL,
+    y = NULL,
+    title = "Forecasts vs. Actual Data"
+  ) +
+  guides(linewidth = "none") +
+  theme_timetk +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Not too bad! All three forecasts look like they were very close in the first few months of the forecast period, but started to underestimate later on.
+
+This ends the series of planned posts on using [modeltime](https://business-science.github.io/modeltime/index.html) with R. All in all this is a great package with all sorts of goodies for forecasting time series.
