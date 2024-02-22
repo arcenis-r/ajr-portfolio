@@ -357,6 +357,7 @@ parallel::stopCluster(cl)                                                   # <9
 rm(cl)
 gc()
 
+hpi_mods
 ```
 
 1.  Get the number of cores available and leave one out for common tasks like running the operating system

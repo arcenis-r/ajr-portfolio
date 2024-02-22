@@ -1,0 +1,4178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Arcenis Rojas">
+<meta name="dcterms.date" content="2024-02-22">
+
+<title>Arcenis Rojas - Forecasting with {modeltime} - Part V</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Arcenis Rojas</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html"> 
+<span class="menu-text">Personal Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../ce-dashboards.html"> 
+<span class="menu-text">Dashboards</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://linkedin.com/in/arcenisrojas" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/arcenis-r" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#filtering-workflows" id="toc-filtering-workflows" class="nav-link active" data-scroll-target="#filtering-workflows">Filtering workflows</a></li>
+  <li><a href="#splitting-the-data" id="toc-splitting-the-data" class="nav-link" data-scroll-target="#splitting-the-data">Splitting the data</a></li>
+  <li><a href="#fit-models" id="toc-fit-models" class="nav-link" data-scroll-target="#fit-models">Fit models</a></li>
+  <li><a href="#selecting-the-best-models" id="toc-selecting-the-best-models" class="nav-link" data-scroll-target="#selecting-the-best-models">Selecting the best models</a></li>
+  <li><a href="#view-accuracy-best-models" id="toc-view-accuracy-best-models" class="nav-link" data-scroll-target="#view-accuracy-best-models">View accuracy best models</a></li>
+  <li><a href="#forecasting-future-hpi" id="toc-forecasting-future-hpi" class="nav-link" data-scroll-target="#forecasting-future-hpi">Forecasting future HPI</a></li>
+  <li><a href="#comparing-forecasts-to-what-really-happened" id="toc-comparing-forecasts-to-what-really-happened" class="nav-link" data-scroll-target="#comparing-forecasts-to-what-really-happened">Comparing forecasts to what really happened</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Forecasting with {modeltime} - Part V</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Selecting the best model for each city</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Time Series</div>
+    <div class="quarto-category">Forecasting</div>
+    <div class="quarto-category">Machine Learning</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Arcenis Rojas </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 22, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This is the final (planned) post for this series on the <a href="https://business-science.github.io/modeltime/index.html">modeltime</a> <span class="citation" data-cites="modeltime">(<a href="#ref-modeltime" role="doc-biblioref">Dancho 2023</a>)</span> package I will identify the best model to forecast the Case-Shiller Home Price Index using an iterative modeling process. The models to work with will be the 11 models that I identified through the global modeling process in <a href="../../posts/20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html">Forecasting with {modeltime} - Part IV</a>. Additionally I’ll be using <a href="https://rdocumentation.org/packages/parallel/versions/3.6.2">parallel</a> <span class="citation" data-cites="parallel">(<a href="#ref-parallel" role="doc-biblioref">2023</a>)</span> for parallel processing, <a href="https://www.tidymodels.org/">tidymodels</a> <span class="citation" data-cites="tidymodels">(<a href="#ref-tidymodels" role="doc-biblioref">Kuhn and Wickham 2020</a>)</span> for a modeling framework, <a href="https://www.tidyverse.org/">tidyverse</a> <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span> for data wrangling and visualization, and <a href="#0">gt</a> <span class="citation" data-cites="gt">(<a href="#ref-gt" role="doc-biblioref">Iannone et al. 2024</a>)</span> for table output.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(timetk)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(modeltime)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"lag"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Below is a look at the names of the model specifications from the last post.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>part4_mods <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="vtzoeifemm" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vtzoeifemm table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vtzoeifemm thead, #vtzoeifemm tbody, #vtzoeifemm tfoot, #vtzoeifemm tr, #vtzoeifemm td, #vtzoeifemm th {
+  border-style: none;
+}
+
+#vtzoeifemm p {
+  margin: 0;
+  padding: 0;
+}
+
+#vtzoeifemm .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vtzoeifemm .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vtzoeifemm .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vtzoeifemm .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vtzoeifemm .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vtzoeifemm .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vtzoeifemm .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vtzoeifemm .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vtzoeifemm .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vtzoeifemm .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vtzoeifemm .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vtzoeifemm .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vtzoeifemm .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vtzoeifemm .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vtzoeifemm .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtzoeifemm .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vtzoeifemm .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vtzoeifemm .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vtzoeifemm .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtzoeifemm .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vtzoeifemm .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtzoeifemm .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vtzoeifemm .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtzoeifemm .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vtzoeifemm .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vtzoeifemm .gt_left {
+  text-align: left;
+}
+
+#vtzoeifemm .gt_center {
+  text-align: center;
+}
+
+#vtzoeifemm .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vtzoeifemm .gt_font_normal {
+  font-weight: normal;
+}
+
+#vtzoeifemm .gt_font_bold {
+  font-weight: bold;
+}
+
+#vtzoeifemm .gt_font_italic {
+  font-style: italic;
+}
+
+#vtzoeifemm .gt_super {
+  font-size: 65%;
+}
+
+#vtzoeifemm .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vtzoeifemm .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vtzoeifemm .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vtzoeifemm .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vtzoeifemm .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vtzoeifemm .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vtzoeifemm .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id=".model_desc" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">.model_desc</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ETS_DEFAULT</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ARIMA_DEFAULT</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ARIMA_SPEC2</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ETS_SPEC14</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ETS_SPEC6</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">DEMOG_REC_ARIMA_SPEC1</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">DEMOG_REC_ARIMA_SPEC3</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">NNET_REC_NNET_SPEC22</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">NNET_REC_NNET_SPEC9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">NNET_REC_NNET_SPEC12</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_STLM_SPEC3</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>And this is what the <code>workflowset</code> object looked like.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>hpi_global_wfset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A workflow set/tibble: 90 × 4
+   wflow_id               info             option    result    
+   &lt;chr&gt;                  &lt;list&gt;           &lt;list&gt;    &lt;list&gt;    
+ 1 base_rec_arima_default &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 2 base_rec_arima_spec1   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 3 base_rec_arima_spec2   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 4 base_rec_arima_spec3   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 5 base_rec_arima_spec4   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 6 econ_rec_arima_default &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 7 econ_rec_arima_spec1   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 8 econ_rec_arima_spec2   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+ 9 econ_rec_arima_spec3   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+10 econ_rec_arima_spec4   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+# ℹ 80 more rows</code></pre>
+</div>
+</div>
+<section id="filtering-workflows" class="level2">
+<h2 class="anchored" data-anchor-id="filtering-workflows">Filtering workflows</h2>
+<p>I’ll first filter the set of workflows to the 11 that I want to keep.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>mod_ids <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(part4_mods<span class="sc">$</span>.model_desc)</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a>hpi_global_wfset <span class="ot">&lt;-</span> hpi_global_wfset <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">filter</span>(wflow_id <span class="sc">%in%</span> mod_ids)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>These are all of the necessary workflows including recipes and model specifications.</p>
+</section>
+<section id="splitting-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="splitting-the-data">Splitting the data</h2>
+<p>Next up is creating the data split object. This is a different set of functions than what I used to split the data for the global modeling process. In this workflow the future dates get added for each city up front.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>econ_splits <span class="ot">&lt;-</span> econ_data <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">extend_timeseries</span>(</span>
+<span id="cb6-3"><a href="#cb6-3"></a>    <span class="at">.id_var =</span> city,</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="at">.date_var =</span> date,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="at">.length_future =</span> <span class="dv">12</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">nest_timeseries</span>(</span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="at">.id_var =</span> city,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="at">.length_future =</span> <span class="dv">12</span>,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="at">.length_actual =</span> <span class="dv">17</span> <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>  <span class="fu">split_nested_timeseries</span>(<span class="at">.length_test =</span> <span class="dv">24</span>)</span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a>econ_splits</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  city      .actual_data        .future_data       .splits         
+  &lt;chr&gt;     &lt;list&gt;              &lt;list&gt;             &lt;list&gt;          
+1 Dallas    &lt;tibble [204 × 15]&gt; &lt;tibble [12 × 15]&gt; &lt;split [180|24]&gt;
+2 Detroit   &lt;tibble [204 × 15]&gt; &lt;tibble [12 × 15]&gt; &lt;split [180|24]&gt;
+3 New York  &lt;tibble [204 × 15]&gt; &lt;tibble [12 × 15]&gt; &lt;split [180|24]&gt;
+4 San Diego &lt;tibble [204 × 15]&gt; &lt;tibble [12 × 15]&gt; &lt;split [180|24]&gt;</code></pre>
+</div>
+</div>
+<p>With these two objects prepared I can now fit the models iteratively for each city.</p>
+</section>
+<section id="fit-models" class="level2">
+<h2 class="anchored" data-anchor-id="fit-models">Fit models</h2>
+<p>I’ll first prepare a parallel processing cluster and set a random seed for each node then fit the models.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>modeltime_nested_fit()</code> requires that models be specified individually rather than as a <code>workflowset</code> object.</p>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">makePSOCKcluster</span>(<span class="fu">nrow</span>(part4_mods))</span>
+<span id="cb8-2"><a href="#cb8-2"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="fu">invisible</span>(</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">clusterCall</span>(cl, <span class="cf">function</span>(x) <span class="fu">.libPaths</span>(x), <span class="fu">.libPaths</span>())</span>
+<span id="cb8-5"><a href="#cb8-5"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">print</span>(cl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>socket cluster with 11 nodes on host 'localhost'</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">500</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+NULL
+
+[[2]]
+NULL
+
+[[3]]
+NULL
+
+[[4]]
+NULL
+
+[[5]]
+NULL
+
+[[6]]
+NULL
+
+[[7]]
+NULL
+
+[[8]]
+NULL
+
+[[9]]
+NULL
+
+[[10]]
+NULL
+
+[[11]]
+NULL</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>hpi_wflowset <span class="ot">&lt;-</span> <span class="fu">modeltime_nested_fit</span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  econ_splits,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">1</span>]),</span>
+<span id="cb12-4"><a href="#cb12-4"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">2</span>]),</span>
+<span id="cb12-5"><a href="#cb12-5"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">3</span>]),</span>
+<span id="cb12-6"><a href="#cb12-6"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">4</span>]),</span>
+<span id="cb12-7"><a href="#cb12-7"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">5</span>]),</span>
+<span id="cb12-8"><a href="#cb12-8"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">6</span>]),</span>
+<span id="cb12-9"><a href="#cb12-9"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">7</span>]),</span>
+<span id="cb12-10"><a href="#cb12-10"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">8</span>]),</span>
+<span id="cb12-11"><a href="#cb12-11"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">9</span>]),</span>
+<span id="cb12-12"><a href="#cb12-12"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">10</span>]),</span>
+<span id="cb12-13"><a href="#cb12-13"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">11</span>]),</span>
+<span id="cb12-14"><a href="#cb12-14"></a>  <span class="at">control =</span> <span class="fu">control_nested_fit</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">allow_par =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-15"><a href="#cb12-15"></a>)</span>
+<span id="cb12-16"><a href="#cb12-16"></a></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="fu">stopCluster</span>(cl)</span>
+<span id="cb12-18"><a href="#cb12-18"></a><span class="fu">rm</span>(cl)</span>
+<span id="cb12-19"><a href="#cb12-19"></a></span>
+<span id="cb12-20"><a href="#cb12-20"></a>hpi_wflowset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Nested Modeltime Table
+  # A tibble: 4 × 5
+  city      .actual_data        .future_data .splits          .modeltime_tables
+  &lt;chr&gt;     &lt;list&gt;              &lt;list&gt;       &lt;list&gt;           &lt;list&gt;           
+1 Dallas    &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t&gt;       
+2 Detroit   &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t&gt;       
+3 New York  &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t&gt;       
+4 San Diego &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t&gt;       </code></pre>
+</div>
+</div>
+<p>Notice that this object is grouped by city whereas the <a href="../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html#fitting-the-models" target="_blank">corresponding object for the global modeling process</a> is listed by model. This happens because <code>modeltime_nested_fit()</code> calls a split object that has the data grouped by ID already. All of the functions in the <a href="https://business-science.github.io/modeltime/articles/nested-forecasting.html">modeltime Nested Forecasting</a> workflow geared toward doing things at the level of the ID variable, which is “city” in this case. Each row contains a <code>mdl_time_tbl</code> object in the “.modeltime_tables” column for each row which has one row for each model that was fit to the data of the ID in that row. This <code>mdl_time_tbl</code> object contains calibration data, which gets created during the iterative modeling process. Below is an example.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>hpi_wflowset <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Modeltime Table
+# A tibble: 11 × 5
+   .model_id .model       .model_desc           .type .calibration_data
+       &lt;int&gt; &lt;named list&gt; &lt;chr&gt;                 &lt;chr&gt; &lt;list&gt;           
+ 1         1 &lt;workflow&gt;   ETSAADN               Test  &lt;tibble [24 × 4]&gt;
+ 2         2 &lt;workflow&gt;   ARIMA                 Test  &lt;tibble [24 × 4]&gt;
+ 3         3 &lt;workflow&gt;   ARIMA                 Test  &lt;tibble [24 × 4]&gt;
+ 4         4 &lt;workflow&gt;   ETSAADA               Test  &lt;tibble [24 × 4]&gt;
+ 5         5 &lt;workflow&gt;   ETSAADA               Test  &lt;tibble [24 × 4]&gt;
+ 6         6 &lt;workflow&gt;   REGRESSION            Test  &lt;tibble [24 × 4]&gt;
+ 7         7 &lt;workflow&gt;   REGRESSION            Test  &lt;tibble [24 × 4]&gt;
+ 8         8 &lt;NULL&gt;       NULL                  &lt;NA&gt;  &lt;lgl [1]&gt;        
+ 9         9 &lt;NULL&gt;       NULL                  &lt;NA&gt;  &lt;lgl [1]&gt;        
+10        10 &lt;NULL&gt;       NULL                  &lt;NA&gt;  &lt;lgl [1]&gt;        
+11        11 &lt;workflow&gt;   SEASONAL DECOMP ARIMA Test  &lt;tibble [24 × 4]&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="selecting-the-best-models" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-the-best-models">Selecting the best models</h2>
+<p><code>{modeltime}</code> has the <code>modeltime_nested_select_best()</code> for selecting the best model for each ID in a nested model table. It requires the specification of a metric for determining which model is “best”. As before, I’ll use the Scaled Mean Average Percent Error (SMAPE).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>hpi_best <span class="ot">&lt;-</span> hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">modeltime_nested_select_best</span>(</span>
+<span id="cb16-3"><a href="#cb16-3"></a>    <span class="at">metric =</span> <span class="st">"smape"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4"></a>    <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-5"><a href="#cb16-5"></a>    <span class="at">filter_test_forecasts =</span> <span class="cn">TRUE</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  )</span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a>hpi_best</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Nested Modeltime Table
+  # A tibble: 4 × 5
+  city      .actual_data        .future_data .splits          .modeltime_tables 
+  &lt;chr&gt;     &lt;list&gt;              &lt;list&gt;       &lt;list&gt;           &lt;list&gt;            
+1 Dallas    &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t [1 × 5]&gt;
+2 Detroit   &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t [1 × 5]&gt;
+3 New York  &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t [1 × 5]&gt;
+4 San Diego &lt;tibble [204 × 15]&gt; &lt;tibble&gt;     &lt;split [180|24]&gt; &lt;mdl_tm_t [1 × 5]&gt;</code></pre>
+</div>
+</div>
+<p>Notice that after selecting the best model it’s only the “.modeltime_tables” column that changes. It now contains a table with one single row corresponding to the model that yielded the best value of the selected metric.</p>
+</section>
+<section id="view-accuracy-best-models" class="level2">
+<h2 class="anchored" data-anchor-id="view-accuracy-best-models">View accuracy best models</h2>
+<p>One gets the accuracy from a nested <code>modeltime</code> table by using <code>extract_nested_test_accuracy()</code> . Interestingly, this function shows the accuracy of all models even if it’s run with the table of the “best” models. So below I’ll use <code>group_by()</code> to get the accuracy for the best model for each city.</p>
+<div id="tbl-show-acc" class="cell anchored">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">extract_nested_test_accuracy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">slice_min</span>(smape, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>  <span class="fu">table_modeltime_accuracy</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="vaossgjhsw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vaossgjhsw table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vaossgjhsw thead, #vaossgjhsw tbody, #vaossgjhsw tfoot, #vaossgjhsw tr, #vaossgjhsw td, #vaossgjhsw th {
+  border-style: none;
+}
+
+#vaossgjhsw p {
+  margin: 0;
+  padding: 0;
+}
+
+#vaossgjhsw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vaossgjhsw .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vaossgjhsw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vaossgjhsw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vaossgjhsw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vaossgjhsw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vaossgjhsw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vaossgjhsw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vaossgjhsw .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vaossgjhsw .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vaossgjhsw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vaossgjhsw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vaossgjhsw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vaossgjhsw .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vaossgjhsw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vaossgjhsw .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vaossgjhsw .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vaossgjhsw .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vaossgjhsw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vaossgjhsw .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vaossgjhsw .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vaossgjhsw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vaossgjhsw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vaossgjhsw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vaossgjhsw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vaossgjhsw .gt_left {
+  text-align: left;
+}
+
+#vaossgjhsw .gt_center {
+  text-align: center;
+}
+
+#vaossgjhsw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vaossgjhsw .gt_font_normal {
+  font-weight: normal;
+}
+
+#vaossgjhsw .gt_font_bold {
+  font-weight: bold;
+}
+
+#vaossgjhsw .gt_font_italic {
+  font-style: italic;
+}
+
+#vaossgjhsw .gt_super {
+  font-size: 65%;
+}
+
+#vaossgjhsw .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vaossgjhsw .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vaossgjhsw .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vaossgjhsw .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vaossgjhsw .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vaossgjhsw .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vaossgjhsw .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="10" class="gt_heading gt_title gt_font_normal gt_bottom_border">Accuracy Table</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="city" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">city</th>
+<th id=".model_id" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">.model_id</th>
+<th id=".model_desc" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">.model_desc</th>
+<th id=".type" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">.type</th>
+<th id="mae" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">mae</th>
+<th id="mape" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">mape</th>
+<th id="mase" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">mase</th>
+<th id="smape" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">smape</th>
+<th id="rmse" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">rmse</th>
+<th id="rsq" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">rsq</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="city">Dallas</td>
+<td class="gt_row gt_right" headers=".model_id">11</td>
+<td class="gt_row gt_left" headers=".model_desc">SEASONAL DECOMP ARIMA</td>
+<td class="gt_row gt_left" headers=".type">Test</td>
+<td class="gt_row gt_right" headers="mae">39.49</td>
+<td class="gt_row gt_right" headers="mape">14.11</td>
+<td class="gt_row gt_right" headers="mase">7.54</td>
+<td class="gt_row gt_right" headers="smape">15.46</td>
+<td class="gt_row gt_right" headers="rmse">44.89</td>
+<td class="gt_row gt_right" headers="rsq">0.86</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="city">Detroit</td>
+<td class="gt_row gt_right" headers=".model_id">11</td>
+<td class="gt_row gt_left" headers=".model_desc">SEASONAL DECOMP ARIMA</td>
+<td class="gt_row gt_left" headers=".type">Test</td>
+<td class="gt_row gt_right" headers="mae">4.16</td>
+<td class="gt_row gt_right" headers="mape">2.56</td>
+<td class="gt_row gt_right" headers="mase">2.37</td>
+<td class="gt_row gt_right" headers="smape">2.59</td>
+<td class="gt_row gt_right" headers="rmse">4.80</td>
+<td class="gt_row gt_right" headers="rsq">0.86</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="city">New York</td>
+<td class="gt_row gt_right" headers=".model_id">11</td>
+<td class="gt_row gt_left" headers=".model_desc">SEASONAL DECOMP ARIMA</td>
+<td class="gt_row gt_left" headers=".type">Test</td>
+<td class="gt_row gt_right" headers="mae">9.12</td>
+<td class="gt_row gt_right" headers="mape">3.50</td>
+<td class="gt_row gt_right" headers="mase">3.84</td>
+<td class="gt_row gt_right" headers="smape">3.58</td>
+<td class="gt_row gt_right" headers="rmse">10.70</td>
+<td class="gt_row gt_right" headers="rsq">0.90</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="city">San Diego</td>
+<td class="gt_row gt_right" headers=".model_id">6</td>
+<td class="gt_row gt_left" headers=".model_desc">REGRESSION</td>
+<td class="gt_row gt_left" headers=".type">Test</td>
+<td class="gt_row gt_right" headers="mae">30.77</td>
+<td class="gt_row gt_right" headers="mape">8.19</td>
+<td class="gt_row gt_right" headers="mase">4.36</td>
+<td class="gt_row gt_right" headers="smape">7.75</td>
+<td class="gt_row gt_right" headers="rmse">35.89</td>
+<td class="gt_row gt_right" headers="rsq">0.29</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Next are the forecasts against the test data.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1"></a>fcst_pal <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2"></a>  <span class="st">"#2c3e50"</span>, <span class="st">"#FF0000"</span>, <span class="st">"#00FFFF"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#00FF00"</span>,</span>
+<span id="annotated-cell-12-3"><a href="#annotated-cell-12-3"></a>  <span class="st">"#FF00FF"</span>, <span class="st">"#FF8000"</span>, <span class="st">"#0080FF"</span>, <span class="st">"#80FF00"</span>, <span class="st">"#8000FF"</span>, <span class="st">"#00FF80"</span>,</span>
+<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4"></a>  <span class="st">"#FF0080"</span></span>
+<span id="annotated-cell-12-5"><a href="#annotated-cell-12-5"></a>)</span>
+<span id="annotated-cell-12-6"><a href="#annotated-cell-12-6"></a></span>
+<span id="annotated-cell-12-7"><a href="#annotated-cell-12-7"></a>hpi_best <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-8"><a href="#annotated-cell-12-8"></a>  <span class="fu">extract_nested_test_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-9"><a href="#annotated-cell-12-9"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-12-10"><a href="#annotated-cell-12-10"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-12-11"><a href="#annotated-cell-12-11"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">Create a color palette for plotting.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div id="fig-test-forecasts" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-test-forecasts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="forecasting-with-modeltime-part-5_files/figure-html/fig-test-forecasts-1.png" id="fig-test-forecasts" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-test-forecasts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For Dallas, Detroit, and New York the 11th model in the original workflow which is a Seasonal Decomposition ARIMA model and for San Diego it’s the 6th model which is just called “REGRESSION”. I’ll show the table of model names here here with a “model_num” column indicating model number.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>part4_mods <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">mutate</span>(<span class="at">model_num =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="ezrmrdksxp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ezrmrdksxp table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ezrmrdksxp thead, #ezrmrdksxp tbody, #ezrmrdksxp tfoot, #ezrmrdksxp tr, #ezrmrdksxp td, #ezrmrdksxp th {
+  border-style: none;
+}
+
+#ezrmrdksxp p {
+  margin: 0;
+  padding: 0;
+}
+
+#ezrmrdksxp .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ezrmrdksxp .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ezrmrdksxp .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ezrmrdksxp .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ezrmrdksxp .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ezrmrdksxp .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ezrmrdksxp .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ezrmrdksxp .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ezrmrdksxp .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ezrmrdksxp .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ezrmrdksxp .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ezrmrdksxp .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ezrmrdksxp .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ezrmrdksxp .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ezrmrdksxp .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ezrmrdksxp .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ezrmrdksxp .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ezrmrdksxp .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ezrmrdksxp .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ezrmrdksxp .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ezrmrdksxp .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ezrmrdksxp .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ezrmrdksxp .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ezrmrdksxp .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ezrmrdksxp .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ezrmrdksxp .gt_left {
+  text-align: left;
+}
+
+#ezrmrdksxp .gt_center {
+  text-align: center;
+}
+
+#ezrmrdksxp .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ezrmrdksxp .gt_font_normal {
+  font-weight: normal;
+}
+
+#ezrmrdksxp .gt_font_bold {
+  font-weight: bold;
+}
+
+#ezrmrdksxp .gt_font_italic {
+  font-style: italic;
+}
+
+#ezrmrdksxp .gt_super {
+  font-size: 65%;
+}
+
+#ezrmrdksxp .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ezrmrdksxp .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ezrmrdksxp .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ezrmrdksxp .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ezrmrdksxp .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ezrmrdksxp .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ezrmrdksxp .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id=".model_desc" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">.model_desc</th>
+<th id="model_num" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">model_num</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ETS_DEFAULT</td>
+<td class="gt_row gt_right" headers="model_num">1</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ARIMA_DEFAULT</td>
+<td class="gt_row gt_right" headers="model_num">2</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ARIMA_SPEC2</td>
+<td class="gt_row gt_right" headers="model_num">3</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ETS_SPEC14</td>
+<td class="gt_row gt_right" headers="model_num">4</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_ETS_SPEC6</td>
+<td class="gt_row gt_right" headers="model_num">5</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">DEMOG_REC_ARIMA_SPEC1</td>
+<td class="gt_row gt_right" headers="model_num">6</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">DEMOG_REC_ARIMA_SPEC3</td>
+<td class="gt_row gt_right" headers="model_num">7</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">NNET_REC_NNET_SPEC22</td>
+<td class="gt_row gt_right" headers="model_num">8</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">NNET_REC_NNET_SPEC9</td>
+<td class="gt_row gt_right" headers="model_num">9</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=".model_desc">NNET_REC_NNET_SPEC12</td>
+<td class="gt_row gt_right" headers="model_num">10</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=".model_desc">BASE_REC_STLM_SPEC3</td>
+<td class="gt_row gt_right" headers="model_num">11</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>We can see that the 11th model is an STLM model and the 6th model is the first ARIMA specification with the “DEMOG” recipe (this is the one that included economic and demographic covariates).</p>
+<p>The plot for San Diego does not include a margin of error and it’s listed as having an error in the legend. This is something that can be traced to the calibration. First I’ll extract the “.modeltime_tables”.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># Modeltime Table
+# A tibble: 11 × 5
+   .model_id .model       .model_desc           .type .calibration_data
+       &lt;int&gt; &lt;named list&gt; &lt;chr&gt;                 &lt;chr&gt; &lt;list&gt;           
+ 1         1 &lt;workflow&gt;   ETSAADN               Test  &lt;tibble [24 × 4]&gt;
+ 2         2 &lt;workflow&gt;   ARIMA                 Test  &lt;tibble [24 × 4]&gt;
+ 3         3 &lt;workflow&gt;   ARIMA                 Test  &lt;tibble [24 × 4]&gt;
+ 4         4 &lt;workflow&gt;   ETSAADA               Test  &lt;tibble [24 × 4]&gt;
+ 5         5 &lt;workflow&gt;   ETSAADA               Test  &lt;tibble [24 × 4]&gt;
+ 6         6 &lt;workflow&gt;   REGRESSION            Test  &lt;tibble [24 × 4]&gt;
+ 7         7 &lt;workflow&gt;   REGRESSION            Test  &lt;tibble [24 × 4]&gt;
+ 8         8 &lt;NULL&gt;       NULL                  &lt;NA&gt;  &lt;lgl [1]&gt;        
+ 9         9 &lt;NULL&gt;       NULL                  &lt;NA&gt;  &lt;lgl [1]&gt;        
+10        10 &lt;NULL&gt;       NULL                  &lt;NA&gt;  &lt;lgl [1]&gt;        
+11        11 &lt;workflow&gt;   SEASONAL DECOMP ARIMA Test  &lt;tibble [24 × 4]&gt;</code></pre>
+</div>
+</div>
+<p>I can see that the 6th model does contain calibration data, so this isn’t the problem. Now I’ll extract the calibration data just for this model to see what’s going on.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">filter</span>(.model_id <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">pluck</span>(<span class="st">".calibration_data"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 24 × 4
+   date       .actual .prediction .residuals
+   &lt;date&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+ 1 2021-01-01    302.         NA        NA  
+ 2 2021-02-01    311.         NA        NA  
+ 3 2021-03-01    321.         NA        NA  
+ 4 2021-04-01    332.         NA        NA  
+ 5 2021-05-01    341.         NA        NA  
+ 6 2021-06-01    350.         NA        NA  
+ 7 2021-07-01    355.        409.      -53.6
+ 8 2021-08-01    357.        410.      -53.2
+ 9 2021-09-01    360.        412.      -51.6
+10 2021-10-01    364.        413.      -48.8
+# ℹ 14 more rows</code></pre>
+</div>
+</div>
+<p>Gaaaahhhh! It’s the missing data created by the lags in the recipe for this model. It might be interesting to run this model again without those lags, but I’ll be happy just to know why there is no margin of error for this one. Interestingly, though, it looks like the STLM did a pretty good job with Detroit and New York.</p>
+<p>Now it’s on to forecasting the future.</p>
+</section>
+<section id="forecasting-future-hpi" class="level2">
+<h2 class="anchored" data-anchor-id="forecasting-future-hpi">Forecasting future HPI</h2>
+<p>The first step in forecasting is re-fitting the models to the full data set including the test portion. I’ll do this with <code>modeltime_nested_refit()</code> . I’ll immediately use that refit object to plot the forecasts.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>hpi_refit <span class="ot">&lt;-</span> hpi_best <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">modeltime_nested_refit</span>(<span class="at">control =</span> <span class="fu">control_nested_refit</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb24-3"><a href="#cb24-3"></a></span>
+<span id="cb24-4"><a href="#cb24-4"></a>hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="forecasting-with-modeltime-part-5_files/figure-html/refit-best-mods-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It looks like the missing values due to the lags prevented the ARIMA from generating forecasts, but the other forecasts look quite believable and much better than the forecasts made by the global process.</p>
+</section>
+<section id="comparing-forecasts-to-what-really-happened" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-forecasts-to-what-really-happened">Comparing forecasts to what really happened</h2>
+<p>I used data that ended in December 2022 because that’s the most recent data I had for some demographic variables. This isn’t a problem for the STLM since this model doesn’t rely on demographic covariates, but there is HPI data through September of 2023, and the forecasts go through December of 2023. So, here I’ll just get the HPI data for 2023 for Dallas, Detroit, and New York.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>case_shiller_ids <span class="ot">&lt;-</span> fredr<span class="sc">::</span><span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">filter</span>(</span>
+<span id="cb25-3"><a href="#cb25-3"></a>    <span class="fu">str_detect</span>(</span>
+<span id="cb25-4"><a href="#cb25-4"></a>      title,</span>
+<span id="cb25-5"><a href="#cb25-5"></a>      <span class="st">"TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>    ),</span>
+<span id="cb25-7"><a href="#cb25-7"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
+<span id="cb25-8"><a href="#cb25-8"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb25-10"><a href="#cb25-10"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb25-11"><a href="#cb25-11"></a>  <span class="fu">select</span>(city, id)</span>
+<span id="cb25-12"><a href="#cb25-12"></a></span>
+<span id="cb25-13"><a href="#cb25-13"></a><span class="co"># Get Case Shiller data for 2023</span></span>
+<span id="cb25-14"><a href="#cb25-14"></a>hpi_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
+<span id="cb25-15"><a href="#cb25-15"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-16"><a href="#cb25-16"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb25-17"><a href="#cb25-17"></a>      id,</span>
+<span id="cb25-18"><a href="#cb25-18"></a>      \(x) fredr<span class="sc">::</span><span class="fu">fredr</span>(</span>
+<span id="cb25-19"><a href="#cb25-19"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb25-20"><a href="#cb25-20"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2020-01-01"</span>),</span>
+<span id="cb25-21"><a href="#cb25-21"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb25-22"><a href="#cb25-22"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb25-23"><a href="#cb25-23"></a>      )</span>
+<span id="cb25-24"><a href="#cb25-24"></a>    )</span>
+<span id="cb25-25"><a href="#cb25-25"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb25-26"><a href="#cb25-26"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb25-27"><a href="#cb25-27"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb25-28"><a href="#cb25-28"></a>  <span class="fu">select</span>(city, date, <span class="at">hpi =</span> value)</span>
+<span id="cb25-29"><a href="#cb25-29"></a></span>
+<span id="cb25-30"><a href="#cb25-30"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb25-31"><a href="#cb25-31"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb25-32"><a href="#cb25-32"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-33"><a href="#cb25-33"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb25-34"><a href="#cb25-34"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="zstlgqxset" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zstlgqxset table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zstlgqxset thead, #zstlgqxset tbody, #zstlgqxset tfoot, #zstlgqxset tr, #zstlgqxset td, #zstlgqxset th {
+  border-style: none;
+}
+
+#zstlgqxset p {
+  margin: 0;
+  padding: 0;
+}
+
+#zstlgqxset .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zstlgqxset .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zstlgqxset .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zstlgqxset .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#zstlgqxset .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#zstlgqxset .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#zstlgqxset .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#zstlgqxset .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#zstlgqxset .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#zstlgqxset .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#zstlgqxset .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#zstlgqxset .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zstlgqxset .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zstlgqxset .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zstlgqxset .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zstlgqxset .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#zstlgqxset .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#zstlgqxset .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#zstlgqxset .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zstlgqxset .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#zstlgqxset .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zstlgqxset .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#zstlgqxset .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zstlgqxset .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zstlgqxset .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zstlgqxset .gt_left {
+  text-align: left;
+}
+
+#zstlgqxset .gt_center {
+  text-align: center;
+}
+
+#zstlgqxset .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zstlgqxset .gt_font_normal {
+  font-weight: normal;
+}
+
+#zstlgqxset .gt_font_bold {
+  font-weight: bold;
+}
+
+#zstlgqxset .gt_font_italic {
+  font-style: italic;
+}
+
+#zstlgqxset .gt_super {
+  font-size: 65%;
+}
+
+#zstlgqxset .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#zstlgqxset .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#zstlgqxset .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#zstlgqxset .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#zstlgqxset .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#zstlgqxset .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#zstlgqxset .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="date" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">date</th>
+<th id="Dallas" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">Dallas</th>
+<th id="New York" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">New York</th>
+<th id="Detroit" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">Detroit</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_right" headers="date">2023-01-01</td>
+<td class="gt_row gt_right" headers="Dallas">281.7092</td>
+<td class="gt_row gt_right" headers="New York">272.8493</td>
+<td class="gt_row gt_right" headers="Detroit">165.3712</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="date">2023-02-01</td>
+<td class="gt_row gt_right" headers="Dallas">281.6864</td>
+<td class="gt_row gt_right" headers="New York">271.9243</td>
+<td class="gt_row gt_right" headers="Detroit">165.0817</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="date">2023-03-01</td>
+<td class="gt_row gt_right" headers="Dallas">284.7053</td>
+<td class="gt_row gt_right" headers="New York">274.9276</td>
+<td class="gt_row gt_right" headers="Detroit">168.7419</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="date">2023-04-01</td>
+<td class="gt_row gt_right" headers="Dallas">288.6548</td>
+<td class="gt_row gt_right" headers="New York">278.5348</td>
+<td class="gt_row gt_right" headers="Detroit">172.7052</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="date">2023-05-01</td>
+<td class="gt_row gt_right" headers="Dallas">293.1761</td>
+<td class="gt_row gt_right" headers="New York">283.2171</td>
+<td class="gt_row gt_right" headers="Detroit">176.2015</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="date">2023-06-01</td>
+<td class="gt_row gt_right" headers="Dallas">295.2387</td>
+<td class="gt_row gt_right" headers="New York">286.5359</td>
+<td class="gt_row gt_right" headers="Detroit">177.9996</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="date">2023-07-01</td>
+<td class="gt_row gt_right" headers="Dallas">296.1252</td>
+<td class="gt_row gt_right" headers="New York">289.0024</td>
+<td class="gt_row gt_right" headers="Detroit">179.2959</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="date">2023-08-01</td>
+<td class="gt_row gt_right" headers="Dallas">295.6140</td>
+<td class="gt_row gt_right" headers="New York">290.5704</td>
+<td class="gt_row gt_right" headers="Detroit">180.7211</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="date">2023-09-01</td>
+<td class="gt_row gt_right" headers="Dallas">295.2280</td>
+<td class="gt_row gt_right" headers="New York">292.3354</td>
+<td class="gt_row gt_right" headers="Detroit">181.9622</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="date">2023-10-01</td>
+<td class="gt_row gt_right" headers="Dallas">294.2782</td>
+<td class="gt_row gt_right" headers="New York">293.4502</td>
+<td class="gt_row gt_right" headers="Detroit">182.6364</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="date">2023-11-01</td>
+<td class="gt_row gt_right" headers="Dallas">292.4071</td>
+<td class="gt_row gt_right" headers="New York">294.2285</td>
+<td class="gt_row gt_right" headers="Detroit">181.8668</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Now I can make a table of accuracy statistics for these series.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb26-3"><a href="#cb26-3"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>      <span class="fu">filter</span>(<span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key),</span>
+<span id="cb26-9"><a href="#cb26-9"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">".index"</span>)</span>
+<span id="cb26-10"><a href="#cb26-10"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-11"><a href="#cb26-11"></a>  <span class="fu">group_nest</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb26-12"><a href="#cb26-12"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-13"><a href="#cb26-13"></a>    <span class="at">smape =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb26-14"><a href="#cb26-14"></a>      data,</span>
+<span id="cb26-15"><a href="#cb26-15"></a>      \(x) <span class="fu">smape</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb26-16"><a href="#cb26-16"></a>    ),</span>
+<span id="cb26-17"><a href="#cb26-17"></a>    <span class="at">rmse =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb26-18"><a href="#cb26-18"></a>      data,</span>
+<span id="cb26-19"><a href="#cb26-19"></a>      \(x) <span class="fu">rmse</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb26-20"><a href="#cb26-20"></a>    ),</span>
+<span id="cb26-21"><a href="#cb26-21"></a>    <span class="at">rsq =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb26-22"><a href="#cb26-22"></a>      data,</span>
+<span id="cb26-23"><a href="#cb26-23"></a>      \(x) <span class="fu">rsq</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb26-24"><a href="#cb26-24"></a>    )</span>
+<span id="cb26-25"><a href="#cb26-25"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-26"><a href="#cb26-26"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
+<span id="cb26-27"><a href="#cb26-27"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-28"><a href="#cb26-28"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-29"><a href="#cb26-29"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fuwndwsuuz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fuwndwsuuz table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#fuwndwsuuz thead, #fuwndwsuuz tbody, #fuwndwsuuz tfoot, #fuwndwsuuz tr, #fuwndwsuuz td, #fuwndwsuuz th {
+  border-style: none;
+}
+
+#fuwndwsuuz p {
+  margin: 0;
+  padding: 0;
+}
+
+#fuwndwsuuz .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#fuwndwsuuz .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#fuwndwsuuz .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#fuwndwsuuz .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#fuwndwsuuz .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#fuwndwsuuz .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#fuwndwsuuz .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#fuwndwsuuz .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#fuwndwsuuz .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#fuwndwsuuz .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#fuwndwsuuz .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#fuwndwsuuz .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#fuwndwsuuz .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#fuwndwsuuz .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#fuwndwsuuz .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fuwndwsuuz .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#fuwndwsuuz .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#fuwndwsuuz .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#fuwndwsuuz .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fuwndwsuuz .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#fuwndwsuuz .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fuwndwsuuz .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#fuwndwsuuz .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fuwndwsuuz .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#fuwndwsuuz .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fuwndwsuuz .gt_left {
+  text-align: left;
+}
+
+#fuwndwsuuz .gt_center {
+  text-align: center;
+}
+
+#fuwndwsuuz .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#fuwndwsuuz .gt_font_normal {
+  font-weight: normal;
+}
+
+#fuwndwsuuz .gt_font_bold {
+  font-weight: bold;
+}
+
+#fuwndwsuuz .gt_font_italic {
+  font-style: italic;
+}
+
+#fuwndwsuuz .gt_super {
+  font-size: 65%;
+}
+
+#fuwndwsuuz .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#fuwndwsuuz .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#fuwndwsuuz .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#fuwndwsuuz .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#fuwndwsuuz .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#fuwndwsuuz .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#fuwndwsuuz .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="city" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">city</th>
+<th id="smape" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">smape</th>
+<th id="rmse" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">rmse</th>
+<th id="rsq" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold; border-top-width: 2px; border-top-style: solid; border-top-color: #000000; border-bottom-width: 2px; border-bottom-style: solid; border-bottom-color: #000000" scope="col">rsq</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="city">Dallas</td>
+<td class="gt_row gt_right" headers="smape">3.522232</td>
+<td class="gt_row gt_right" headers="rmse">13.336181</td>
+<td class="gt_row gt_right" headers="rsq">0.0272001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="city">Detroit</td>
+<td class="gt_row gt_right" headers="smape">5.161485</td>
+<td class="gt_row gt_right" headers="rmse">10.526957</td>
+<td class="gt_row gt_right" headers="rsq">0.2394261</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="city">New York</td>
+<td class="gt_row gt_right" headers="smape">1.658322</td>
+<td class="gt_row gt_right" headers="rmse">5.643017</td>
+<td class="gt_row gt_right" headers="rsq">0.9973690</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>These are some pretty low (good) values of SMAPE. Let’s see what these look like in plots.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">mutate</span>(<span class="at">model_name =</span> <span class="st">"ACTUAL"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">rename</span>(<span class="at">.value =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb27-5"><a href="#cb27-5"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>, <span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-8"><a href="#cb27-8"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb27-9"><a href="#cb27-9"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key) <span class="sc">|&gt;</span></span>
+<span id="cb27-10"><a href="#cb27-10"></a>      <span class="fu">rename</span>(<span class="at">date =</span> .index)</span>
+<span id="cb27-11"><a href="#cb27-11"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb27-12"><a href="#cb27-12"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-13"><a href="#cb27-13"></a>    <span class="at">model_name =</span> <span class="fu">fct_relevel</span>(model_name, <span class="st">"ACTUAL"</span>),</span>
+<span id="cb27-14"><a href="#cb27-14"></a>    <span class="at">lwidth =</span> <span class="fu">if_else</span>(model_name <span class="sc">%in%</span> <span class="st">"ACTUAL"</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb27-15"><a href="#cb27-15"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb27-16"><a href="#cb27-16"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">group =</span> model_name, <span class="at">color =</span> model_name)) <span class="sc">+</span></span>
+<span id="cb27-17"><a href="#cb27-17"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .value, <span class="at">linewidth =</span> lwidth)) <span class="sc">+</span></span>
+<span id="cb27-18"><a href="#cb27-18"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .conf_lo, <span class="at">ymax =</span> .conf_hi), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb27-19"><a href="#cb27-19"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal) <span class="sc">+</span></span>
+<span id="cb27-20"><a href="#cb27-20"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb27-21"><a href="#cb27-21"></a>  <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb27-22"><a href="#cb27-22"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> city, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb27-23"><a href="#cb27-23"></a>  <span class="fu">labs</span>(</span>
+<span id="cb27-24"><a href="#cb27-24"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb27-25"><a href="#cb27-25"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb27-26"><a href="#cb27-26"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb27-27"><a href="#cb27-27"></a>    <span class="at">title =</span> <span class="st">"Forecasts vs. Actual Data"</span></span>
+<span id="cb27-28"><a href="#cb27-28"></a>  ) <span class="sc">+</span></span>
+<span id="cb27-29"><a href="#cb27-29"></a>  <span class="fu">guides</span>(<span class="at">linewidth =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb27-30"><a href="#cb27-30"></a>  theme_timetk <span class="sc">+</span></span>
+<span id="cb27-31"><a href="#cb27-31"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="forecasting-with-modeltime-part-5_files/figure-html/hpi2023-forecast-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not too bad! All three forecasts look like they were very close in the first few months of the forecast period, but started to underestimate later on.</p>
+<p>This ends the series of planned posts on using <a href="https://business-science.github.io/modeltime/index.html">modeltime</a> with R. All in all this is a great package with all sorts of goodies for forecasting time series.</p>
+
+
+<!-- -->
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-modeltime" class="csl-entry" role="listitem">
+Dancho, Matt. 2023. <span>“Modeltime: The Tidymodels Extension for Time Series Modeling.”</span> <a href="https://CRAN.R-project.org/package=modeltime">https://CRAN.R-project.org/package=modeltime</a>.
+</div>
+<div id="ref-gt" class="csl-entry" role="listitem">
+Iannone, Richard, Joe Cheng, Barret Schloerke, Ellis Hughes, Alexandra Lauer, and JooYoung Seo. 2024. <span>“Gt: Easily Create Presentation-Ready Display Tables.”</span> <a href="https://CRAN.R-project.org/package=gt">https://CRAN.R-project.org/package=gt</a>.
+</div>
+<div id="ref-tidymodels" class="csl-entry" role="listitem">
+Kuhn, Max, and Hadley Wickham. 2020. <span>“Tidymodels: A Collection of Packages for Modeling and Machine Learning Using Tidyverse Principles.”</span> <a href="https://www.tidymodels.org">https://www.tidymodels.org</a>.
+</div>
+<div id="ref-parallel" class="csl-entry" role="listitem">
+R Core Team. 2023. <span>“R: A Language and Environment for Statistical Computing.”</span> <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-tidyverse" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the <span></span>Tidyverse<span></span>”</span> 4: 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("^(?:http:|https:)\/\/arcenis-r\.github\.io\/ajr-portfolio");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+          // default icon
+          link.classList.add("external");
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+      for (let i=0; i<annoteTargets.length; i++) {
+        const annoteTarget = annoteTargets[i];
+        const targetCell = annoteTarget.getAttribute("data-target-cell");
+        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+        const contentFn = () => {
+          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          if (content) {
+            const tipContent = content.cloneNode(true);
+            tipContent.classList.add("code-annotation-tip-content");
+            return tipContent.outerHTML;
+          }
+        }
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          onShow: (instance) => {
+            selectCodeLines(instance.reference);
+            instance.reference.classList.add('code-annotation-active');
+            window.tippy.hideAll();
+          },
+          onHide: (instance) => {
+            unselectCodeLines();
+            instance.reference.classList.remove('code-annotation-active');
+          },
+          maxWidth: 300,
+          delay: [50, 0],
+          duration: [200, 0],
+          offset: [5, 10],
+          arrow: true,
+          trigger: 'click',
+          appendTo: function(el) {
+            return el.parentElement.parentElement.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'quarto',
+          placement: 'right',
+          positionFixed: true,
+          popperOptions: {
+            modifiers: [
+            {
+              name: 'flip',
+              options: {
+                flipVariations: false, // true by default
+                allowedAutoPlacements: ['right'],
+                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                mainAxis: false,
+                altAxis: false
+              }
+            }
+            ]        
+          }      
+        };
+        window.tippy(annoteTarget, config); 
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="arcenis-r/ajr-portfolio" data-repo-id="MDEwOlJlcG9zaXRvcnkxNzg3MDY3MTM=" data-category="General" data-category-id="DIC_kwDOCqbZGc4CdJXz" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
+</script>
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark"><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb28" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb28-1"><a href="#cb28-1"></a><span class="co">---</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="an">title:</span><span class="co"> "Forecasting with {modeltime} - Part V"</span></span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="an">subtitle:</span><span class="co"> "Selecting the best model for each city"</span></span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="an">author:</span><span class="co"> "Arcenis Rojas"</span></span>
+<span id="cb28-5"><a href="#cb28-5"></a><span class="an">date:</span><span class="co"> "2/22/2024"</span></span>
+<span id="cb28-6"><a href="#cb28-6"></a><span class="an">bibliography:</span><span class="co"> references.bib</span></span>
+<span id="cb28-7"><a href="#cb28-7"></a><span class="an">categories:</span></span>
+<span id="cb28-8"><a href="#cb28-8"></a><span class="co">  - Time Series</span></span>
+<span id="cb28-9"><a href="#cb28-9"></a><span class="co">  - Forecasting</span></span>
+<span id="cb28-10"><a href="#cb28-10"></a><span class="co">  - Machine Learning</span></span>
+<span id="cb28-11"><a href="#cb28-11"></a><span class="co">---</span></span>
+<span id="cb28-12"><a href="#cb28-12"></a></span>
+<span id="cb28-13"><a href="#cb28-13"></a>This is the final (planned) post for this series on the <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/index.html)</span> <span class="co">[</span><span class="ot">@modeltime</span><span class="co">]</span> package I will identify the best model to forecast the Case-Shiller Home Price Index using an iterative modeling process. The models to work with will be the 11 models that I identified through the global modeling process in <span class="co">[</span><span class="ot">Forecasting with {modeltime} - Part IV</span><span class="co">](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.qmd)</span>. Additionally I'll be using <span class="co">[</span><span class="ot">parallel</span><span class="co">](https://rdocumentation.org/packages/parallel/versions/3.6.2)</span> <span class="co">[</span><span class="ot">@parallel</span><span class="co">]</span> for parallel processing, <span class="co">[</span><span class="ot">tidymodels</span><span class="co">](https://www.tidymodels.org/)</span> <span class="co">[</span><span class="ot">@tidymodels</span><span class="co">]</span> for a modeling framework, <span class="co">[</span><span class="ot">tidyverse</span><span class="co">](https://www.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@tidyverse</span><span class="co">]</span> for data wrangling and visualization, and <span class="co">[</span><span class="ot">gt</span><span class="co">](#0)</span> <span class="co">[</span><span class="ot">@gt</span><span class="co">]</span> for table output.</span>
+<span id="cb28-14"><a href="#cb28-14"></a></span>
+<span id="cb28-17"><a href="#cb28-17"></a><span class="in">```{r}</span></span>
+<span id="cb28-18"><a href="#cb28-18"></a><span class="co">#| label: load-packages</span></span>
+<span id="cb28-19"><a href="#cb28-19"></a></span>
+<span id="cb28-20"><a href="#cb28-20"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb28-21"><a href="#cb28-21"></a><span class="fu">library</span>(timetk)</span>
+<span id="cb28-22"><a href="#cb28-22"></a><span class="fu">library</span>(modeltime)</span>
+<span id="cb28-23"><a href="#cb28-23"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb28-24"><a href="#cb28-24"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb28-25"><a href="#cb28-25"></a><span class="fu">library</span>(gt)</span>
+<span id="cb28-26"><a href="#cb28-26"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb28-27"><a href="#cb28-27"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"lag"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb28-28"><a href="#cb28-28"></a><span class="fu">tidymodels_prefer</span>()</span>
+<span id="cb28-29"><a href="#cb28-29"></a></span>
+<span id="cb28-30"><a href="#cb28-30"></a><span class="in">```</span></span>
+<span id="cb28-31"><a href="#cb28-31"></a></span>
+<span id="cb28-34"><a href="#cb28-34"></a><span class="in">```{r}</span></span>
+<span id="cb28-35"><a href="#cb28-35"></a><span class="co">#| label: import-data</span></span>
+<span id="cb28-36"><a href="#cb28-36"></a><span class="co">#| include: false</span></span>
+<span id="cb28-37"><a href="#cb28-37"></a></span>
+<span id="cb28-38"><a href="#cb28-38"></a>modEnv <span class="ot">&lt;-</span> <span class="fu">new.env</span>()</span>
+<span id="cb28-39"><a href="#cb28-39"></a><span class="fu">source</span>(<span class="st">"build-global-models.R"</span>, <span class="at">local =</span> modEnv)</span>
+<span id="cb28-40"><a href="#cb28-40"></a><span class="fu">source</span>(<span class="st">"../_common-resources/gt-bold-head.R"</span>)</span>
+<span id="cb28-41"><a href="#cb28-41"></a></span>
+<span id="cb28-42"><a href="#cb28-42"></a>theme_timetk <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"../_common-resources/theme-timetk.Rds"</span>)</span>
+<span id="cb28-43"><a href="#cb28-43"></a></span>
+<span id="cb28-44"><a href="#cb28-44"></a>econ_data <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>econ_data</span>
+<span id="cb28-45"><a href="#cb28-45"></a>part4_mods <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>part4_mods</span>
+<span id="cb28-46"><a href="#cb28-46"></a>hpi_global_wfset <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>hpi_wfset</span>
+<span id="cb28-47"><a href="#cb28-47"></a><span class="fu">rm</span>(modEnv)</span>
+<span id="cb28-48"><a href="#cb28-48"></a></span>
+<span id="cb28-49"><a href="#cb28-49"></a><span class="in">```</span></span>
+<span id="cb28-50"><a href="#cb28-50"></a></span>
+<span id="cb28-51"><a href="#cb28-51"></a>Below is a look at the names of the model specifications from the last post.</span>
+<span id="cb28-52"><a href="#cb28-52"></a></span>
+<span id="cb28-55"><a href="#cb28-55"></a><span class="in">```{r}</span></span>
+<span id="cb28-56"><a href="#cb28-56"></a><span class="co">#| label: show-mod-names</span></span>
+<span id="cb28-57"><a href="#cb28-57"></a></span>
+<span id="cb28-58"><a href="#cb28-58"></a>part4_mods <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span>
+<span id="cb28-59"><a href="#cb28-59"></a></span>
+<span id="cb28-60"><a href="#cb28-60"></a><span class="in">```</span></span>
+<span id="cb28-61"><a href="#cb28-61"></a></span>
+<span id="cb28-62"><a href="#cb28-62"></a>And this is what the <span class="in">`workflowset`</span> object looked like.</span>
+<span id="cb28-63"><a href="#cb28-63"></a></span>
+<span id="cb28-66"><a href="#cb28-66"></a><span class="in">```{r}</span></span>
+<span id="cb28-67"><a href="#cb28-67"></a><span class="co">#| label: show-wfset</span></span>
+<span id="cb28-68"><a href="#cb28-68"></a></span>
+<span id="cb28-69"><a href="#cb28-69"></a>hpi_global_wfset</span>
+<span id="cb28-70"><a href="#cb28-70"></a></span>
+<span id="cb28-71"><a href="#cb28-71"></a><span class="in">```</span></span>
+<span id="cb28-72"><a href="#cb28-72"></a></span>
+<span id="cb28-73"><a href="#cb28-73"></a><span class="fu">## Filtering workflows</span></span>
+<span id="cb28-74"><a href="#cb28-74"></a></span>
+<span id="cb28-75"><a href="#cb28-75"></a>I'll first filter the set of workflows to the 11 that I want to keep.</span>
+<span id="cb28-76"><a href="#cb28-76"></a></span>
+<span id="cb28-79"><a href="#cb28-79"></a><span class="in">```{r}</span></span>
+<span id="cb28-80"><a href="#cb28-80"></a><span class="co">#| label: filter-wflows </span></span>
+<span id="cb28-81"><a href="#cb28-81"></a></span>
+<span id="cb28-82"><a href="#cb28-82"></a>mod_ids <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(part4_mods<span class="sc">$</span>.model_desc)</span>
+<span id="cb28-83"><a href="#cb28-83"></a></span>
+<span id="cb28-84"><a href="#cb28-84"></a>hpi_global_wfset <span class="ot">&lt;-</span> hpi_global_wfset <span class="sc">|&gt;</span></span>
+<span id="cb28-85"><a href="#cb28-85"></a>  <span class="fu">filter</span>(wflow_id <span class="sc">%in%</span> mod_ids)</span>
+<span id="cb28-86"><a href="#cb28-86"></a></span>
+<span id="cb28-87"><a href="#cb28-87"></a><span class="in">```</span></span>
+<span id="cb28-88"><a href="#cb28-88"></a></span>
+<span id="cb28-89"><a href="#cb28-89"></a>These are all of the necessary workflows including recipes and model specifications.</span>
+<span id="cb28-90"><a href="#cb28-90"></a></span>
+<span id="cb28-91"><a href="#cb28-91"></a><span class="fu">## Splitting the data</span></span>
+<span id="cb28-92"><a href="#cb28-92"></a></span>
+<span id="cb28-93"><a href="#cb28-93"></a>Next up is creating the data split object. This is a different set of functions than what I used to split the data for the global modeling process. In this workflow the future dates get added for each city up front.</span>
+<span id="cb28-94"><a href="#cb28-94"></a></span>
+<span id="cb28-97"><a href="#cb28-97"></a><span class="in">```{r}</span></span>
+<span id="cb28-98"><a href="#cb28-98"></a><span class="co">#| label: split-data</span></span>
+<span id="cb28-99"><a href="#cb28-99"></a></span>
+<span id="cb28-100"><a href="#cb28-100"></a>econ_splits <span class="ot">&lt;-</span> econ_data <span class="sc">|&gt;</span></span>
+<span id="cb28-101"><a href="#cb28-101"></a>  <span class="fu">extend_timeseries</span>(</span>
+<span id="cb28-102"><a href="#cb28-102"></a>    <span class="at">.id_var =</span> city,</span>
+<span id="cb28-103"><a href="#cb28-103"></a>    <span class="at">.date_var =</span> date,</span>
+<span id="cb28-104"><a href="#cb28-104"></a>    <span class="at">.length_future =</span> <span class="dv">12</span></span>
+<span id="cb28-105"><a href="#cb28-105"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-106"><a href="#cb28-106"></a>  <span class="fu">nest_timeseries</span>(</span>
+<span id="cb28-107"><a href="#cb28-107"></a>    <span class="at">.id_var =</span> city,</span>
+<span id="cb28-108"><a href="#cb28-108"></a>    <span class="at">.length_future =</span> <span class="dv">12</span>,</span>
+<span id="cb28-109"><a href="#cb28-109"></a>    <span class="at">.length_actual =</span> <span class="dv">17</span> <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb28-110"><a href="#cb28-110"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-111"><a href="#cb28-111"></a>  <span class="fu">split_nested_timeseries</span>(<span class="at">.length_test =</span> <span class="dv">24</span>)</span>
+<span id="cb28-112"><a href="#cb28-112"></a></span>
+<span id="cb28-113"><a href="#cb28-113"></a>econ_splits</span>
+<span id="cb28-114"><a href="#cb28-114"></a><span class="in">```</span></span>
+<span id="cb28-115"><a href="#cb28-115"></a></span>
+<span id="cb28-116"><a href="#cb28-116"></a>With these two objects prepared I can now fit the models iteratively for each city.</span>
+<span id="cb28-117"><a href="#cb28-117"></a></span>
+<span id="cb28-118"><a href="#cb28-118"></a><span class="fu">## Fit models</span></span>
+<span id="cb28-119"><a href="#cb28-119"></a></span>
+<span id="cb28-120"><a href="#cb28-120"></a>I'll first prepare a parallel processing cluster and set a random seed for each node then fit the models.</span>
+<span id="cb28-121"><a href="#cb28-121"></a></span>
+<span id="cb28-122"><a href="#cb28-122"></a>::: callout-note</span>
+<span id="cb28-123"><a href="#cb28-123"></a><span class="in">`modeltime_nested_fit()`</span> requires that models be specified individually rather than as a <span class="in">`workflowset`</span> object.</span>
+<span id="cb28-124"><a href="#cb28-124"></a>:::</span>
+<span id="cb28-125"><a href="#cb28-125"></a></span>
+<span id="cb28-128"><a href="#cb28-128"></a><span class="in">```{r}</span></span>
+<span id="cb28-129"><a href="#cb28-129"></a><span class="co">#| label: fit-models</span></span>
+<span id="cb28-130"><a href="#cb28-130"></a><span class="co">#| cache: true</span></span>
+<span id="cb28-131"><a href="#cb28-131"></a></span>
+<span id="cb28-132"><a href="#cb28-132"></a>cl <span class="ot">&lt;-</span> <span class="fu">makePSOCKcluster</span>(<span class="fu">nrow</span>(part4_mods))</span>
+<span id="cb28-133"><a href="#cb28-133"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
+<span id="cb28-134"><a href="#cb28-134"></a><span class="fu">invisible</span>(</span>
+<span id="cb28-135"><a href="#cb28-135"></a>  <span class="fu">clusterCall</span>(cl, <span class="cf">function</span>(x) <span class="fu">.libPaths</span>(x), <span class="fu">.libPaths</span>())</span>
+<span id="cb28-136"><a href="#cb28-136"></a>)</span>
+<span id="cb28-137"><a href="#cb28-137"></a><span class="fu">print</span>(cl)</span>
+<span id="cb28-138"><a href="#cb28-138"></a><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">500</span>))</span>
+<span id="cb28-139"><a href="#cb28-139"></a></span>
+<span id="cb28-140"><a href="#cb28-140"></a>hpi_wflowset <span class="ot">&lt;-</span> <span class="fu">modeltime_nested_fit</span>(</span>
+<span id="cb28-141"><a href="#cb28-141"></a>  econ_splits,</span>
+<span id="cb28-142"><a href="#cb28-142"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">1</span>]),</span>
+<span id="cb28-143"><a href="#cb28-143"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">2</span>]),</span>
+<span id="cb28-144"><a href="#cb28-144"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">3</span>]),</span>
+<span id="cb28-145"><a href="#cb28-145"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">4</span>]),</span>
+<span id="cb28-146"><a href="#cb28-146"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">5</span>]),</span>
+<span id="cb28-147"><a href="#cb28-147"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">6</span>]),</span>
+<span id="cb28-148"><a href="#cb28-148"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">7</span>]),</span>
+<span id="cb28-149"><a href="#cb28-149"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">8</span>]),</span>
+<span id="cb28-150"><a href="#cb28-150"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">9</span>]),</span>
+<span id="cb28-151"><a href="#cb28-151"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">10</span>]),</span>
+<span id="cb28-152"><a href="#cb28-152"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">11</span>]),</span>
+<span id="cb28-153"><a href="#cb28-153"></a>  <span class="at">control =</span> <span class="fu">control_nested_fit</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">allow_par =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-154"><a href="#cb28-154"></a>)</span>
+<span id="cb28-155"><a href="#cb28-155"></a></span>
+<span id="cb28-156"><a href="#cb28-156"></a><span class="fu">stopCluster</span>(cl)</span>
+<span id="cb28-157"><a href="#cb28-157"></a><span class="fu">rm</span>(cl)</span>
+<span id="cb28-158"><a href="#cb28-158"></a></span>
+<span id="cb28-159"><a href="#cb28-159"></a>hpi_wflowset</span>
+<span id="cb28-160"><a href="#cb28-160"></a><span class="in">```</span></span>
+<span id="cb28-161"><a href="#cb28-161"></a></span>
+<span id="cb28-162"><a href="#cb28-162"></a>Notice that this object is grouped by city whereas the <span class="co">[</span><span class="ot">corresponding object for the global modeling process</span><span class="co">](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html#fitting-the-models)</span>{target="_blank"} is listed by model. This happens because <span class="in">`modeltime_nested_fit()`</span> calls a split object that has the data grouped by ID already. All of the functions in the <span class="co">[</span><span class="ot">modeltime Nested Forecasting</span><span class="co">](https://business-science.github.io/modeltime/articles/nested-forecasting.html)</span> workflow geared toward doing things at the level of the ID variable, which is "city" in this case. Each row contains a <span class="in">`mdl_time_tbl`</span> object in the ".modeltime_tables" column for each row which has one row for each model that was fit to the data of the ID in that row. This <span class="in">`mdl_time_tbl`</span> object contains calibration data, which gets created during the iterative modeling process. Below is an example.</span>
+<span id="cb28-163"><a href="#cb28-163"></a></span>
+<span id="cb28-166"><a href="#cb28-166"></a><span class="in">```{r}</span></span>
+<span id="cb28-167"><a href="#cb28-167"></a><span class="co">#| label: show-mdl-time-tbl</span></span>
+<span id="cb28-168"><a href="#cb28-168"></a></span>
+<span id="cb28-169"><a href="#cb28-169"></a>hpi_wflowset <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span>
+<span id="cb28-170"><a href="#cb28-170"></a></span>
+<span id="cb28-171"><a href="#cb28-171"></a><span class="in">```</span></span>
+<span id="cb28-172"><a href="#cb28-172"></a></span>
+<span id="cb28-173"><a href="#cb28-173"></a><span class="fu">## Selecting the best models</span></span>
+<span id="cb28-174"><a href="#cb28-174"></a></span>
+<span id="cb28-175"><a href="#cb28-175"></a><span class="in">`{modeltime}`</span> has the <span class="in">`modeltime_nested_select_best()`</span> for selecting the best model for each ID in a nested model table. It requires the specification of a metric for determining which model is "best". As before, I'll use the Scaled Mean Average Percent Error (SMAPE).</span>
+<span id="cb28-176"><a href="#cb28-176"></a></span>
+<span id="cb28-179"><a href="#cb28-179"></a><span class="in">```{r}</span></span>
+<span id="cb28-180"><a href="#cb28-180"></a><span class="co">#| label: select-best-mods</span></span>
+<span id="cb28-181"><a href="#cb28-181"></a></span>
+<span id="cb28-182"><a href="#cb28-182"></a>hpi_best <span class="ot">&lt;-</span> hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb28-183"><a href="#cb28-183"></a>  <span class="fu">modeltime_nested_select_best</span>(</span>
+<span id="cb28-184"><a href="#cb28-184"></a>    <span class="at">metric =</span> <span class="st">"smape"</span>,</span>
+<span id="cb28-185"><a href="#cb28-185"></a>    <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb28-186"><a href="#cb28-186"></a>    <span class="at">filter_test_forecasts =</span> <span class="cn">TRUE</span></span>
+<span id="cb28-187"><a href="#cb28-187"></a>  )</span>
+<span id="cb28-188"><a href="#cb28-188"></a></span>
+<span id="cb28-189"><a href="#cb28-189"></a>hpi_best</span>
+<span id="cb28-190"><a href="#cb28-190"></a><span class="in">```</span></span>
+<span id="cb28-191"><a href="#cb28-191"></a></span>
+<span id="cb28-192"><a href="#cb28-192"></a>Notice that after selecting the best model it's only the ".modeltime_tables" column that changes. It now contains a table with one single row corresponding to the model that yielded the best value of the selected metric.</span>
+<span id="cb28-193"><a href="#cb28-193"></a></span>
+<span id="cb28-194"><a href="#cb28-194"></a><span class="fu">## View accuracy best models</span></span>
+<span id="cb28-195"><a href="#cb28-195"></a></span>
+<span id="cb28-196"><a href="#cb28-196"></a>One gets the accuracy from a nested <span class="in">`modeltime`</span> table by using <span class="in">`extract_nested_test_accuracy()`</span> . Interestingly, this function shows the accuracy of all models even if it's run with the table of the "best" models. So below I'll use <span class="in">`group_by()`</span> to get the accuracy for the best model for each city.</span>
+<span id="cb28-197"><a href="#cb28-197"></a></span>
+<span id="cb28-200"><a href="#cb28-200"></a><span class="in">```{r}</span></span>
+<span id="cb28-201"><a href="#cb28-201"></a><span class="co">#| label: tbl-show-acc</span></span>
+<span id="cb28-202"><a href="#cb28-202"></a></span>
+<span id="cb28-203"><a href="#cb28-203"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb28-204"><a href="#cb28-204"></a>  <span class="fu">extract_nested_test_accuracy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-205"><a href="#cb28-205"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb28-206"><a href="#cb28-206"></a>  <span class="fu">slice_min</span>(smape, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-207"><a href="#cb28-207"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-208"><a href="#cb28-208"></a>  <span class="fu">table_modeltime_accuracy</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-209"><a href="#cb28-209"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb28-210"><a href="#cb28-210"></a></span>
+<span id="cb28-211"><a href="#cb28-211"></a><span class="in">```</span></span>
+<span id="cb28-212"><a href="#cb28-212"></a></span>
+<span id="cb28-213"><a href="#cb28-213"></a>Next are the forecasts against the test data.</span>
+<span id="cb28-214"><a href="#cb28-214"></a></span>
+<span id="cb28-217"><a href="#cb28-217"></a><span class="in">```{r}</span></span>
+<span id="cb28-218"><a href="#cb28-218"></a><span class="co">#| label: fig-test-forecasts</span></span>
+<span id="cb28-219"><a href="#cb28-219"></a></span>
+<span id="cb28-220"><a href="#cb28-220"></a>fcst_pal <span class="ot">&lt;-</span> <span class="fu">c</span>(                                                     <span class="co"># &lt;1&gt;</span></span>
+<span id="cb28-221"><a href="#cb28-221"></a>  <span class="st">"#2c3e50"</span>, <span class="st">"#FF0000"</span>, <span class="st">"#00FFFF"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#00FF00"</span>,</span>
+<span id="cb28-222"><a href="#cb28-222"></a>  <span class="st">"#FF00FF"</span>, <span class="st">"#FF8000"</span>, <span class="st">"#0080FF"</span>, <span class="st">"#80FF00"</span>, <span class="st">"#8000FF"</span>, <span class="st">"#00FF80"</span>,</span>
+<span id="cb28-223"><a href="#cb28-223"></a>  <span class="st">"#FF0080"</span></span>
+<span id="cb28-224"><a href="#cb28-224"></a>)</span>
+<span id="cb28-225"><a href="#cb28-225"></a></span>
+<span id="cb28-226"><a href="#cb28-226"></a>hpi_best <span class="sc">|&gt;</span></span>
+<span id="cb28-227"><a href="#cb28-227"></a>  <span class="fu">extract_nested_test_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-228"><a href="#cb28-228"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb28-229"><a href="#cb28-229"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb28-230"><a href="#cb28-230"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span>
+<span id="cb28-231"><a href="#cb28-231"></a></span>
+<span id="cb28-232"><a href="#cb28-232"></a><span class="in">```</span></span>
+<span id="cb28-233"><a href="#cb28-233"></a></span>
+<span id="cb28-234"><a href="#cb28-234"></a><span class="ss">1.  </span>Create a color palette for plotting.</span>
+<span id="cb28-235"><a href="#cb28-235"></a></span>
+<span id="cb28-236"><a href="#cb28-236"></a>For Dallas, Detroit, and New York the 11th model in the original workflow which is a Seasonal Decomposition ARIMA model and for San Diego it's the 6th model which is just called "REGRESSION". I'll show the table of model names here here with a "model_num" column indicating model number.</span>
+<span id="cb28-237"><a href="#cb28-237"></a></span>
+<span id="cb28-240"><a href="#cb28-240"></a><span class="in">```{r}</span></span>
+<span id="cb28-241"><a href="#cb28-241"></a>part4_mods <span class="sc">|&gt;</span></span>
+<span id="cb28-242"><a href="#cb28-242"></a>  <span class="fu">mutate</span>(<span class="at">model_num =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb28-243"><a href="#cb28-243"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-244"><a href="#cb28-244"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb28-245"><a href="#cb28-245"></a><span class="in">```</span></span>
+<span id="cb28-246"><a href="#cb28-246"></a></span>
+<span id="cb28-247"><a href="#cb28-247"></a>We can see that the 11th model is an STLM model and the 6th model is the first ARIMA specification with the "DEMOG" recipe (this is the one that included economic and demographic covariates).</span>
+<span id="cb28-248"><a href="#cb28-248"></a></span>
+<span id="cb28-249"><a href="#cb28-249"></a>The plot for San Diego does not include a margin of error and it's listed as having an error in the legend. This is something that can be traced to the calibration. First I'll extract the ".modeltime_tables".</span>
+<span id="cb28-250"><a href="#cb28-250"></a></span>
+<span id="cb28-253"><a href="#cb28-253"></a><span class="in">```{r}</span></span>
+<span id="cb28-254"><a href="#cb28-254"></a><span class="co">#| label: investigate-error1</span></span>
+<span id="cb28-255"><a href="#cb28-255"></a></span>
+<span id="cb28-256"><a href="#cb28-256"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb28-257"><a href="#cb28-257"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-258"><a href="#cb28-258"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span>
+<span id="cb28-259"><a href="#cb28-259"></a></span>
+<span id="cb28-260"><a href="#cb28-260"></a><span class="in">```</span></span>
+<span id="cb28-261"><a href="#cb28-261"></a></span>
+<span id="cb28-262"><a href="#cb28-262"></a>I can see that the 6th model does contain calibration data, so this isn't the problem. Now I'll extract the calibration data just for this model to see what's going on.</span>
+<span id="cb28-263"><a href="#cb28-263"></a></span>
+<span id="cb28-266"><a href="#cb28-266"></a><span class="in">```{r}</span></span>
+<span id="cb28-267"><a href="#cb28-267"></a><span class="co">#| label: investigate-error2</span></span>
+<span id="cb28-268"><a href="#cb28-268"></a></span>
+<span id="cb28-269"><a href="#cb28-269"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb28-270"><a href="#cb28-270"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-271"><a href="#cb28-271"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-272"><a href="#cb28-272"></a>  <span class="fu">filter</span>(.model_id <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-273"><a href="#cb28-273"></a>  <span class="fu">pluck</span>(<span class="st">".calibration_data"</span>, <span class="dv">1</span>)</span>
+<span id="cb28-274"><a href="#cb28-274"></a></span>
+<span id="cb28-275"><a href="#cb28-275"></a><span class="in">```</span></span>
+<span id="cb28-276"><a href="#cb28-276"></a></span>
+<span id="cb28-277"><a href="#cb28-277"></a>Gaaaahhhh! It's the missing data created by the lags in the recipe for this model. It might be interesting to run this model again without those lags, but I'll be happy just to know why there is no margin of error for this one. Interestingly, though, it looks like the STLM did a pretty good job with Detroit and New York.</span>
+<span id="cb28-278"><a href="#cb28-278"></a></span>
+<span id="cb28-279"><a href="#cb28-279"></a>Now it's on to forecasting the future.</span>
+<span id="cb28-280"><a href="#cb28-280"></a></span>
+<span id="cb28-281"><a href="#cb28-281"></a><span class="fu">## Forecasting future HPI</span></span>
+<span id="cb28-282"><a href="#cb28-282"></a></span>
+<span id="cb28-283"><a href="#cb28-283"></a>The first step in forecasting is re-fitting the models to the full data set including the test portion. I'll do this with <span class="in">`modeltime_nested_refit()`</span> . I'll immediately use that refit object to plot the forecasts.</span>
+<span id="cb28-284"><a href="#cb28-284"></a></span>
+<span id="cb28-287"><a href="#cb28-287"></a><span class="in">```{r}</span></span>
+<span id="cb28-288"><a href="#cb28-288"></a><span class="co">#| label: refit-best-mods</span></span>
+<span id="cb28-289"><a href="#cb28-289"></a></span>
+<span id="cb28-290"><a href="#cb28-290"></a>hpi_refit <span class="ot">&lt;-</span> hpi_best <span class="sc">|&gt;</span></span>
+<span id="cb28-291"><a href="#cb28-291"></a>  <span class="fu">modeltime_nested_refit</span>(<span class="at">control =</span> <span class="fu">control_nested_refit</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb28-292"><a href="#cb28-292"></a></span>
+<span id="cb28-293"><a href="#cb28-293"></a>hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb28-294"><a href="#cb28-294"></a>  <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-295"><a href="#cb28-295"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb28-296"><a href="#cb28-296"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb28-297"><a href="#cb28-297"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span>
+<span id="cb28-298"><a href="#cb28-298"></a></span>
+<span id="cb28-299"><a href="#cb28-299"></a><span class="in">```</span></span>
+<span id="cb28-300"><a href="#cb28-300"></a></span>
+<span id="cb28-301"><a href="#cb28-301"></a>It looks like the missing values due to the lags prevented the ARIMA from generating forecasts, but the other forecasts look quite believable and much better than the forecasts made by the global process.</span>
+<span id="cb28-302"><a href="#cb28-302"></a></span>
+<span id="cb28-303"><a href="#cb28-303"></a><span class="fu">## Comparing forecasts to what really happened</span></span>
+<span id="cb28-304"><a href="#cb28-304"></a></span>
+<span id="cb28-305"><a href="#cb28-305"></a>I used data that ended in December 2022 because that's the most recent data I had for some demographic variables. This isn't a problem for the STLM since this model doesn't rely on demographic covariates, but there is HPI data through September of 2023, and the forecasts go through December of 2023. So, here I'll just get the HPI data for 2023 for Dallas, Detroit, and New York.</span>
+<span id="cb28-306"><a href="#cb28-306"></a></span>
+<span id="cb28-309"><a href="#cb28-309"></a><span class="in">```{r}</span></span>
+<span id="cb28-310"><a href="#cb28-310"></a><span class="co">#| label: get-hpi2023-data</span></span>
+<span id="cb28-311"><a href="#cb28-311"></a><span class="co">#| cache: true</span></span>
+<span id="cb28-312"><a href="#cb28-312"></a></span>
+<span id="cb28-313"><a href="#cb28-313"></a>case_shiller_ids <span class="ot">&lt;-</span> fredr<span class="sc">::</span><span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-314"><a href="#cb28-314"></a>  <span class="fu">filter</span>(</span>
+<span id="cb28-315"><a href="#cb28-315"></a>    <span class="fu">str_detect</span>(</span>
+<span id="cb28-316"><a href="#cb28-316"></a>      title,</span>
+<span id="cb28-317"><a href="#cb28-317"></a>      <span class="st">"TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
+<span id="cb28-318"><a href="#cb28-318"></a>    ),</span>
+<span id="cb28-319"><a href="#cb28-319"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
+<span id="cb28-320"><a href="#cb28-320"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
+<span id="cb28-321"><a href="#cb28-321"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-322"><a href="#cb28-322"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb28-323"><a href="#cb28-323"></a>  <span class="fu">select</span>(city, id)</span>
+<span id="cb28-324"><a href="#cb28-324"></a></span>
+<span id="cb28-325"><a href="#cb28-325"></a><span class="co"># Get Case Shiller data for 2023</span></span>
+<span id="cb28-326"><a href="#cb28-326"></a>hpi_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
+<span id="cb28-327"><a href="#cb28-327"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-328"><a href="#cb28-328"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb28-329"><a href="#cb28-329"></a>      id,</span>
+<span id="cb28-330"><a href="#cb28-330"></a>      \(x) fredr<span class="sc">::</span><span class="fu">fredr</span>(</span>
+<span id="cb28-331"><a href="#cb28-331"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb28-332"><a href="#cb28-332"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2020-01-01"</span>),</span>
+<span id="cb28-333"><a href="#cb28-333"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb28-334"><a href="#cb28-334"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb28-335"><a href="#cb28-335"></a>      )</span>
+<span id="cb28-336"><a href="#cb28-336"></a>    )</span>
+<span id="cb28-337"><a href="#cb28-337"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-338"><a href="#cb28-338"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb28-339"><a href="#cb28-339"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb28-340"><a href="#cb28-340"></a>  <span class="fu">select</span>(city, date, <span class="at">hpi =</span> value)</span>
+<span id="cb28-341"><a href="#cb28-341"></a></span>
+<span id="cb28-342"><a href="#cb28-342"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb28-343"><a href="#cb28-343"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb28-344"><a href="#cb28-344"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-345"><a href="#cb28-345"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-346"><a href="#cb28-346"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb28-347"><a href="#cb28-347"></a></span>
+<span id="cb28-348"><a href="#cb28-348"></a><span class="in">```</span></span>
+<span id="cb28-349"><a href="#cb28-349"></a></span>
+<span id="cb28-350"><a href="#cb28-350"></a>Now I can make a table of accuracy statistics for these series.</span>
+<span id="cb28-351"><a href="#cb28-351"></a></span>
+<span id="cb28-354"><a href="#cb28-354"></a><span class="in">```{r}</span></span>
+<span id="cb28-355"><a href="#cb28-355"></a><span class="co">#| label: hpi2023-acc</span></span>
+<span id="cb28-356"><a href="#cb28-356"></a></span>
+<span id="cb28-357"><a href="#cb28-357"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb28-358"><a href="#cb28-358"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb28-359"><a href="#cb28-359"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb28-360"><a href="#cb28-360"></a>      <span class="fu">filter</span>(<span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-361"><a href="#cb28-361"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-362"><a href="#cb28-362"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-363"><a href="#cb28-363"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb28-364"><a href="#cb28-364"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key),</span>
+<span id="cb28-365"><a href="#cb28-365"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">".index"</span>)</span>
+<span id="cb28-366"><a href="#cb28-366"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-367"><a href="#cb28-367"></a>  <span class="fu">group_nest</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb28-368"><a href="#cb28-368"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-369"><a href="#cb28-369"></a>    <span class="at">smape =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb28-370"><a href="#cb28-370"></a>      data,</span>
+<span id="cb28-371"><a href="#cb28-371"></a>      \(x) <span class="fu">smape</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb28-372"><a href="#cb28-372"></a>    ),</span>
+<span id="cb28-373"><a href="#cb28-373"></a>    <span class="at">rmse =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb28-374"><a href="#cb28-374"></a>      data,</span>
+<span id="cb28-375"><a href="#cb28-375"></a>      \(x) <span class="fu">rmse</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb28-376"><a href="#cb28-376"></a>    ),</span>
+<span id="cb28-377"><a href="#cb28-377"></a>    <span class="at">rsq =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb28-378"><a href="#cb28-378"></a>      data,</span>
+<span id="cb28-379"><a href="#cb28-379"></a>      \(x) <span class="fu">rsq</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb28-380"><a href="#cb28-380"></a>    )</span>
+<span id="cb28-381"><a href="#cb28-381"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-382"><a href="#cb28-382"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
+<span id="cb28-383"><a href="#cb28-383"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-384"><a href="#cb28-384"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-385"><a href="#cb28-385"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb28-386"><a href="#cb28-386"></a></span>
+<span id="cb28-387"><a href="#cb28-387"></a><span class="in">```</span></span>
+<span id="cb28-388"><a href="#cb28-388"></a></span>
+<span id="cb28-389"><a href="#cb28-389"></a>These are some pretty low (good) values of SMAPE. Let's see what these look like in plots.</span>
+<span id="cb28-390"><a href="#cb28-390"></a></span>
+<span id="cb28-393"><a href="#cb28-393"></a><span class="in">```{r}</span></span>
+<span id="cb28-394"><a href="#cb28-394"></a><span class="co">#| label: hpi2023-forecast-plot</span></span>
+<span id="cb28-395"><a href="#cb28-395"></a></span>
+<span id="cb28-396"><a href="#cb28-396"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb28-397"><a href="#cb28-397"></a>  <span class="fu">mutate</span>(<span class="at">model_name =</span> <span class="st">"ACTUAL"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-398"><a href="#cb28-398"></a>  <span class="fu">rename</span>(<span class="at">.value =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb28-399"><a href="#cb28-399"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb28-400"><a href="#cb28-400"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb28-401"><a href="#cb28-401"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-402"><a href="#cb28-402"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>, <span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-403"><a href="#cb28-403"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb28-404"><a href="#cb28-404"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key) <span class="sc">|&gt;</span></span>
+<span id="cb28-405"><a href="#cb28-405"></a>      <span class="fu">rename</span>(<span class="at">date =</span> .index)</span>
+<span id="cb28-406"><a href="#cb28-406"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-407"><a href="#cb28-407"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb28-408"><a href="#cb28-408"></a>    <span class="at">model_name =</span> <span class="fu">fct_relevel</span>(model_name, <span class="st">"ACTUAL"</span>),</span>
+<span id="cb28-409"><a href="#cb28-409"></a>    <span class="at">lwidth =</span> <span class="fu">if_else</span>(model_name <span class="sc">%in%</span> <span class="st">"ACTUAL"</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb28-410"><a href="#cb28-410"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb28-411"><a href="#cb28-411"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">group =</span> model_name, <span class="at">color =</span> model_name)) <span class="sc">+</span></span>
+<span id="cb28-412"><a href="#cb28-412"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .value, <span class="at">linewidth =</span> lwidth)) <span class="sc">+</span></span>
+<span id="cb28-413"><a href="#cb28-413"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .conf_lo, <span class="at">ymax =</span> .conf_hi), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb28-414"><a href="#cb28-414"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal) <span class="sc">+</span></span>
+<span id="cb28-415"><a href="#cb28-415"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb28-416"><a href="#cb28-416"></a>  <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb28-417"><a href="#cb28-417"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> city, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb28-418"><a href="#cb28-418"></a>  <span class="fu">labs</span>(</span>
+<span id="cb28-419"><a href="#cb28-419"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb28-420"><a href="#cb28-420"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb28-421"><a href="#cb28-421"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb28-422"><a href="#cb28-422"></a>    <span class="at">title =</span> <span class="st">"Forecasts vs. Actual Data"</span></span>
+<span id="cb28-423"><a href="#cb28-423"></a>  ) <span class="sc">+</span></span>
+<span id="cb28-424"><a href="#cb28-424"></a>  <span class="fu">guides</span>(<span class="at">linewidth =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb28-425"><a href="#cb28-425"></a>  theme_timetk <span class="sc">+</span></span>
+<span id="cb28-426"><a href="#cb28-426"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb28-427"><a href="#cb28-427"></a></span>
+<span id="cb28-428"><a href="#cb28-428"></a><span class="in">```</span></span>
+<span id="cb28-429"><a href="#cb28-429"></a></span>
+<span id="cb28-430"><a href="#cb28-430"></a>Not too bad! All three forecasts look like they were very close in the first few months of the forecast period, but started to underestimate later on.</span>
+<span id="cb28-431"><a href="#cb28-431"></a></span>
+<span id="cb28-432"><a href="#cb28-432"></a>This ends the series of planned posts on using <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/index.html)</span> with R. All in all this is a great package with all sorts of goodies for forecasting time series.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
