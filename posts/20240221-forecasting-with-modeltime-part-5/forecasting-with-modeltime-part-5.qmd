@@ -2,12 +2,14 @@
 title: "Forecasting with {modeltime} - Part V"
 subtitle: "Selecting the best model for each city"
 author: "Arcenis Rojas"
-date: "2/22/2024"
+date: "2/21/2024"
 bibliography: references.bib
 categories:
   - Time Series
   - Forecasting
   - Machine Learning
+fig-width: 8
+fig-height: 8
 ---
 
 This is the final (planned) post for this series on the [modeltime](https://business-science.github.io/modeltime/index.html) [@modeltime] package I will identify the best model to forecast the Case-Shiller Home Price Index using an iterative modeling process. The models to work with will be the 11 models that I identified through the global modeling process in [Forecasting with {modeltime} - Part IV](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.qmd). Additionally I'll be using [parallel](https://rdocumentation.org/packages/parallel/versions/3.6.2) [@parallel] for parallel processing, [tidymodels](https://www.tidymodels.org/) [@tidymodels] for a modeling framework, [tidyverse](https://www.tidyverse.org/) [@tidyverse] for data wrangling and visualization, and [gt](#0) [@gt] for table output.
@@ -121,7 +123,7 @@ invisible(
   clusterCall(cl, function(x) .libPaths(x), .libPaths())
 )
 print(cl)
-clusterEvalQ(cl, set.seed(500))
+invisible(clusterEvalQ(cl, set.seed(500)))
 
 hpi_wflowset <- modeltime_nested_fit(
   econ_splits,
@@ -356,6 +358,7 @@ These are some pretty low (good) values of SMAPE. Let's see what these look like
 
 ```{r}
 #| label: hpi2023-forecast-plot
+#| fig-height: 6
 
 hpi_data |>
   mutate(model_name = "ACTUAL") |>
