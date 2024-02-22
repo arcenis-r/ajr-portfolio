@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Arcenis Rojas">
-<meta name="dcterms.date" content="2024-02-22">
+<meta name="dcterms.date" content="2024-02-21">
 
 <title>Arcenis Rojas - Forecasting with {modeltime} - Part V</title>
 <style>
@@ -222,7 +222,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 22, 2024</p>
+      <p class="date">February 21, 2024</p>
     </div>
   </div>
   
@@ -844,64 +844,28 @@ Note
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">500</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[[1]]
-NULL
-
-[[2]]
-NULL
-
-[[3]]
-NULL
-
-[[4]]
-NULL
-
-[[5]]
-NULL
-
-[[6]]
-NULL
-
-[[7]]
-NULL
-
-[[8]]
-NULL
-
-[[9]]
-NULL
-
-[[10]]
-NULL
-
-[[11]]
-NULL</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>hpi_wflowset <span class="ot">&lt;-</span> <span class="fu">modeltime_nested_fit</span>(</span>
-<span id="cb12-2"><a href="#cb12-2"></a>  econ_splits,</span>
-<span id="cb12-3"><a href="#cb12-3"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">1</span>]),</span>
-<span id="cb12-4"><a href="#cb12-4"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">2</span>]),</span>
-<span id="cb12-5"><a href="#cb12-5"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">3</span>]),</span>
-<span id="cb12-6"><a href="#cb12-6"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">4</span>]),</span>
-<span id="cb12-7"><a href="#cb12-7"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">5</span>]),</span>
-<span id="cb12-8"><a href="#cb12-8"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">6</span>]),</span>
-<span id="cb12-9"><a href="#cb12-9"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">7</span>]),</span>
-<span id="cb12-10"><a href="#cb12-10"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">8</span>]),</span>
-<span id="cb12-11"><a href="#cb12-11"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">9</span>]),</span>
-<span id="cb12-12"><a href="#cb12-12"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">10</span>]),</span>
-<span id="cb12-13"><a href="#cb12-13"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">11</span>]),</span>
-<span id="cb12-14"><a href="#cb12-14"></a>  <span class="at">control =</span> <span class="fu">control_nested_fit</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">allow_par =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-15"><a href="#cb12-15"></a>)</span>
-<span id="cb12-16"><a href="#cb12-16"></a></span>
-<span id="cb12-17"><a href="#cb12-17"></a><span class="fu">stopCluster</span>(cl)</span>
-<span id="cb12-18"><a href="#cb12-18"></a><span class="fu">rm</span>(cl)</span>
-<span id="cb12-19"><a href="#cb12-19"></a></span>
-<span id="cb12-20"><a href="#cb12-20"></a>hpi_wflowset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">invisible</span>(<span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">500</span>)))</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a>hpi_wflowset <span class="ot">&lt;-</span> <span class="fu">modeltime_nested_fit</span>(</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  econ_splits,</span>
+<span id="cb10-5"><a href="#cb10-5"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">1</span>]),</span>
+<span id="cb10-6"><a href="#cb10-6"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">2</span>]),</span>
+<span id="cb10-7"><a href="#cb10-7"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">3</span>]),</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">4</span>]),</span>
+<span id="cb10-9"><a href="#cb10-9"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">5</span>]),</span>
+<span id="cb10-10"><a href="#cb10-10"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">6</span>]),</span>
+<span id="cb10-11"><a href="#cb10-11"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">7</span>]),</span>
+<span id="cb10-12"><a href="#cb10-12"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">8</span>]),</span>
+<span id="cb10-13"><a href="#cb10-13"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">9</span>]),</span>
+<span id="cb10-14"><a href="#cb10-14"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">10</span>]),</span>
+<span id="cb10-15"><a href="#cb10-15"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">11</span>]),</span>
+<span id="cb10-16"><a href="#cb10-16"></a>  <span class="at">control =</span> <span class="fu">control_nested_fit</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">allow_par =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-17"><a href="#cb10-17"></a>)</span>
+<span id="cb10-18"><a href="#cb10-18"></a></span>
+<span id="cb10-19"><a href="#cb10-19"></a><span class="fu">stopCluster</span>(cl)</span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="fu">rm</span>(cl)</span>
+<span id="cb10-21"><a href="#cb10-21"></a></span>
+<span id="cb10-22"><a href="#cb10-22"></a>hpi_wflowset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># Nested Modeltime Table
@@ -918,7 +882,7 @@ NULL</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>hpi_wflowset <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>hpi_wflowset <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># Modeltime Table
@@ -945,14 +909,14 @@ NULL</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>hpi_best <span class="ot">&lt;-</span> hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">modeltime_nested_select_best</span>(</span>
-<span id="cb16-3"><a href="#cb16-3"></a>    <span class="at">metric =</span> <span class="st">"smape"</span>,</span>
-<span id="cb16-4"><a href="#cb16-4"></a>    <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-5"><a href="#cb16-5"></a>    <span class="at">filter_test_forecasts =</span> <span class="cn">TRUE</span></span>
-<span id="cb16-6"><a href="#cb16-6"></a>  )</span>
-<span id="cb16-7"><a href="#cb16-7"></a></span>
-<span id="cb16-8"><a href="#cb16-8"></a>hpi_best</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>hpi_best <span class="ot">&lt;-</span> hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">modeltime_nested_select_best</span>(</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    <span class="at">metric =</span> <span class="st">"smape"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">filter_test_forecasts =</span> <span class="cn">TRUE</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>  )</span>
+<span id="cb14-7"><a href="#cb14-7"></a></span>
+<span id="cb14-8"><a href="#cb14-8"></a>hpi_best</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># Nested Modeltime Table
@@ -973,13 +937,13 @@ NULL</code></pre>
 <div id="tbl-show-acc" class="cell anchored">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">extract_nested_test_accuracy</span>() <span class="sc">|&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">slice_min</span>(smape, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a href="#cb18-5"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb18-6"><a href="#cb18-6"></a>  <span class="fu">table_modeltime_accuracy</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-7"><a href="#cb18-7"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">extract_nested_test_accuracy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">slice_min</span>(smape, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">table_modeltime_accuracy</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="vaossgjhsw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -1500,31 +1464,31 @@ NULL</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1"></a>fcst_pal <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="annotated-cell-12-2"><a href="#annotated-cell-12-2"></a>  <span class="st">"#2c3e50"</span>, <span class="st">"#FF0000"</span>, <span class="st">"#00FFFF"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#00FF00"</span>,</span>
-<span id="annotated-cell-12-3"><a href="#annotated-cell-12-3"></a>  <span class="st">"#FF00FF"</span>, <span class="st">"#FF8000"</span>, <span class="st">"#0080FF"</span>, <span class="st">"#80FF00"</span>, <span class="st">"#8000FF"</span>, <span class="st">"#00FF80"</span>,</span>
-<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4"></a>  <span class="st">"#FF0080"</span></span>
-<span id="annotated-cell-12-5"><a href="#annotated-cell-12-5"></a>)</span>
-<span id="annotated-cell-12-6"><a href="#annotated-cell-12-6"></a></span>
-<span id="annotated-cell-12-7"><a href="#annotated-cell-12-7"></a>hpi_best <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-12-8"><a href="#annotated-cell-12-8"></a>  <span class="fu">extract_nested_test_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-12-9"><a href="#annotated-cell-12-9"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-12-10"><a href="#annotated-cell-12-10"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="annotated-cell-12-11"><a href="#annotated-cell-12-11"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode numberSource r code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-1" class="code-annotation-target"><a href="#annotated-cell-11-1"></a>fcst_pal <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="annotated-cell-11-2"><a href="#annotated-cell-11-2"></a>  <span class="st">"#2c3e50"</span>, <span class="st">"#FF0000"</span>, <span class="st">"#00FFFF"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#00FF00"</span>,</span>
+<span id="annotated-cell-11-3"><a href="#annotated-cell-11-3"></a>  <span class="st">"#FF00FF"</span>, <span class="st">"#FF8000"</span>, <span class="st">"#0080FF"</span>, <span class="st">"#80FF00"</span>, <span class="st">"#8000FF"</span>, <span class="st">"#00FF80"</span>,</span>
+<span id="annotated-cell-11-4"><a href="#annotated-cell-11-4"></a>  <span class="st">"#FF0080"</span></span>
+<span id="annotated-cell-11-5"><a href="#annotated-cell-11-5"></a>)</span>
+<span id="annotated-cell-11-6"><a href="#annotated-cell-11-6"></a></span>
+<span id="annotated-cell-11-7"><a href="#annotated-cell-11-7"></a>hpi_best <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-8"><a href="#annotated-cell-11-8"></a>  <span class="fu">extract_nested_test_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-9"><a href="#annotated-cell-11-9"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-11-10"><a href="#annotated-cell-11-10"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="annotated-cell-11-11"><a href="#annotated-cell-11-11"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">Create a color palette for plotting.</span>
+<span data-code-cell="annotated-cell-11" data-code-lines="1" data-code-annotation="1">Create a color palette for plotting.</span>
 </dd>
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-test-forecasts" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-test-forecasts" class="quarto-figure quarto-figure-center quarto-float anchored" width="768">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-test-forecasts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="forecasting-with-modeltime-part-5_files/figure-html/fig-test-forecasts-1.png" id="fig-test-forecasts" class="img-fluid figure-img" width="672">
+<img src="forecasting-with-modeltime-part-5_files/figure-html/fig-test-forecasts-1.png" id="fig-test-forecasts" class="img-fluid figure-img" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-test-forecasts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1
@@ -1537,10 +1501,10 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>part4_mods <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">mutate</span>(<span class="at">model_num =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>part4_mods <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">mutate</span>(<span class="at">model_num =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="ezrmrdksxp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2047,9 +2011,9 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># Modeltime Table
@@ -2073,11 +2037,11 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">filter</span>(.model_id <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">pluck</span>(<span class="st">".calibration_data"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">filter</span>(.model_id <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>  <span class="fu">pluck</span>(<span class="st">".calibration_data"</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 24 × 4
@@ -2105,19 +2069,19 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>hpi_refit <span class="ot">&lt;-</span> hpi_best <span class="sc">|&gt;</span></span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">modeltime_nested_refit</span>(<span class="at">control =</span> <span class="fu">control_nested_refit</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb24-3"><a href="#cb24-3"></a></span>
-<span id="cb24-4"><a href="#cb24-4"></a>hpi_refit <span class="sc">|&gt;</span></span>
-<span id="cb24-5"><a href="#cb24-5"></a>  <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb24-6"><a href="#cb24-6"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb24-7"><a href="#cb24-7"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb24-8"><a href="#cb24-8"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>hpi_refit <span class="ot">&lt;-</span> hpi_best <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">modeltime_nested_refit</span>(<span class="at">control =</span> <span class="fu">control_nested_refit</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a>hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="forecasting-with-modeltime-part-5_files/figure-html/refit-best-mods-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="forecasting-with-modeltime-part-5_files/figure-html/refit-best-mods-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -2130,40 +2094,40 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>case_shiller_ids <span class="ot">&lt;-</span> fredr<span class="sc">::</span><span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">filter</span>(</span>
-<span id="cb25-3"><a href="#cb25-3"></a>    <span class="fu">str_detect</span>(</span>
-<span id="cb25-4"><a href="#cb25-4"></a>      title,</span>
-<span id="cb25-5"><a href="#cb25-5"></a>      <span class="st">"TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
-<span id="cb25-6"><a href="#cb25-6"></a>    ),</span>
-<span id="cb25-7"><a href="#cb25-7"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
-<span id="cb25-8"><a href="#cb25-8"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
-<span id="cb25-9"><a href="#cb25-9"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb25-10"><a href="#cb25-10"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb25-11"><a href="#cb25-11"></a>  <span class="fu">select</span>(city, id)</span>
-<span id="cb25-12"><a href="#cb25-12"></a></span>
-<span id="cb25-13"><a href="#cb25-13"></a><span class="co"># Get Case Shiller data for 2023</span></span>
-<span id="cb25-14"><a href="#cb25-14"></a>hpi_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
-<span id="cb25-15"><a href="#cb25-15"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb25-16"><a href="#cb25-16"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
-<span id="cb25-17"><a href="#cb25-17"></a>      id,</span>
-<span id="cb25-18"><a href="#cb25-18"></a>      \(x) fredr<span class="sc">::</span><span class="fu">fredr</span>(</span>
-<span id="cb25-19"><a href="#cb25-19"></a>        <span class="at">series_id =</span> x,</span>
-<span id="cb25-20"><a href="#cb25-20"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2020-01-01"</span>),</span>
-<span id="cb25-21"><a href="#cb25-21"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
-<span id="cb25-22"><a href="#cb25-22"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
-<span id="cb25-23"><a href="#cb25-23"></a>      )</span>
-<span id="cb25-24"><a href="#cb25-24"></a>    )</span>
-<span id="cb25-25"><a href="#cb25-25"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb25-26"><a href="#cb25-26"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
-<span id="cb25-27"><a href="#cb25-27"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
-<span id="cb25-28"><a href="#cb25-28"></a>  <span class="fu">select</span>(city, date, <span class="at">hpi =</span> value)</span>
-<span id="cb25-29"><a href="#cb25-29"></a></span>
-<span id="cb25-30"><a href="#cb25-30"></a>hpi_data <span class="sc">|&gt;</span></span>
-<span id="cb25-31"><a href="#cb25-31"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> hpi) <span class="sc">|&gt;</span></span>
-<span id="cb25-32"><a href="#cb25-32"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-33"><a href="#cb25-33"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb25-34"><a href="#cb25-34"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>case_shiller_ids <span class="ot">&lt;-</span> fredr<span class="sc">::</span><span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">filter</span>(</span>
+<span id="cb23-3"><a href="#cb23-3"></a>    <span class="fu">str_detect</span>(</span>
+<span id="cb23-4"><a href="#cb23-4"></a>      title,</span>
+<span id="cb23-5"><a href="#cb23-5"></a>      <span class="st">"TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
+<span id="cb23-6"><a href="#cb23-6"></a>    ),</span>
+<span id="cb23-7"><a href="#cb23-7"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
+<span id="cb23-9"><a href="#cb23-9"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb23-11"><a href="#cb23-11"></a>  <span class="fu">select</span>(city, id)</span>
+<span id="cb23-12"><a href="#cb23-12"></a></span>
+<span id="cb23-13"><a href="#cb23-13"></a><span class="co"># Get Case Shiller data for 2023</span></span>
+<span id="cb23-14"><a href="#cb23-14"></a>hpi_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
+<span id="cb23-15"><a href="#cb23-15"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-16"><a href="#cb23-16"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb23-17"><a href="#cb23-17"></a>      id,</span>
+<span id="cb23-18"><a href="#cb23-18"></a>      \(x) fredr<span class="sc">::</span><span class="fu">fredr</span>(</span>
+<span id="cb23-19"><a href="#cb23-19"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb23-20"><a href="#cb23-20"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2020-01-01"</span>),</span>
+<span id="cb23-21"><a href="#cb23-21"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb23-22"><a href="#cb23-22"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb23-23"><a href="#cb23-23"></a>      )</span>
+<span id="cb23-24"><a href="#cb23-24"></a>    )</span>
+<span id="cb23-25"><a href="#cb23-25"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-26"><a href="#cb23-26"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb23-27"><a href="#cb23-27"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb23-28"><a href="#cb23-28"></a>  <span class="fu">select</span>(city, date, <span class="at">hpi =</span> value)</span>
+<span id="cb23-29"><a href="#cb23-29"></a></span>
+<span id="cb23-30"><a href="#cb23-30"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb23-31"><a href="#cb23-31"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb23-32"><a href="#cb23-32"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-33"><a href="#cb23-33"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb23-34"><a href="#cb23-34"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="zstlgqxset" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2693,35 +2657,35 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>hpi_data <span class="sc">|&gt;</span></span>
-<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb26-3"><a href="#cb26-3"></a>    hpi_refit <span class="sc">|&gt;</span></span>
-<span id="cb26-4"><a href="#cb26-4"></a>      <span class="fu">filter</span>(<span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb26-5"><a href="#cb26-5"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb26-6"><a href="#cb26-6"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb26-7"><a href="#cb26-7"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
-<span id="cb26-8"><a href="#cb26-8"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key),</span>
-<span id="cb26-9"><a href="#cb26-9"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">".index"</span>)</span>
-<span id="cb26-10"><a href="#cb26-10"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb26-11"><a href="#cb26-11"></a>  <span class="fu">group_nest</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb26-12"><a href="#cb26-12"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb26-13"><a href="#cb26-13"></a>    <span class="at">smape =</span> <span class="fu">map_dbl</span>(</span>
-<span id="cb26-14"><a href="#cb26-14"></a>      data,</span>
-<span id="cb26-15"><a href="#cb26-15"></a>      \(x) <span class="fu">smape</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
-<span id="cb26-16"><a href="#cb26-16"></a>    ),</span>
-<span id="cb26-17"><a href="#cb26-17"></a>    <span class="at">rmse =</span> <span class="fu">map_dbl</span>(</span>
-<span id="cb26-18"><a href="#cb26-18"></a>      data,</span>
-<span id="cb26-19"><a href="#cb26-19"></a>      \(x) <span class="fu">rmse</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
-<span id="cb26-20"><a href="#cb26-20"></a>    ),</span>
-<span id="cb26-21"><a href="#cb26-21"></a>    <span class="at">rsq =</span> <span class="fu">map_dbl</span>(</span>
-<span id="cb26-22"><a href="#cb26-22"></a>      data,</span>
-<span id="cb26-23"><a href="#cb26-23"></a>      \(x) <span class="fu">rsq</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
-<span id="cb26-24"><a href="#cb26-24"></a>    )</span>
-<span id="cb26-25"><a href="#cb26-25"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb26-26"><a href="#cb26-26"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
-<span id="cb26-27"><a href="#cb26-27"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb26-28"><a href="#cb26-28"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb26-29"><a href="#cb26-29"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb24-3"><a href="#cb24-3"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a>      <span class="fu">filter</span>(<span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key),</span>
+<span id="cb24-9"><a href="#cb24-9"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">".index"</span>)</span>
+<span id="cb24-10"><a href="#cb24-10"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb24-11"><a href="#cb24-11"></a>  <span class="fu">group_nest</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb24-12"><a href="#cb24-12"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-13"><a href="#cb24-13"></a>    <span class="at">smape =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb24-14"><a href="#cb24-14"></a>      data,</span>
+<span id="cb24-15"><a href="#cb24-15"></a>      \(x) <span class="fu">smape</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb24-16"><a href="#cb24-16"></a>    ),</span>
+<span id="cb24-17"><a href="#cb24-17"></a>    <span class="at">rmse =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb24-18"><a href="#cb24-18"></a>      data,</span>
+<span id="cb24-19"><a href="#cb24-19"></a>      \(x) <span class="fu">rmse</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb24-20"><a href="#cb24-20"></a>    ),</span>
+<span id="cb24-21"><a href="#cb24-21"></a>    <span class="at">rsq =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb24-22"><a href="#cb24-22"></a>      data,</span>
+<span id="cb24-23"><a href="#cb24-23"></a>      \(x) <span class="fu">rsq</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb24-24"><a href="#cb24-24"></a>    )</span>
+<span id="cb24-25"><a href="#cb24-25"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb24-26"><a href="#cb24-26"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
+<span id="cb24-27"><a href="#cb24-27"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-28"><a href="#cb24-28"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-29"><a href="#cb24-29"></a>  <span class="fu">gt_bold_head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fuwndwsuuz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -3203,42 +3167,42 @@ Figure&nbsp;1
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>hpi_data <span class="sc">|&gt;</span></span>
-<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">mutate</span>(<span class="at">model_name =</span> <span class="st">"ACTUAL"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">rename</span>(<span class="at">.value =</span> hpi) <span class="sc">|&gt;</span></span>
-<span id="cb27-4"><a href="#cb27-4"></a>  <span class="fu">bind_rows</span>(</span>
-<span id="cb27-5"><a href="#cb27-5"></a>    hpi_refit <span class="sc">|&gt;</span></span>
-<span id="cb27-6"><a href="#cb27-6"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb27-7"><a href="#cb27-7"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>, <span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb27-8"><a href="#cb27-8"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
-<span id="cb27-9"><a href="#cb27-9"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key) <span class="sc">|&gt;</span></span>
-<span id="cb27-10"><a href="#cb27-10"></a>      <span class="fu">rename</span>(<span class="at">date =</span> .index)</span>
-<span id="cb27-11"><a href="#cb27-11"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb27-12"><a href="#cb27-12"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb27-13"><a href="#cb27-13"></a>    <span class="at">model_name =</span> <span class="fu">fct_relevel</span>(model_name, <span class="st">"ACTUAL"</span>),</span>
-<span id="cb27-14"><a href="#cb27-14"></a>    <span class="at">lwidth =</span> <span class="fu">if_else</span>(model_name <span class="sc">%in%</span> <span class="st">"ACTUAL"</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb27-15"><a href="#cb27-15"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb27-16"><a href="#cb27-16"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">group =</span> model_name, <span class="at">color =</span> model_name)) <span class="sc">+</span></span>
-<span id="cb27-17"><a href="#cb27-17"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .value, <span class="at">linewidth =</span> lwidth)) <span class="sc">+</span></span>
-<span id="cb27-18"><a href="#cb27-18"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .conf_lo, <span class="at">ymax =</span> .conf_hi), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb27-19"><a href="#cb27-19"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal) <span class="sc">+</span></span>
-<span id="cb27-20"><a href="#cb27-20"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb27-21"><a href="#cb27-21"></a>  <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb27-22"><a href="#cb27-22"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> city, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb27-23"><a href="#cb27-23"></a>  <span class="fu">labs</span>(</span>
-<span id="cb27-24"><a href="#cb27-24"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
-<span id="cb27-25"><a href="#cb27-25"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb27-26"><a href="#cb27-26"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb27-27"><a href="#cb27-27"></a>    <span class="at">title =</span> <span class="st">"Forecasts vs. Actual Data"</span></span>
-<span id="cb27-28"><a href="#cb27-28"></a>  ) <span class="sc">+</span></span>
-<span id="cb27-29"><a href="#cb27-29"></a>  <span class="fu">guides</span>(<span class="at">linewidth =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb27-30"><a href="#cb27-30"></a>  theme_timetk <span class="sc">+</span></span>
-<span id="cb27-31"><a href="#cb27-31"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">mutate</span>(<span class="at">model_name =</span> <span class="st">"ACTUAL"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">rename</span>(<span class="at">.value =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb25-5"><a href="#cb25-5"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>, <span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key) <span class="sc">|&gt;</span></span>
+<span id="cb25-10"><a href="#cb25-10"></a>      <span class="fu">rename</span>(<span class="at">date =</span> .index)</span>
+<span id="cb25-11"><a href="#cb25-11"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb25-12"><a href="#cb25-12"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-13"><a href="#cb25-13"></a>    <span class="at">model_name =</span> <span class="fu">fct_relevel</span>(model_name, <span class="st">"ACTUAL"</span>),</span>
+<span id="cb25-14"><a href="#cb25-14"></a>    <span class="at">lwidth =</span> <span class="fu">if_else</span>(model_name <span class="sc">%in%</span> <span class="st">"ACTUAL"</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb25-15"><a href="#cb25-15"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb25-16"><a href="#cb25-16"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">group =</span> model_name, <span class="at">color =</span> model_name)) <span class="sc">+</span></span>
+<span id="cb25-17"><a href="#cb25-17"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .value, <span class="at">linewidth =</span> lwidth)) <span class="sc">+</span></span>
+<span id="cb25-18"><a href="#cb25-18"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .conf_lo, <span class="at">ymax =</span> .conf_hi), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb25-19"><a href="#cb25-19"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal) <span class="sc">+</span></span>
+<span id="cb25-20"><a href="#cb25-20"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb25-21"><a href="#cb25-21"></a>  <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb25-22"><a href="#cb25-22"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> city, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb25-23"><a href="#cb25-23"></a>  <span class="fu">labs</span>(</span>
+<span id="cb25-24"><a href="#cb25-24"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb25-25"><a href="#cb25-25"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb25-26"><a href="#cb25-26"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb25-27"><a href="#cb25-27"></a>    <span class="at">title =</span> <span class="st">"Forecasts vs. Actual Data"</span></span>
+<span id="cb25-28"><a href="#cb25-28"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-29"><a href="#cb25-29"></a>  <span class="fu">guides</span>(<span class="at">linewidth =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb25-30"><a href="#cb25-30"></a>  theme_timetk <span class="sc">+</span></span>
+<span id="cb25-31"><a href="#cb25-31"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="forecasting-with-modeltime-part-5_files/figure-html/hpi2023-forecast-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="forecasting-with-modeltime-part-5_files/figure-html/hpi2023-forecast-plot-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -3772,402 +3736,405 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <input type="hidden" id="giscus-base-theme" value="light">
 <input type="hidden" id="giscus-alt-theme" value="dark"><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb28" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb28-1"><a href="#cb28-1"></a><span class="co">---</span></span>
-<span id="cb28-2"><a href="#cb28-2"></a><span class="an">title:</span><span class="co"> "Forecasting with {modeltime} - Part V"</span></span>
-<span id="cb28-3"><a href="#cb28-3"></a><span class="an">subtitle:</span><span class="co"> "Selecting the best model for each city"</span></span>
-<span id="cb28-4"><a href="#cb28-4"></a><span class="an">author:</span><span class="co"> "Arcenis Rojas"</span></span>
-<span id="cb28-5"><a href="#cb28-5"></a><span class="an">date:</span><span class="co"> "2/22/2024"</span></span>
-<span id="cb28-6"><a href="#cb28-6"></a><span class="an">bibliography:</span><span class="co"> references.bib</span></span>
-<span id="cb28-7"><a href="#cb28-7"></a><span class="an">categories:</span></span>
-<span id="cb28-8"><a href="#cb28-8"></a><span class="co">  - Time Series</span></span>
-<span id="cb28-9"><a href="#cb28-9"></a><span class="co">  - Forecasting</span></span>
-<span id="cb28-10"><a href="#cb28-10"></a><span class="co">  - Machine Learning</span></span>
-<span id="cb28-11"><a href="#cb28-11"></a><span class="co">---</span></span>
-<span id="cb28-12"><a href="#cb28-12"></a></span>
-<span id="cb28-13"><a href="#cb28-13"></a>This is the final (planned) post for this series on the <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/index.html)</span> <span class="co">[</span><span class="ot">@modeltime</span><span class="co">]</span> package I will identify the best model to forecast the Case-Shiller Home Price Index using an iterative modeling process. The models to work with will be the 11 models that I identified through the global modeling process in <span class="co">[</span><span class="ot">Forecasting with {modeltime} - Part IV</span><span class="co">](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.qmd)</span>. Additionally I'll be using <span class="co">[</span><span class="ot">parallel</span><span class="co">](https://rdocumentation.org/packages/parallel/versions/3.6.2)</span> <span class="co">[</span><span class="ot">@parallel</span><span class="co">]</span> for parallel processing, <span class="co">[</span><span class="ot">tidymodels</span><span class="co">](https://www.tidymodels.org/)</span> <span class="co">[</span><span class="ot">@tidymodels</span><span class="co">]</span> for a modeling framework, <span class="co">[</span><span class="ot">tidyverse</span><span class="co">](https://www.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@tidyverse</span><span class="co">]</span> for data wrangling and visualization, and <span class="co">[</span><span class="ot">gt</span><span class="co">](#0)</span> <span class="co">[</span><span class="ot">@gt</span><span class="co">]</span> for table output.</span>
-<span id="cb28-14"><a href="#cb28-14"></a></span>
-<span id="cb28-17"><a href="#cb28-17"></a><span class="in">```{r}</span></span>
-<span id="cb28-18"><a href="#cb28-18"></a><span class="co">#| label: load-packages</span></span>
-<span id="cb28-19"><a href="#cb28-19"></a></span>
-<span id="cb28-20"><a href="#cb28-20"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb28-21"><a href="#cb28-21"></a><span class="fu">library</span>(timetk)</span>
-<span id="cb28-22"><a href="#cb28-22"></a><span class="fu">library</span>(modeltime)</span>
-<span id="cb28-23"><a href="#cb28-23"></a><span class="fu">library</span>(tidymodels)</span>
-<span id="cb28-24"><a href="#cb28-24"></a><span class="fu">library</span>(parallel)</span>
-<span id="cb28-25"><a href="#cb28-25"></a><span class="fu">library</span>(gt)</span>
-<span id="cb28-26"><a href="#cb28-26"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb28-27"><a href="#cb28-27"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"lag"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb28-28"><a href="#cb28-28"></a><span class="fu">tidymodels_prefer</span>()</span>
-<span id="cb28-29"><a href="#cb28-29"></a></span>
-<span id="cb28-30"><a href="#cb28-30"></a><span class="in">```</span></span>
-<span id="cb28-31"><a href="#cb28-31"></a></span>
-<span id="cb28-34"><a href="#cb28-34"></a><span class="in">```{r}</span></span>
-<span id="cb28-35"><a href="#cb28-35"></a><span class="co">#| label: import-data</span></span>
-<span id="cb28-36"><a href="#cb28-36"></a><span class="co">#| include: false</span></span>
-<span id="cb28-37"><a href="#cb28-37"></a></span>
-<span id="cb28-38"><a href="#cb28-38"></a>modEnv <span class="ot">&lt;-</span> <span class="fu">new.env</span>()</span>
-<span id="cb28-39"><a href="#cb28-39"></a><span class="fu">source</span>(<span class="st">"build-global-models.R"</span>, <span class="at">local =</span> modEnv)</span>
-<span id="cb28-40"><a href="#cb28-40"></a><span class="fu">source</span>(<span class="st">"../_common-resources/gt-bold-head.R"</span>)</span>
-<span id="cb28-41"><a href="#cb28-41"></a></span>
-<span id="cb28-42"><a href="#cb28-42"></a>theme_timetk <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"../_common-resources/theme-timetk.Rds"</span>)</span>
-<span id="cb28-43"><a href="#cb28-43"></a></span>
-<span id="cb28-44"><a href="#cb28-44"></a>econ_data <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>econ_data</span>
-<span id="cb28-45"><a href="#cb28-45"></a>part4_mods <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>part4_mods</span>
-<span id="cb28-46"><a href="#cb28-46"></a>hpi_global_wfset <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>hpi_wfset</span>
-<span id="cb28-47"><a href="#cb28-47"></a><span class="fu">rm</span>(modEnv)</span>
-<span id="cb28-48"><a href="#cb28-48"></a></span>
-<span id="cb28-49"><a href="#cb28-49"></a><span class="in">```</span></span>
-<span id="cb28-50"><a href="#cb28-50"></a></span>
-<span id="cb28-51"><a href="#cb28-51"></a>Below is a look at the names of the model specifications from the last post.</span>
-<span id="cb28-52"><a href="#cb28-52"></a></span>
-<span id="cb28-55"><a href="#cb28-55"></a><span class="in">```{r}</span></span>
-<span id="cb28-56"><a href="#cb28-56"></a><span class="co">#| label: show-mod-names</span></span>
-<span id="cb28-57"><a href="#cb28-57"></a></span>
-<span id="cb28-58"><a href="#cb28-58"></a>part4_mods <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span>
-<span id="cb28-59"><a href="#cb28-59"></a></span>
-<span id="cb28-60"><a href="#cb28-60"></a><span class="in">```</span></span>
-<span id="cb28-61"><a href="#cb28-61"></a></span>
-<span id="cb28-62"><a href="#cb28-62"></a>And this is what the <span class="in">`workflowset`</span> object looked like.</span>
-<span id="cb28-63"><a href="#cb28-63"></a></span>
-<span id="cb28-66"><a href="#cb28-66"></a><span class="in">```{r}</span></span>
-<span id="cb28-67"><a href="#cb28-67"></a><span class="co">#| label: show-wfset</span></span>
-<span id="cb28-68"><a href="#cb28-68"></a></span>
-<span id="cb28-69"><a href="#cb28-69"></a>hpi_global_wfset</span>
-<span id="cb28-70"><a href="#cb28-70"></a></span>
-<span id="cb28-71"><a href="#cb28-71"></a><span class="in">```</span></span>
-<span id="cb28-72"><a href="#cb28-72"></a></span>
-<span id="cb28-73"><a href="#cb28-73"></a><span class="fu">## Filtering workflows</span></span>
-<span id="cb28-74"><a href="#cb28-74"></a></span>
-<span id="cb28-75"><a href="#cb28-75"></a>I'll first filter the set of workflows to the 11 that I want to keep.</span>
-<span id="cb28-76"><a href="#cb28-76"></a></span>
-<span id="cb28-79"><a href="#cb28-79"></a><span class="in">```{r}</span></span>
-<span id="cb28-80"><a href="#cb28-80"></a><span class="co">#| label: filter-wflows </span></span>
-<span id="cb28-81"><a href="#cb28-81"></a></span>
-<span id="cb28-82"><a href="#cb28-82"></a>mod_ids <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(part4_mods<span class="sc">$</span>.model_desc)</span>
-<span id="cb28-83"><a href="#cb28-83"></a></span>
-<span id="cb28-84"><a href="#cb28-84"></a>hpi_global_wfset <span class="ot">&lt;-</span> hpi_global_wfset <span class="sc">|&gt;</span></span>
-<span id="cb28-85"><a href="#cb28-85"></a>  <span class="fu">filter</span>(wflow_id <span class="sc">%in%</span> mod_ids)</span>
-<span id="cb28-86"><a href="#cb28-86"></a></span>
-<span id="cb28-87"><a href="#cb28-87"></a><span class="in">```</span></span>
-<span id="cb28-88"><a href="#cb28-88"></a></span>
-<span id="cb28-89"><a href="#cb28-89"></a>These are all of the necessary workflows including recipes and model specifications.</span>
-<span id="cb28-90"><a href="#cb28-90"></a></span>
-<span id="cb28-91"><a href="#cb28-91"></a><span class="fu">## Splitting the data</span></span>
-<span id="cb28-92"><a href="#cb28-92"></a></span>
-<span id="cb28-93"><a href="#cb28-93"></a>Next up is creating the data split object. This is a different set of functions than what I used to split the data for the global modeling process. In this workflow the future dates get added for each city up front.</span>
-<span id="cb28-94"><a href="#cb28-94"></a></span>
-<span id="cb28-97"><a href="#cb28-97"></a><span class="in">```{r}</span></span>
-<span id="cb28-98"><a href="#cb28-98"></a><span class="co">#| label: split-data</span></span>
-<span id="cb28-99"><a href="#cb28-99"></a></span>
-<span id="cb28-100"><a href="#cb28-100"></a>econ_splits <span class="ot">&lt;-</span> econ_data <span class="sc">|&gt;</span></span>
-<span id="cb28-101"><a href="#cb28-101"></a>  <span class="fu">extend_timeseries</span>(</span>
-<span id="cb28-102"><a href="#cb28-102"></a>    <span class="at">.id_var =</span> city,</span>
-<span id="cb28-103"><a href="#cb28-103"></a>    <span class="at">.date_var =</span> date,</span>
-<span id="cb28-104"><a href="#cb28-104"></a>    <span class="at">.length_future =</span> <span class="dv">12</span></span>
-<span id="cb28-105"><a href="#cb28-105"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-106"><a href="#cb28-106"></a>  <span class="fu">nest_timeseries</span>(</span>
-<span id="cb28-107"><a href="#cb28-107"></a>    <span class="at">.id_var =</span> city,</span>
-<span id="cb28-108"><a href="#cb28-108"></a>    <span class="at">.length_future =</span> <span class="dv">12</span>,</span>
-<span id="cb28-109"><a href="#cb28-109"></a>    <span class="at">.length_actual =</span> <span class="dv">17</span> <span class="sc">*</span> <span class="dv">12</span></span>
-<span id="cb28-110"><a href="#cb28-110"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-111"><a href="#cb28-111"></a>  <span class="fu">split_nested_timeseries</span>(<span class="at">.length_test =</span> <span class="dv">24</span>)</span>
-<span id="cb28-112"><a href="#cb28-112"></a></span>
-<span id="cb28-113"><a href="#cb28-113"></a>econ_splits</span>
-<span id="cb28-114"><a href="#cb28-114"></a><span class="in">```</span></span>
-<span id="cb28-115"><a href="#cb28-115"></a></span>
-<span id="cb28-116"><a href="#cb28-116"></a>With these two objects prepared I can now fit the models iteratively for each city.</span>
-<span id="cb28-117"><a href="#cb28-117"></a></span>
-<span id="cb28-118"><a href="#cb28-118"></a><span class="fu">## Fit models</span></span>
-<span id="cb28-119"><a href="#cb28-119"></a></span>
-<span id="cb28-120"><a href="#cb28-120"></a>I'll first prepare a parallel processing cluster and set a random seed for each node then fit the models.</span>
-<span id="cb28-121"><a href="#cb28-121"></a></span>
-<span id="cb28-122"><a href="#cb28-122"></a>::: callout-note</span>
-<span id="cb28-123"><a href="#cb28-123"></a><span class="in">`modeltime_nested_fit()`</span> requires that models be specified individually rather than as a <span class="in">`workflowset`</span> object.</span>
-<span id="cb28-124"><a href="#cb28-124"></a>:::</span>
-<span id="cb28-125"><a href="#cb28-125"></a></span>
-<span id="cb28-128"><a href="#cb28-128"></a><span class="in">```{r}</span></span>
-<span id="cb28-129"><a href="#cb28-129"></a><span class="co">#| label: fit-models</span></span>
-<span id="cb28-130"><a href="#cb28-130"></a><span class="co">#| cache: true</span></span>
-<span id="cb28-131"><a href="#cb28-131"></a></span>
-<span id="cb28-132"><a href="#cb28-132"></a>cl <span class="ot">&lt;-</span> <span class="fu">makePSOCKcluster</span>(<span class="fu">nrow</span>(part4_mods))</span>
-<span id="cb28-133"><a href="#cb28-133"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
-<span id="cb28-134"><a href="#cb28-134"></a><span class="fu">invisible</span>(</span>
-<span id="cb28-135"><a href="#cb28-135"></a>  <span class="fu">clusterCall</span>(cl, <span class="cf">function</span>(x) <span class="fu">.libPaths</span>(x), <span class="fu">.libPaths</span>())</span>
-<span id="cb28-136"><a href="#cb28-136"></a>)</span>
-<span id="cb28-137"><a href="#cb28-137"></a><span class="fu">print</span>(cl)</span>
-<span id="cb28-138"><a href="#cb28-138"></a><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">500</span>))</span>
-<span id="cb28-139"><a href="#cb28-139"></a></span>
-<span id="cb28-140"><a href="#cb28-140"></a>hpi_wflowset <span class="ot">&lt;-</span> <span class="fu">modeltime_nested_fit</span>(</span>
-<span id="cb28-141"><a href="#cb28-141"></a>  econ_splits,</span>
-<span id="cb28-142"><a href="#cb28-142"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">1</span>]),</span>
-<span id="cb28-143"><a href="#cb28-143"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">2</span>]),</span>
-<span id="cb28-144"><a href="#cb28-144"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">3</span>]),</span>
-<span id="cb28-145"><a href="#cb28-145"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">4</span>]),</span>
-<span id="cb28-146"><a href="#cb28-146"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">5</span>]),</span>
-<span id="cb28-147"><a href="#cb28-147"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">6</span>]),</span>
-<span id="cb28-148"><a href="#cb28-148"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">7</span>]),</span>
-<span id="cb28-149"><a href="#cb28-149"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">8</span>]),</span>
-<span id="cb28-150"><a href="#cb28-150"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">9</span>]),</span>
-<span id="cb28-151"><a href="#cb28-151"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">10</span>]),</span>
-<span id="cb28-152"><a href="#cb28-152"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">11</span>]),</span>
-<span id="cb28-153"><a href="#cb28-153"></a>  <span class="at">control =</span> <span class="fu">control_nested_fit</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">allow_par =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb28-154"><a href="#cb28-154"></a>)</span>
-<span id="cb28-155"><a href="#cb28-155"></a></span>
-<span id="cb28-156"><a href="#cb28-156"></a><span class="fu">stopCluster</span>(cl)</span>
-<span id="cb28-157"><a href="#cb28-157"></a><span class="fu">rm</span>(cl)</span>
-<span id="cb28-158"><a href="#cb28-158"></a></span>
-<span id="cb28-159"><a href="#cb28-159"></a>hpi_wflowset</span>
-<span id="cb28-160"><a href="#cb28-160"></a><span class="in">```</span></span>
-<span id="cb28-161"><a href="#cb28-161"></a></span>
-<span id="cb28-162"><a href="#cb28-162"></a>Notice that this object is grouped by city whereas the <span class="co">[</span><span class="ot">corresponding object for the global modeling process</span><span class="co">](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html#fitting-the-models)</span>{target="_blank"} is listed by model. This happens because <span class="in">`modeltime_nested_fit()`</span> calls a split object that has the data grouped by ID already. All of the functions in the <span class="co">[</span><span class="ot">modeltime Nested Forecasting</span><span class="co">](https://business-science.github.io/modeltime/articles/nested-forecasting.html)</span> workflow geared toward doing things at the level of the ID variable, which is "city" in this case. Each row contains a <span class="in">`mdl_time_tbl`</span> object in the ".modeltime_tables" column for each row which has one row for each model that was fit to the data of the ID in that row. This <span class="in">`mdl_time_tbl`</span> object contains calibration data, which gets created during the iterative modeling process. Below is an example.</span>
-<span id="cb28-163"><a href="#cb28-163"></a></span>
-<span id="cb28-166"><a href="#cb28-166"></a><span class="in">```{r}</span></span>
-<span id="cb28-167"><a href="#cb28-167"></a><span class="co">#| label: show-mdl-time-tbl</span></span>
-<span id="cb28-168"><a href="#cb28-168"></a></span>
-<span id="cb28-169"><a href="#cb28-169"></a>hpi_wflowset <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span>
-<span id="cb28-170"><a href="#cb28-170"></a></span>
-<span id="cb28-171"><a href="#cb28-171"></a><span class="in">```</span></span>
-<span id="cb28-172"><a href="#cb28-172"></a></span>
-<span id="cb28-173"><a href="#cb28-173"></a><span class="fu">## Selecting the best models</span></span>
-<span id="cb28-174"><a href="#cb28-174"></a></span>
-<span id="cb28-175"><a href="#cb28-175"></a><span class="in">`{modeltime}`</span> has the <span class="in">`modeltime_nested_select_best()`</span> for selecting the best model for each ID in a nested model table. It requires the specification of a metric for determining which model is "best". As before, I'll use the Scaled Mean Average Percent Error (SMAPE).</span>
-<span id="cb28-176"><a href="#cb28-176"></a></span>
-<span id="cb28-179"><a href="#cb28-179"></a><span class="in">```{r}</span></span>
-<span id="cb28-180"><a href="#cb28-180"></a><span class="co">#| label: select-best-mods</span></span>
-<span id="cb28-181"><a href="#cb28-181"></a></span>
-<span id="cb28-182"><a href="#cb28-182"></a>hpi_best <span class="ot">&lt;-</span> hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb28-183"><a href="#cb28-183"></a>  <span class="fu">modeltime_nested_select_best</span>(</span>
-<span id="cb28-184"><a href="#cb28-184"></a>    <span class="at">metric =</span> <span class="st">"smape"</span>,</span>
-<span id="cb28-185"><a href="#cb28-185"></a>    <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb28-186"><a href="#cb28-186"></a>    <span class="at">filter_test_forecasts =</span> <span class="cn">TRUE</span></span>
-<span id="cb28-187"><a href="#cb28-187"></a>  )</span>
-<span id="cb28-188"><a href="#cb28-188"></a></span>
-<span id="cb28-189"><a href="#cb28-189"></a>hpi_best</span>
-<span id="cb28-190"><a href="#cb28-190"></a><span class="in">```</span></span>
-<span id="cb28-191"><a href="#cb28-191"></a></span>
-<span id="cb28-192"><a href="#cb28-192"></a>Notice that after selecting the best model it's only the ".modeltime_tables" column that changes. It now contains a table with one single row corresponding to the model that yielded the best value of the selected metric.</span>
-<span id="cb28-193"><a href="#cb28-193"></a></span>
-<span id="cb28-194"><a href="#cb28-194"></a><span class="fu">## View accuracy best models</span></span>
-<span id="cb28-195"><a href="#cb28-195"></a></span>
-<span id="cb28-196"><a href="#cb28-196"></a>One gets the accuracy from a nested <span class="in">`modeltime`</span> table by using <span class="in">`extract_nested_test_accuracy()`</span> . Interestingly, this function shows the accuracy of all models even if it's run with the table of the "best" models. So below I'll use <span class="in">`group_by()`</span> to get the accuracy for the best model for each city.</span>
-<span id="cb28-197"><a href="#cb28-197"></a></span>
-<span id="cb28-200"><a href="#cb28-200"></a><span class="in">```{r}</span></span>
-<span id="cb28-201"><a href="#cb28-201"></a><span class="co">#| label: tbl-show-acc</span></span>
-<span id="cb28-202"><a href="#cb28-202"></a></span>
-<span id="cb28-203"><a href="#cb28-203"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb28-204"><a href="#cb28-204"></a>  <span class="fu">extract_nested_test_accuracy</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-205"><a href="#cb28-205"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb28-206"><a href="#cb28-206"></a>  <span class="fu">slice_min</span>(smape, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-207"><a href="#cb28-207"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-208"><a href="#cb28-208"></a>  <span class="fu">table_modeltime_accuracy</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-209"><a href="#cb28-209"></a>  <span class="fu">gt_bold_head</span>()</span>
-<span id="cb28-210"><a href="#cb28-210"></a></span>
-<span id="cb28-211"><a href="#cb28-211"></a><span class="in">```</span></span>
-<span id="cb28-212"><a href="#cb28-212"></a></span>
-<span id="cb28-213"><a href="#cb28-213"></a>Next are the forecasts against the test data.</span>
-<span id="cb28-214"><a href="#cb28-214"></a></span>
-<span id="cb28-217"><a href="#cb28-217"></a><span class="in">```{r}</span></span>
-<span id="cb28-218"><a href="#cb28-218"></a><span class="co">#| label: fig-test-forecasts</span></span>
-<span id="cb28-219"><a href="#cb28-219"></a></span>
-<span id="cb28-220"><a href="#cb28-220"></a>fcst_pal <span class="ot">&lt;-</span> <span class="fu">c</span>(                                                     <span class="co"># &lt;1&gt;</span></span>
-<span id="cb28-221"><a href="#cb28-221"></a>  <span class="st">"#2c3e50"</span>, <span class="st">"#FF0000"</span>, <span class="st">"#00FFFF"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#00FF00"</span>,</span>
-<span id="cb28-222"><a href="#cb28-222"></a>  <span class="st">"#FF00FF"</span>, <span class="st">"#FF8000"</span>, <span class="st">"#0080FF"</span>, <span class="st">"#80FF00"</span>, <span class="st">"#8000FF"</span>, <span class="st">"#00FF80"</span>,</span>
-<span id="cb28-223"><a href="#cb28-223"></a>  <span class="st">"#FF0080"</span></span>
-<span id="cb28-224"><a href="#cb28-224"></a>)</span>
-<span id="cb28-225"><a href="#cb28-225"></a></span>
-<span id="cb28-226"><a href="#cb28-226"></a>hpi_best <span class="sc">|&gt;</span></span>
-<span id="cb28-227"><a href="#cb28-227"></a>  <span class="fu">extract_nested_test_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-228"><a href="#cb28-228"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb28-229"><a href="#cb28-229"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb28-230"><a href="#cb28-230"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span>
-<span id="cb28-231"><a href="#cb28-231"></a></span>
-<span id="cb28-232"><a href="#cb28-232"></a><span class="in">```</span></span>
-<span id="cb28-233"><a href="#cb28-233"></a></span>
-<span id="cb28-234"><a href="#cb28-234"></a><span class="ss">1.  </span>Create a color palette for plotting.</span>
-<span id="cb28-235"><a href="#cb28-235"></a></span>
-<span id="cb28-236"><a href="#cb28-236"></a>For Dallas, Detroit, and New York the 11th model in the original workflow which is a Seasonal Decomposition ARIMA model and for San Diego it's the 6th model which is just called "REGRESSION". I'll show the table of model names here here with a "model_num" column indicating model number.</span>
-<span id="cb28-237"><a href="#cb28-237"></a></span>
-<span id="cb28-240"><a href="#cb28-240"></a><span class="in">```{r}</span></span>
-<span id="cb28-241"><a href="#cb28-241"></a>part4_mods <span class="sc">|&gt;</span></span>
-<span id="cb28-242"><a href="#cb28-242"></a>  <span class="fu">mutate</span>(<span class="at">model_num =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb28-243"><a href="#cb28-243"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-244"><a href="#cb28-244"></a>  <span class="fu">gt_bold_head</span>()</span>
-<span id="cb28-245"><a href="#cb28-245"></a><span class="in">```</span></span>
-<span id="cb28-246"><a href="#cb28-246"></a></span>
-<span id="cb28-247"><a href="#cb28-247"></a>We can see that the 11th model is an STLM model and the 6th model is the first ARIMA specification with the "DEMOG" recipe (this is the one that included economic and demographic covariates).</span>
-<span id="cb28-248"><a href="#cb28-248"></a></span>
-<span id="cb28-249"><a href="#cb28-249"></a>The plot for San Diego does not include a margin of error and it's listed as having an error in the legend. This is something that can be traced to the calibration. First I'll extract the ".modeltime_tables".</span>
-<span id="cb28-250"><a href="#cb28-250"></a></span>
-<span id="cb28-253"><a href="#cb28-253"></a><span class="in">```{r}</span></span>
-<span id="cb28-254"><a href="#cb28-254"></a><span class="co">#| label: investigate-error1</span></span>
-<span id="cb28-255"><a href="#cb28-255"></a></span>
-<span id="cb28-256"><a href="#cb28-256"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb28-257"><a href="#cb28-257"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-258"><a href="#cb28-258"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span>
-<span id="cb28-259"><a href="#cb28-259"></a></span>
-<span id="cb28-260"><a href="#cb28-260"></a><span class="in">```</span></span>
-<span id="cb28-261"><a href="#cb28-261"></a></span>
-<span id="cb28-262"><a href="#cb28-262"></a>I can see that the 6th model does contain calibration data, so this isn't the problem. Now I'll extract the calibration data just for this model to see what's going on.</span>
-<span id="cb28-263"><a href="#cb28-263"></a></span>
-<span id="cb28-266"><a href="#cb28-266"></a><span class="in">```{r}</span></span>
-<span id="cb28-267"><a href="#cb28-267"></a><span class="co">#| label: investigate-error2</span></span>
-<span id="cb28-268"><a href="#cb28-268"></a></span>
-<span id="cb28-269"><a href="#cb28-269"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
-<span id="cb28-270"><a href="#cb28-270"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-271"><a href="#cb28-271"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-272"><a href="#cb28-272"></a>  <span class="fu">filter</span>(.model_id <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-273"><a href="#cb28-273"></a>  <span class="fu">pluck</span>(<span class="st">".calibration_data"</span>, <span class="dv">1</span>)</span>
-<span id="cb28-274"><a href="#cb28-274"></a></span>
-<span id="cb28-275"><a href="#cb28-275"></a><span class="in">```</span></span>
-<span id="cb28-276"><a href="#cb28-276"></a></span>
-<span id="cb28-277"><a href="#cb28-277"></a>Gaaaahhhh! It's the missing data created by the lags in the recipe for this model. It might be interesting to run this model again without those lags, but I'll be happy just to know why there is no margin of error for this one. Interestingly, though, it looks like the STLM did a pretty good job with Detroit and New York.</span>
-<span id="cb28-278"><a href="#cb28-278"></a></span>
-<span id="cb28-279"><a href="#cb28-279"></a>Now it's on to forecasting the future.</span>
-<span id="cb28-280"><a href="#cb28-280"></a></span>
-<span id="cb28-281"><a href="#cb28-281"></a><span class="fu">## Forecasting future HPI</span></span>
-<span id="cb28-282"><a href="#cb28-282"></a></span>
-<span id="cb28-283"><a href="#cb28-283"></a>The first step in forecasting is re-fitting the models to the full data set including the test portion. I'll do this with <span class="in">`modeltime_nested_refit()`</span> . I'll immediately use that refit object to plot the forecasts.</span>
-<span id="cb28-284"><a href="#cb28-284"></a></span>
-<span id="cb28-287"><a href="#cb28-287"></a><span class="in">```{r}</span></span>
-<span id="cb28-288"><a href="#cb28-288"></a><span class="co">#| label: refit-best-mods</span></span>
-<span id="cb28-289"><a href="#cb28-289"></a></span>
-<span id="cb28-290"><a href="#cb28-290"></a>hpi_refit <span class="ot">&lt;-</span> hpi_best <span class="sc">|&gt;</span></span>
-<span id="cb28-291"><a href="#cb28-291"></a>  <span class="fu">modeltime_nested_refit</span>(<span class="at">control =</span> <span class="fu">control_nested_refit</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb28-292"><a href="#cb28-292"></a></span>
-<span id="cb28-293"><a href="#cb28-293"></a>hpi_refit <span class="sc">|&gt;</span></span>
-<span id="cb28-294"><a href="#cb28-294"></a>  <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-295"><a href="#cb28-295"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb28-296"><a href="#cb28-296"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb28-297"><a href="#cb28-297"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span>
-<span id="cb28-298"><a href="#cb28-298"></a></span>
-<span id="cb28-299"><a href="#cb28-299"></a><span class="in">```</span></span>
-<span id="cb28-300"><a href="#cb28-300"></a></span>
-<span id="cb28-301"><a href="#cb28-301"></a>It looks like the missing values due to the lags prevented the ARIMA from generating forecasts, but the other forecasts look quite believable and much better than the forecasts made by the global process.</span>
-<span id="cb28-302"><a href="#cb28-302"></a></span>
-<span id="cb28-303"><a href="#cb28-303"></a><span class="fu">## Comparing forecasts to what really happened</span></span>
-<span id="cb28-304"><a href="#cb28-304"></a></span>
-<span id="cb28-305"><a href="#cb28-305"></a>I used data that ended in December 2022 because that's the most recent data I had for some demographic variables. This isn't a problem for the STLM since this model doesn't rely on demographic covariates, but there is HPI data through September of 2023, and the forecasts go through December of 2023. So, here I'll just get the HPI data for 2023 for Dallas, Detroit, and New York.</span>
-<span id="cb28-306"><a href="#cb28-306"></a></span>
-<span id="cb28-309"><a href="#cb28-309"></a><span class="in">```{r}</span></span>
-<span id="cb28-310"><a href="#cb28-310"></a><span class="co">#| label: get-hpi2023-data</span></span>
-<span id="cb28-311"><a href="#cb28-311"></a><span class="co">#| cache: true</span></span>
-<span id="cb28-312"><a href="#cb28-312"></a></span>
-<span id="cb28-313"><a href="#cb28-313"></a>case_shiller_ids <span class="ot">&lt;-</span> fredr<span class="sc">::</span><span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-314"><a href="#cb28-314"></a>  <span class="fu">filter</span>(</span>
-<span id="cb28-315"><a href="#cb28-315"></a>    <span class="fu">str_detect</span>(</span>
-<span id="cb28-316"><a href="#cb28-316"></a>      title,</span>
-<span id="cb28-317"><a href="#cb28-317"></a>      <span class="st">"TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
-<span id="cb28-318"><a href="#cb28-318"></a>    ),</span>
-<span id="cb28-319"><a href="#cb28-319"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
-<span id="cb28-320"><a href="#cb28-320"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
-<span id="cb28-321"><a href="#cb28-321"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-322"><a href="#cb28-322"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb28-323"><a href="#cb28-323"></a>  <span class="fu">select</span>(city, id)</span>
-<span id="cb28-324"><a href="#cb28-324"></a></span>
-<span id="cb28-325"><a href="#cb28-325"></a><span class="co"># Get Case Shiller data for 2023</span></span>
-<span id="cb28-326"><a href="#cb28-326"></a>hpi_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
-<span id="cb28-327"><a href="#cb28-327"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-328"><a href="#cb28-328"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
-<span id="cb28-329"><a href="#cb28-329"></a>      id,</span>
-<span id="cb28-330"><a href="#cb28-330"></a>      \(x) fredr<span class="sc">::</span><span class="fu">fredr</span>(</span>
-<span id="cb28-331"><a href="#cb28-331"></a>        <span class="at">series_id =</span> x,</span>
-<span id="cb28-332"><a href="#cb28-332"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2020-01-01"</span>),</span>
-<span id="cb28-333"><a href="#cb28-333"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
-<span id="cb28-334"><a href="#cb28-334"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
-<span id="cb28-335"><a href="#cb28-335"></a>      )</span>
-<span id="cb28-336"><a href="#cb28-336"></a>    )</span>
-<span id="cb28-337"><a href="#cb28-337"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-338"><a href="#cb28-338"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
-<span id="cb28-339"><a href="#cb28-339"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
-<span id="cb28-340"><a href="#cb28-340"></a>  <span class="fu">select</span>(city, date, <span class="at">hpi =</span> value)</span>
-<span id="cb28-341"><a href="#cb28-341"></a></span>
-<span id="cb28-342"><a href="#cb28-342"></a>hpi_data <span class="sc">|&gt;</span></span>
-<span id="cb28-343"><a href="#cb28-343"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> hpi) <span class="sc">|&gt;</span></span>
-<span id="cb28-344"><a href="#cb28-344"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-345"><a href="#cb28-345"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-346"><a href="#cb28-346"></a>  <span class="fu">gt_bold_head</span>()</span>
-<span id="cb28-347"><a href="#cb28-347"></a></span>
-<span id="cb28-348"><a href="#cb28-348"></a><span class="in">```</span></span>
-<span id="cb28-349"><a href="#cb28-349"></a></span>
-<span id="cb28-350"><a href="#cb28-350"></a>Now I can make a table of accuracy statistics for these series.</span>
-<span id="cb28-351"><a href="#cb28-351"></a></span>
-<span id="cb28-354"><a href="#cb28-354"></a><span class="in">```{r}</span></span>
-<span id="cb28-355"><a href="#cb28-355"></a><span class="co">#| label: hpi2023-acc</span></span>
-<span id="cb28-356"><a href="#cb28-356"></a></span>
-<span id="cb28-357"><a href="#cb28-357"></a>hpi_data <span class="sc">|&gt;</span></span>
-<span id="cb28-358"><a href="#cb28-358"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb28-359"><a href="#cb28-359"></a>    hpi_refit <span class="sc">|&gt;</span></span>
-<span id="cb28-360"><a href="#cb28-360"></a>      <span class="fu">filter</span>(<span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-361"><a href="#cb28-361"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-362"><a href="#cb28-362"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-363"><a href="#cb28-363"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
-<span id="cb28-364"><a href="#cb28-364"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key),</span>
-<span id="cb28-365"><a href="#cb28-365"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">".index"</span>)</span>
-<span id="cb28-366"><a href="#cb28-366"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-367"><a href="#cb28-367"></a>  <span class="fu">group_nest</span>(city) <span class="sc">|&gt;</span></span>
-<span id="cb28-368"><a href="#cb28-368"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-369"><a href="#cb28-369"></a>    <span class="at">smape =</span> <span class="fu">map_dbl</span>(</span>
-<span id="cb28-370"><a href="#cb28-370"></a>      data,</span>
-<span id="cb28-371"><a href="#cb28-371"></a>      \(x) <span class="fu">smape</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
-<span id="cb28-372"><a href="#cb28-372"></a>    ),</span>
-<span id="cb28-373"><a href="#cb28-373"></a>    <span class="at">rmse =</span> <span class="fu">map_dbl</span>(</span>
-<span id="cb28-374"><a href="#cb28-374"></a>      data,</span>
-<span id="cb28-375"><a href="#cb28-375"></a>      \(x) <span class="fu">rmse</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
-<span id="cb28-376"><a href="#cb28-376"></a>    ),</span>
-<span id="cb28-377"><a href="#cb28-377"></a>    <span class="at">rsq =</span> <span class="fu">map_dbl</span>(</span>
-<span id="cb28-378"><a href="#cb28-378"></a>      data,</span>
-<span id="cb28-379"><a href="#cb28-379"></a>      \(x) <span class="fu">rsq</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
-<span id="cb28-380"><a href="#cb28-380"></a>    )</span>
-<span id="cb28-381"><a href="#cb28-381"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-382"><a href="#cb28-382"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
-<span id="cb28-383"><a href="#cb28-383"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-384"><a href="#cb28-384"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-385"><a href="#cb28-385"></a>  <span class="fu">gt_bold_head</span>()</span>
-<span id="cb28-386"><a href="#cb28-386"></a></span>
-<span id="cb28-387"><a href="#cb28-387"></a><span class="in">```</span></span>
-<span id="cb28-388"><a href="#cb28-388"></a></span>
-<span id="cb28-389"><a href="#cb28-389"></a>These are some pretty low (good) values of SMAPE. Let's see what these look like in plots.</span>
-<span id="cb28-390"><a href="#cb28-390"></a></span>
-<span id="cb28-393"><a href="#cb28-393"></a><span class="in">```{r}</span></span>
-<span id="cb28-394"><a href="#cb28-394"></a><span class="co">#| label: hpi2023-forecast-plot</span></span>
-<span id="cb28-395"><a href="#cb28-395"></a></span>
-<span id="cb28-396"><a href="#cb28-396"></a>hpi_data <span class="sc">|&gt;</span></span>
-<span id="cb28-397"><a href="#cb28-397"></a>  <span class="fu">mutate</span>(<span class="at">model_name =</span> <span class="st">"ACTUAL"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-398"><a href="#cb28-398"></a>  <span class="fu">rename</span>(<span class="at">.value =</span> hpi) <span class="sc">|&gt;</span></span>
-<span id="cb28-399"><a href="#cb28-399"></a>  <span class="fu">bind_rows</span>(</span>
-<span id="cb28-400"><a href="#cb28-400"></a>    hpi_refit <span class="sc">|&gt;</span></span>
-<span id="cb28-401"><a href="#cb28-401"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
-<span id="cb28-402"><a href="#cb28-402"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>, <span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-403"><a href="#cb28-403"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
-<span id="cb28-404"><a href="#cb28-404"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key) <span class="sc">|&gt;</span></span>
-<span id="cb28-405"><a href="#cb28-405"></a>      <span class="fu">rename</span>(<span class="at">date =</span> .index)</span>
-<span id="cb28-406"><a href="#cb28-406"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-407"><a href="#cb28-407"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-408"><a href="#cb28-408"></a>    <span class="at">model_name =</span> <span class="fu">fct_relevel</span>(model_name, <span class="st">"ACTUAL"</span>),</span>
-<span id="cb28-409"><a href="#cb28-409"></a>    <span class="at">lwidth =</span> <span class="fu">if_else</span>(model_name <span class="sc">%in%</span> <span class="st">"ACTUAL"</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb28-410"><a href="#cb28-410"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb28-411"><a href="#cb28-411"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">group =</span> model_name, <span class="at">color =</span> model_name)) <span class="sc">+</span></span>
-<span id="cb28-412"><a href="#cb28-412"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .value, <span class="at">linewidth =</span> lwidth)) <span class="sc">+</span></span>
-<span id="cb28-413"><a href="#cb28-413"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .conf_lo, <span class="at">ymax =</span> .conf_hi), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb28-414"><a href="#cb28-414"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal) <span class="sc">+</span></span>
-<span id="cb28-415"><a href="#cb28-415"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb28-416"><a href="#cb28-416"></a>  <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb28-417"><a href="#cb28-417"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> city, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb28-418"><a href="#cb28-418"></a>  <span class="fu">labs</span>(</span>
-<span id="cb28-419"><a href="#cb28-419"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
-<span id="cb28-420"><a href="#cb28-420"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb28-421"><a href="#cb28-421"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb28-422"><a href="#cb28-422"></a>    <span class="at">title =</span> <span class="st">"Forecasts vs. Actual Data"</span></span>
-<span id="cb28-423"><a href="#cb28-423"></a>  ) <span class="sc">+</span></span>
-<span id="cb28-424"><a href="#cb28-424"></a>  <span class="fu">guides</span>(<span class="at">linewidth =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb28-425"><a href="#cb28-425"></a>  theme_timetk <span class="sc">+</span></span>
-<span id="cb28-426"><a href="#cb28-426"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb28-427"><a href="#cb28-427"></a></span>
-<span id="cb28-428"><a href="#cb28-428"></a><span class="in">```</span></span>
-<span id="cb28-429"><a href="#cb28-429"></a></span>
-<span id="cb28-430"><a href="#cb28-430"></a>Not too bad! All three forecasts look like they were very close in the first few months of the forecast period, but started to underestimate later on.</span>
-<span id="cb28-431"><a href="#cb28-431"></a></span>
-<span id="cb28-432"><a href="#cb28-432"></a>This ends the series of planned posts on using <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/index.html)</span> with R. All in all this is a great package with all sorts of goodies for forecasting time series.</span>
+<div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1"></a><span class="co">---</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="an">title:</span><span class="co"> "Forecasting with {modeltime} - Part V"</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="an">subtitle:</span><span class="co"> "Selecting the best model for each city"</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a><span class="an">author:</span><span class="co"> "Arcenis Rojas"</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="an">date:</span><span class="co"> "2/21/2024"</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a><span class="an">bibliography:</span><span class="co"> references.bib</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a><span class="an">categories:</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a><span class="co">  - Time Series</span></span>
+<span id="cb26-9"><a href="#cb26-9"></a><span class="co">  - Forecasting</span></span>
+<span id="cb26-10"><a href="#cb26-10"></a><span class="co">  - Machine Learning</span></span>
+<span id="cb26-11"><a href="#cb26-11"></a><span class="an">fig-width:</span><span class="co"> 8</span></span>
+<span id="cb26-12"><a href="#cb26-12"></a><span class="an">fig-height:</span><span class="co"> 8</span></span>
+<span id="cb26-13"><a href="#cb26-13"></a><span class="co">---</span></span>
+<span id="cb26-14"><a href="#cb26-14"></a></span>
+<span id="cb26-15"><a href="#cb26-15"></a>This is the final (planned) post for this series on the <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/index.html)</span> <span class="co">[</span><span class="ot">@modeltime</span><span class="co">]</span> package I will identify the best model to forecast the Case-Shiller Home Price Index using an iterative modeling process. The models to work with will be the 11 models that I identified through the global modeling process in <span class="co">[</span><span class="ot">Forecasting with {modeltime} - Part IV</span><span class="co">](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.qmd)</span>. Additionally I'll be using <span class="co">[</span><span class="ot">parallel</span><span class="co">](https://rdocumentation.org/packages/parallel/versions/3.6.2)</span> <span class="co">[</span><span class="ot">@parallel</span><span class="co">]</span> for parallel processing, <span class="co">[</span><span class="ot">tidymodels</span><span class="co">](https://www.tidymodels.org/)</span> <span class="co">[</span><span class="ot">@tidymodels</span><span class="co">]</span> for a modeling framework, <span class="co">[</span><span class="ot">tidyverse</span><span class="co">](https://www.tidyverse.org/)</span> <span class="co">[</span><span class="ot">@tidyverse</span><span class="co">]</span> for data wrangling and visualization, and <span class="co">[</span><span class="ot">gt</span><span class="co">](#0)</span> <span class="co">[</span><span class="ot">@gt</span><span class="co">]</span> for table output.</span>
+<span id="cb26-16"><a href="#cb26-16"></a></span>
+<span id="cb26-19"><a href="#cb26-19"></a><span class="in">```{r}</span></span>
+<span id="cb26-20"><a href="#cb26-20"></a><span class="co">#| label: load-packages</span></span>
+<span id="cb26-21"><a href="#cb26-21"></a></span>
+<span id="cb26-22"><a href="#cb26-22"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb26-23"><a href="#cb26-23"></a><span class="fu">library</span>(timetk)</span>
+<span id="cb26-24"><a href="#cb26-24"></a><span class="fu">library</span>(modeltime)</span>
+<span id="cb26-25"><a href="#cb26-25"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb26-26"><a href="#cb26-26"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb26-27"><a href="#cb26-27"></a><span class="fu">library</span>(gt)</span>
+<span id="cb26-28"><a href="#cb26-28"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb26-29"><a href="#cb26-29"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"lag"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb26-30"><a href="#cb26-30"></a><span class="fu">tidymodels_prefer</span>()</span>
+<span id="cb26-31"><a href="#cb26-31"></a></span>
+<span id="cb26-32"><a href="#cb26-32"></a><span class="in">```</span></span>
+<span id="cb26-33"><a href="#cb26-33"></a></span>
+<span id="cb26-36"><a href="#cb26-36"></a><span class="in">```{r}</span></span>
+<span id="cb26-37"><a href="#cb26-37"></a><span class="co">#| label: import-data</span></span>
+<span id="cb26-38"><a href="#cb26-38"></a><span class="co">#| include: false</span></span>
+<span id="cb26-39"><a href="#cb26-39"></a></span>
+<span id="cb26-40"><a href="#cb26-40"></a>modEnv <span class="ot">&lt;-</span> <span class="fu">new.env</span>()</span>
+<span id="cb26-41"><a href="#cb26-41"></a><span class="fu">source</span>(<span class="st">"build-global-models.R"</span>, <span class="at">local =</span> modEnv)</span>
+<span id="cb26-42"><a href="#cb26-42"></a><span class="fu">source</span>(<span class="st">"../_common-resources/gt-bold-head.R"</span>)</span>
+<span id="cb26-43"><a href="#cb26-43"></a></span>
+<span id="cb26-44"><a href="#cb26-44"></a>theme_timetk <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"../_common-resources/theme-timetk.Rds"</span>)</span>
+<span id="cb26-45"><a href="#cb26-45"></a></span>
+<span id="cb26-46"><a href="#cb26-46"></a>econ_data <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>econ_data</span>
+<span id="cb26-47"><a href="#cb26-47"></a>part4_mods <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>part4_mods</span>
+<span id="cb26-48"><a href="#cb26-48"></a>hpi_global_wfset <span class="ot">&lt;-</span> modEnv<span class="sc">$</span>hpi_wfset</span>
+<span id="cb26-49"><a href="#cb26-49"></a><span class="fu">rm</span>(modEnv)</span>
+<span id="cb26-50"><a href="#cb26-50"></a></span>
+<span id="cb26-51"><a href="#cb26-51"></a><span class="in">```</span></span>
+<span id="cb26-52"><a href="#cb26-52"></a></span>
+<span id="cb26-53"><a href="#cb26-53"></a>Below is a look at the names of the model specifications from the last post.</span>
+<span id="cb26-54"><a href="#cb26-54"></a></span>
+<span id="cb26-57"><a href="#cb26-57"></a><span class="in">```{r}</span></span>
+<span id="cb26-58"><a href="#cb26-58"></a><span class="co">#| label: show-mod-names</span></span>
+<span id="cb26-59"><a href="#cb26-59"></a></span>
+<span id="cb26-60"><a href="#cb26-60"></a>part4_mods <span class="sc">|&gt;</span> <span class="fu">gt</span>() <span class="sc">|&gt;</span> <span class="fu">gt_bold_head</span>()</span>
+<span id="cb26-61"><a href="#cb26-61"></a></span>
+<span id="cb26-62"><a href="#cb26-62"></a><span class="in">```</span></span>
+<span id="cb26-63"><a href="#cb26-63"></a></span>
+<span id="cb26-64"><a href="#cb26-64"></a>And this is what the <span class="in">`workflowset`</span> object looked like.</span>
+<span id="cb26-65"><a href="#cb26-65"></a></span>
+<span id="cb26-68"><a href="#cb26-68"></a><span class="in">```{r}</span></span>
+<span id="cb26-69"><a href="#cb26-69"></a><span class="co">#| label: show-wfset</span></span>
+<span id="cb26-70"><a href="#cb26-70"></a></span>
+<span id="cb26-71"><a href="#cb26-71"></a>hpi_global_wfset</span>
+<span id="cb26-72"><a href="#cb26-72"></a></span>
+<span id="cb26-73"><a href="#cb26-73"></a><span class="in">```</span></span>
+<span id="cb26-74"><a href="#cb26-74"></a></span>
+<span id="cb26-75"><a href="#cb26-75"></a><span class="fu">## Filtering workflows</span></span>
+<span id="cb26-76"><a href="#cb26-76"></a></span>
+<span id="cb26-77"><a href="#cb26-77"></a>I'll first filter the set of workflows to the 11 that I want to keep.</span>
+<span id="cb26-78"><a href="#cb26-78"></a></span>
+<span id="cb26-81"><a href="#cb26-81"></a><span class="in">```{r}</span></span>
+<span id="cb26-82"><a href="#cb26-82"></a><span class="co">#| label: filter-wflows </span></span>
+<span id="cb26-83"><a href="#cb26-83"></a></span>
+<span id="cb26-84"><a href="#cb26-84"></a>mod_ids <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(part4_mods<span class="sc">$</span>.model_desc)</span>
+<span id="cb26-85"><a href="#cb26-85"></a></span>
+<span id="cb26-86"><a href="#cb26-86"></a>hpi_global_wfset <span class="ot">&lt;-</span> hpi_global_wfset <span class="sc">|&gt;</span></span>
+<span id="cb26-87"><a href="#cb26-87"></a>  <span class="fu">filter</span>(wflow_id <span class="sc">%in%</span> mod_ids)</span>
+<span id="cb26-88"><a href="#cb26-88"></a></span>
+<span id="cb26-89"><a href="#cb26-89"></a><span class="in">```</span></span>
+<span id="cb26-90"><a href="#cb26-90"></a></span>
+<span id="cb26-91"><a href="#cb26-91"></a>These are all of the necessary workflows including recipes and model specifications.</span>
+<span id="cb26-92"><a href="#cb26-92"></a></span>
+<span id="cb26-93"><a href="#cb26-93"></a><span class="fu">## Splitting the data</span></span>
+<span id="cb26-94"><a href="#cb26-94"></a></span>
+<span id="cb26-95"><a href="#cb26-95"></a>Next up is creating the data split object. This is a different set of functions than what I used to split the data for the global modeling process. In this workflow the future dates get added for each city up front.</span>
+<span id="cb26-96"><a href="#cb26-96"></a></span>
+<span id="cb26-99"><a href="#cb26-99"></a><span class="in">```{r}</span></span>
+<span id="cb26-100"><a href="#cb26-100"></a><span class="co">#| label: split-data</span></span>
+<span id="cb26-101"><a href="#cb26-101"></a></span>
+<span id="cb26-102"><a href="#cb26-102"></a>econ_splits <span class="ot">&lt;-</span> econ_data <span class="sc">|&gt;</span></span>
+<span id="cb26-103"><a href="#cb26-103"></a>  <span class="fu">extend_timeseries</span>(</span>
+<span id="cb26-104"><a href="#cb26-104"></a>    <span class="at">.id_var =</span> city,</span>
+<span id="cb26-105"><a href="#cb26-105"></a>    <span class="at">.date_var =</span> date,</span>
+<span id="cb26-106"><a href="#cb26-106"></a>    <span class="at">.length_future =</span> <span class="dv">12</span></span>
+<span id="cb26-107"><a href="#cb26-107"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-108"><a href="#cb26-108"></a>  <span class="fu">nest_timeseries</span>(</span>
+<span id="cb26-109"><a href="#cb26-109"></a>    <span class="at">.id_var =</span> city,</span>
+<span id="cb26-110"><a href="#cb26-110"></a>    <span class="at">.length_future =</span> <span class="dv">12</span>,</span>
+<span id="cb26-111"><a href="#cb26-111"></a>    <span class="at">.length_actual =</span> <span class="dv">17</span> <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb26-112"><a href="#cb26-112"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-113"><a href="#cb26-113"></a>  <span class="fu">split_nested_timeseries</span>(<span class="at">.length_test =</span> <span class="dv">24</span>)</span>
+<span id="cb26-114"><a href="#cb26-114"></a></span>
+<span id="cb26-115"><a href="#cb26-115"></a>econ_splits</span>
+<span id="cb26-116"><a href="#cb26-116"></a><span class="in">```</span></span>
+<span id="cb26-117"><a href="#cb26-117"></a></span>
+<span id="cb26-118"><a href="#cb26-118"></a>With these two objects prepared I can now fit the models iteratively for each city.</span>
+<span id="cb26-119"><a href="#cb26-119"></a></span>
+<span id="cb26-120"><a href="#cb26-120"></a><span class="fu">## Fit models</span></span>
+<span id="cb26-121"><a href="#cb26-121"></a></span>
+<span id="cb26-122"><a href="#cb26-122"></a>I'll first prepare a parallel processing cluster and set a random seed for each node then fit the models.</span>
+<span id="cb26-123"><a href="#cb26-123"></a></span>
+<span id="cb26-124"><a href="#cb26-124"></a>::: callout-note</span>
+<span id="cb26-125"><a href="#cb26-125"></a><span class="in">`modeltime_nested_fit()`</span> requires that models be specified individually rather than as a <span class="in">`workflowset`</span> object.</span>
+<span id="cb26-126"><a href="#cb26-126"></a>:::</span>
+<span id="cb26-127"><a href="#cb26-127"></a></span>
+<span id="cb26-130"><a href="#cb26-130"></a><span class="in">```{r}</span></span>
+<span id="cb26-131"><a href="#cb26-131"></a><span class="co">#| label: fit-models</span></span>
+<span id="cb26-132"><a href="#cb26-132"></a><span class="co">#| cache: true</span></span>
+<span id="cb26-133"><a href="#cb26-133"></a></span>
+<span id="cb26-134"><a href="#cb26-134"></a>cl <span class="ot">&lt;-</span> <span class="fu">makePSOCKcluster</span>(<span class="fu">nrow</span>(part4_mods))</span>
+<span id="cb26-135"><a href="#cb26-135"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
+<span id="cb26-136"><a href="#cb26-136"></a><span class="fu">invisible</span>(</span>
+<span id="cb26-137"><a href="#cb26-137"></a>  <span class="fu">clusterCall</span>(cl, <span class="cf">function</span>(x) <span class="fu">.libPaths</span>(x), <span class="fu">.libPaths</span>())</span>
+<span id="cb26-138"><a href="#cb26-138"></a>)</span>
+<span id="cb26-139"><a href="#cb26-139"></a><span class="fu">print</span>(cl)</span>
+<span id="cb26-140"><a href="#cb26-140"></a><span class="fu">invisible</span>(<span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">500</span>)))</span>
+<span id="cb26-141"><a href="#cb26-141"></a></span>
+<span id="cb26-142"><a href="#cb26-142"></a>hpi_wflowset <span class="ot">&lt;-</span> <span class="fu">modeltime_nested_fit</span>(</span>
+<span id="cb26-143"><a href="#cb26-143"></a>  econ_splits,</span>
+<span id="cb26-144"><a href="#cb26-144"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">1</span>]),</span>
+<span id="cb26-145"><a href="#cb26-145"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">2</span>]),</span>
+<span id="cb26-146"><a href="#cb26-146"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">3</span>]),</span>
+<span id="cb26-147"><a href="#cb26-147"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">4</span>]),</span>
+<span id="cb26-148"><a href="#cb26-148"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">5</span>]),</span>
+<span id="cb26-149"><a href="#cb26-149"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">6</span>]),</span>
+<span id="cb26-150"><a href="#cb26-150"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">7</span>]),</span>
+<span id="cb26-151"><a href="#cb26-151"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">8</span>]),</span>
+<span id="cb26-152"><a href="#cb26-152"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">9</span>]),</span>
+<span id="cb26-153"><a href="#cb26-153"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">10</span>]),</span>
+<span id="cb26-154"><a href="#cb26-154"></a>  hpi_global_wfset <span class="sc">|&gt;</span> <span class="fu">extract_workflow</span>(mod_ids[<span class="dv">11</span>]),</span>
+<span id="cb26-155"><a href="#cb26-155"></a>  <span class="at">control =</span> <span class="fu">control_nested_fit</span>(<span class="at">verbose =</span> <span class="cn">TRUE</span>, <span class="at">allow_par =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-156"><a href="#cb26-156"></a>)</span>
+<span id="cb26-157"><a href="#cb26-157"></a></span>
+<span id="cb26-158"><a href="#cb26-158"></a><span class="fu">stopCluster</span>(cl)</span>
+<span id="cb26-159"><a href="#cb26-159"></a><span class="fu">rm</span>(cl)</span>
+<span id="cb26-160"><a href="#cb26-160"></a></span>
+<span id="cb26-161"><a href="#cb26-161"></a>hpi_wflowset</span>
+<span id="cb26-162"><a href="#cb26-162"></a><span class="in">```</span></span>
+<span id="cb26-163"><a href="#cb26-163"></a></span>
+<span id="cb26-164"><a href="#cb26-164"></a>Notice that this object is grouped by city whereas the <span class="co">[</span><span class="ot">corresponding object for the global modeling process</span><span class="co">](../20240220-forecasting-with-modeltime-part-4/forecasting-with-modeltime-part-4.html#fitting-the-models)</span>{target="_blank"} is listed by model. This happens because <span class="in">`modeltime_nested_fit()`</span> calls a split object that has the data grouped by ID already. All of the functions in the <span class="co">[</span><span class="ot">modeltime Nested Forecasting</span><span class="co">](https://business-science.github.io/modeltime/articles/nested-forecasting.html)</span> workflow geared toward doing things at the level of the ID variable, which is "city" in this case. Each row contains a <span class="in">`mdl_time_tbl`</span> object in the ".modeltime_tables" column for each row which has one row for each model that was fit to the data of the ID in that row. This <span class="in">`mdl_time_tbl`</span> object contains calibration data, which gets created during the iterative modeling process. Below is an example.</span>
+<span id="cb26-165"><a href="#cb26-165"></a></span>
+<span id="cb26-168"><a href="#cb26-168"></a><span class="in">```{r}</span></span>
+<span id="cb26-169"><a href="#cb26-169"></a><span class="co">#| label: show-mdl-time-tbl</span></span>
+<span id="cb26-170"><a href="#cb26-170"></a></span>
+<span id="cb26-171"><a href="#cb26-171"></a>hpi_wflowset <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span>
+<span id="cb26-172"><a href="#cb26-172"></a></span>
+<span id="cb26-173"><a href="#cb26-173"></a><span class="in">```</span></span>
+<span id="cb26-174"><a href="#cb26-174"></a></span>
+<span id="cb26-175"><a href="#cb26-175"></a><span class="fu">## Selecting the best models</span></span>
+<span id="cb26-176"><a href="#cb26-176"></a></span>
+<span id="cb26-177"><a href="#cb26-177"></a><span class="in">`{modeltime}`</span> has the <span class="in">`modeltime_nested_select_best()`</span> for selecting the best model for each ID in a nested model table. It requires the specification of a metric for determining which model is "best". As before, I'll use the Scaled Mean Average Percent Error (SMAPE).</span>
+<span id="cb26-178"><a href="#cb26-178"></a></span>
+<span id="cb26-181"><a href="#cb26-181"></a><span class="in">```{r}</span></span>
+<span id="cb26-182"><a href="#cb26-182"></a><span class="co">#| label: select-best-mods</span></span>
+<span id="cb26-183"><a href="#cb26-183"></a></span>
+<span id="cb26-184"><a href="#cb26-184"></a>hpi_best <span class="ot">&lt;-</span> hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb26-185"><a href="#cb26-185"></a>  <span class="fu">modeltime_nested_select_best</span>(</span>
+<span id="cb26-186"><a href="#cb26-186"></a>    <span class="at">metric =</span> <span class="st">"smape"</span>,</span>
+<span id="cb26-187"><a href="#cb26-187"></a>    <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb26-188"><a href="#cb26-188"></a>    <span class="at">filter_test_forecasts =</span> <span class="cn">TRUE</span></span>
+<span id="cb26-189"><a href="#cb26-189"></a>  )</span>
+<span id="cb26-190"><a href="#cb26-190"></a></span>
+<span id="cb26-191"><a href="#cb26-191"></a>hpi_best</span>
+<span id="cb26-192"><a href="#cb26-192"></a><span class="in">```</span></span>
+<span id="cb26-193"><a href="#cb26-193"></a></span>
+<span id="cb26-194"><a href="#cb26-194"></a>Notice that after selecting the best model it's only the ".modeltime_tables" column that changes. It now contains a table with one single row corresponding to the model that yielded the best value of the selected metric.</span>
+<span id="cb26-195"><a href="#cb26-195"></a></span>
+<span id="cb26-196"><a href="#cb26-196"></a><span class="fu">## View accuracy best models</span></span>
+<span id="cb26-197"><a href="#cb26-197"></a></span>
+<span id="cb26-198"><a href="#cb26-198"></a>One gets the accuracy from a nested <span class="in">`modeltime`</span> table by using <span class="in">`extract_nested_test_accuracy()`</span> . Interestingly, this function shows the accuracy of all models even if it's run with the table of the "best" models. So below I'll use <span class="in">`group_by()`</span> to get the accuracy for the best model for each city.</span>
+<span id="cb26-199"><a href="#cb26-199"></a></span>
+<span id="cb26-202"><a href="#cb26-202"></a><span class="in">```{r}</span></span>
+<span id="cb26-203"><a href="#cb26-203"></a><span class="co">#| label: tbl-show-acc</span></span>
+<span id="cb26-204"><a href="#cb26-204"></a></span>
+<span id="cb26-205"><a href="#cb26-205"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb26-206"><a href="#cb26-206"></a>  <span class="fu">extract_nested_test_accuracy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-207"><a href="#cb26-207"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb26-208"><a href="#cb26-208"></a>  <span class="fu">slice_min</span>(smape, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-209"><a href="#cb26-209"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-210"><a href="#cb26-210"></a>  <span class="fu">table_modeltime_accuracy</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-211"><a href="#cb26-211"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb26-212"><a href="#cb26-212"></a></span>
+<span id="cb26-213"><a href="#cb26-213"></a><span class="in">```</span></span>
+<span id="cb26-214"><a href="#cb26-214"></a></span>
+<span id="cb26-215"><a href="#cb26-215"></a>Next are the forecasts against the test data.</span>
+<span id="cb26-216"><a href="#cb26-216"></a></span>
+<span id="cb26-219"><a href="#cb26-219"></a><span class="in">```{r}</span></span>
+<span id="cb26-220"><a href="#cb26-220"></a><span class="co">#| label: fig-test-forecasts</span></span>
+<span id="cb26-221"><a href="#cb26-221"></a></span>
+<span id="cb26-222"><a href="#cb26-222"></a>fcst_pal <span class="ot">&lt;-</span> <span class="fu">c</span>(                                                     <span class="co"># &lt;1&gt;</span></span>
+<span id="cb26-223"><a href="#cb26-223"></a>  <span class="st">"#2c3e50"</span>, <span class="st">"#FF0000"</span>, <span class="st">"#00FFFF"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#0000FF"</span>, <span class="st">"#00FF00"</span>,</span>
+<span id="cb26-224"><a href="#cb26-224"></a>  <span class="st">"#FF00FF"</span>, <span class="st">"#FF8000"</span>, <span class="st">"#0080FF"</span>, <span class="st">"#80FF00"</span>, <span class="st">"#8000FF"</span>, <span class="st">"#00FF80"</span>,</span>
+<span id="cb26-225"><a href="#cb26-225"></a>  <span class="st">"#FF0080"</span></span>
+<span id="cb26-226"><a href="#cb26-226"></a>)</span>
+<span id="cb26-227"><a href="#cb26-227"></a></span>
+<span id="cb26-228"><a href="#cb26-228"></a>hpi_best <span class="sc">|&gt;</span></span>
+<span id="cb26-229"><a href="#cb26-229"></a>  <span class="fu">extract_nested_test_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-230"><a href="#cb26-230"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb26-231"><a href="#cb26-231"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb26-232"><a href="#cb26-232"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span>
+<span id="cb26-233"><a href="#cb26-233"></a></span>
+<span id="cb26-234"><a href="#cb26-234"></a><span class="in">```</span></span>
+<span id="cb26-235"><a href="#cb26-235"></a></span>
+<span id="cb26-236"><a href="#cb26-236"></a><span class="ss">1.  </span>Create a color palette for plotting.</span>
+<span id="cb26-237"><a href="#cb26-237"></a></span>
+<span id="cb26-238"><a href="#cb26-238"></a>For Dallas, Detroit, and New York the 11th model in the original workflow which is a Seasonal Decomposition ARIMA model and for San Diego it's the 6th model which is just called "REGRESSION". I'll show the table of model names here here with a "model_num" column indicating model number.</span>
+<span id="cb26-239"><a href="#cb26-239"></a></span>
+<span id="cb26-242"><a href="#cb26-242"></a><span class="in">```{r}</span></span>
+<span id="cb26-243"><a href="#cb26-243"></a>part4_mods <span class="sc">|&gt;</span></span>
+<span id="cb26-244"><a href="#cb26-244"></a>  <span class="fu">mutate</span>(<span class="at">model_num =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb26-245"><a href="#cb26-245"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-246"><a href="#cb26-246"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb26-247"><a href="#cb26-247"></a><span class="in">```</span></span>
+<span id="cb26-248"><a href="#cb26-248"></a></span>
+<span id="cb26-249"><a href="#cb26-249"></a>We can see that the 11th model is an STLM model and the 6th model is the first ARIMA specification with the "DEMOG" recipe (this is the one that included economic and demographic covariates).</span>
+<span id="cb26-250"><a href="#cb26-250"></a></span>
+<span id="cb26-251"><a href="#cb26-251"></a>The plot for San Diego does not include a margin of error and it's listed as having an error in the legend. This is something that can be traced to the calibration. First I'll extract the ".modeltime_tables".</span>
+<span id="cb26-252"><a href="#cb26-252"></a></span>
+<span id="cb26-255"><a href="#cb26-255"></a><span class="in">```{r}</span></span>
+<span id="cb26-256"><a href="#cb26-256"></a><span class="co">#| label: investigate-error1</span></span>
+<span id="cb26-257"><a href="#cb26-257"></a></span>
+<span id="cb26-258"><a href="#cb26-258"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb26-259"><a href="#cb26-259"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-260"><a href="#cb26-260"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>)</span>
+<span id="cb26-261"><a href="#cb26-261"></a></span>
+<span id="cb26-262"><a href="#cb26-262"></a><span class="in">```</span></span>
+<span id="cb26-263"><a href="#cb26-263"></a></span>
+<span id="cb26-264"><a href="#cb26-264"></a>I can see that the 6th model does contain calibration data, so this isn't the problem. Now I'll extract the calibration data just for this model to see what's going on.</span>
+<span id="cb26-265"><a href="#cb26-265"></a></span>
+<span id="cb26-268"><a href="#cb26-268"></a><span class="in">```{r}</span></span>
+<span id="cb26-269"><a href="#cb26-269"></a><span class="co">#| label: investigate-error2</span></span>
+<span id="cb26-270"><a href="#cb26-270"></a></span>
+<span id="cb26-271"><a href="#cb26-271"></a>hpi_wflowset <span class="sc">|&gt;</span></span>
+<span id="cb26-272"><a href="#cb26-272"></a>  <span class="fu">filter</span>(city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-273"><a href="#cb26-273"></a>  <span class="fu">pluck</span>(<span class="st">".modeltime_tables"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-274"><a href="#cb26-274"></a>  <span class="fu">filter</span>(.model_id <span class="sc">==</span> <span class="dv">6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-275"><a href="#cb26-275"></a>  <span class="fu">pluck</span>(<span class="st">".calibration_data"</span>, <span class="dv">1</span>)</span>
+<span id="cb26-276"><a href="#cb26-276"></a></span>
+<span id="cb26-277"><a href="#cb26-277"></a><span class="in">```</span></span>
+<span id="cb26-278"><a href="#cb26-278"></a></span>
+<span id="cb26-279"><a href="#cb26-279"></a>Gaaaahhhh! It's the missing data created by the lags in the recipe for this model. It might be interesting to run this model again without those lags, but I'll be happy just to know why there is no margin of error for this one. Interestingly, though, it looks like the STLM did a pretty good job with Detroit and New York.</span>
+<span id="cb26-280"><a href="#cb26-280"></a></span>
+<span id="cb26-281"><a href="#cb26-281"></a>Now it's on to forecasting the future.</span>
+<span id="cb26-282"><a href="#cb26-282"></a></span>
+<span id="cb26-283"><a href="#cb26-283"></a><span class="fu">## Forecasting future HPI</span></span>
+<span id="cb26-284"><a href="#cb26-284"></a></span>
+<span id="cb26-285"><a href="#cb26-285"></a>The first step in forecasting is re-fitting the models to the full data set including the test portion. I'll do this with <span class="in">`modeltime_nested_refit()`</span> . I'll immediately use that refit object to plot the forecasts.</span>
+<span id="cb26-286"><a href="#cb26-286"></a></span>
+<span id="cb26-289"><a href="#cb26-289"></a><span class="in">```{r}</span></span>
+<span id="cb26-290"><a href="#cb26-290"></a><span class="co">#| label: refit-best-mods</span></span>
+<span id="cb26-291"><a href="#cb26-291"></a></span>
+<span id="cb26-292"><a href="#cb26-292"></a>hpi_refit <span class="ot">&lt;-</span> hpi_best <span class="sc">|&gt;</span></span>
+<span id="cb26-293"><a href="#cb26-293"></a>  <span class="fu">modeltime_nested_refit</span>(<span class="at">control =</span> <span class="fu">control_nested_refit</span>(<span class="at">verbose =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb26-294"><a href="#cb26-294"></a></span>
+<span id="cb26-295"><a href="#cb26-295"></a>hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb26-296"><a href="#cb26-296"></a>  <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-297"><a href="#cb26-297"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb26-298"><a href="#cb26-298"></a>  <span class="fu">plot_modeltime_forecast</span>(<span class="at">.interactive =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb26-299"><a href="#cb26-299"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal)</span>
+<span id="cb26-300"><a href="#cb26-300"></a></span>
+<span id="cb26-301"><a href="#cb26-301"></a><span class="in">```</span></span>
+<span id="cb26-302"><a href="#cb26-302"></a></span>
+<span id="cb26-303"><a href="#cb26-303"></a>It looks like the missing values due to the lags prevented the ARIMA from generating forecasts, but the other forecasts look quite believable and much better than the forecasts made by the global process.</span>
+<span id="cb26-304"><a href="#cb26-304"></a></span>
+<span id="cb26-305"><a href="#cb26-305"></a><span class="fu">## Comparing forecasts to what really happened</span></span>
+<span id="cb26-306"><a href="#cb26-306"></a></span>
+<span id="cb26-307"><a href="#cb26-307"></a>I used data that ended in December 2022 because that's the most recent data I had for some demographic variables. This isn't a problem for the STLM since this model doesn't rely on demographic covariates, but there is HPI data through September of 2023, and the forecasts go through December of 2023. So, here I'll just get the HPI data for 2023 for Dallas, Detroit, and New York.</span>
+<span id="cb26-308"><a href="#cb26-308"></a></span>
+<span id="cb26-311"><a href="#cb26-311"></a><span class="in">```{r}</span></span>
+<span id="cb26-312"><a href="#cb26-312"></a><span class="co">#| label: get-hpi2023-data</span></span>
+<span id="cb26-313"><a href="#cb26-313"></a><span class="co">#| cache: true</span></span>
+<span id="cb26-314"><a href="#cb26-314"></a></span>
+<span id="cb26-315"><a href="#cb26-315"></a>case_shiller_ids <span class="ot">&lt;-</span> fredr<span class="sc">::</span><span class="fu">fredr_series_search_text</span>(<span class="st">"Case-Shiller"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-316"><a href="#cb26-316"></a>  <span class="fu">filter</span>(</span>
+<span id="cb26-317"><a href="#cb26-317"></a>    <span class="fu">str_detect</span>(</span>
+<span id="cb26-318"><a href="#cb26-318"></a>      title,</span>
+<span id="cb26-319"><a href="#cb26-319"></a>      <span class="st">"TX-Dallas|NY-New York|MI-Detroit Home Price Index"</span></span>
+<span id="cb26-320"><a href="#cb26-320"></a>    ),</span>
+<span id="cb26-321"><a href="#cb26-321"></a>    seasonal_adjustment_short <span class="sc">%in%</span> <span class="st">"NSA"</span>,</span>
+<span id="cb26-322"><a href="#cb26-322"></a>    frequency <span class="sc">%in%</span> <span class="st">"Monthly"</span></span>
+<span id="cb26-323"><a href="#cb26-323"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-324"><a href="#cb26-324"></a>  <span class="fu">mutate</span>(<span class="at">city =</span> <span class="fu">str_extract</span>(title, <span class="st">"New York|Dallas|San Diego|Detroit"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb26-325"><a href="#cb26-325"></a>  <span class="fu">select</span>(city, id)</span>
+<span id="cb26-326"><a href="#cb26-326"></a></span>
+<span id="cb26-327"><a href="#cb26-327"></a><span class="co"># Get Case Shiller data for 2023</span></span>
+<span id="cb26-328"><a href="#cb26-328"></a>hpi_data <span class="ot">&lt;-</span> case_shiller_ids <span class="sc">|&gt;</span></span>
+<span id="cb26-329"><a href="#cb26-329"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-330"><a href="#cb26-330"></a>    <span class="at">data =</span> <span class="fu">map</span>(</span>
+<span id="cb26-331"><a href="#cb26-331"></a>      id,</span>
+<span id="cb26-332"><a href="#cb26-332"></a>      \(x) fredr<span class="sc">::</span><span class="fu">fredr</span>(</span>
+<span id="cb26-333"><a href="#cb26-333"></a>        <span class="at">series_id =</span> x,</span>
+<span id="cb26-334"><a href="#cb26-334"></a>        <span class="at">observation_start =</span> <span class="fu">ymd</span>(<span class="st">"2020-01-01"</span>),</span>
+<span id="cb26-335"><a href="#cb26-335"></a>        <span class="at">observation_end =</span> <span class="fu">ymd</span>(<span class="st">"2023-12-31"</span>),</span>
+<span id="cb26-336"><a href="#cb26-336"></a>        <span class="at">frequency =</span> <span class="st">"m"</span></span>
+<span id="cb26-337"><a href="#cb26-337"></a>      )</span>
+<span id="cb26-338"><a href="#cb26-338"></a>    )</span>
+<span id="cb26-339"><a href="#cb26-339"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-340"><a href="#cb26-340"></a>  <span class="fu">select</span>(<span class="sc">-</span>id) <span class="sc">|&gt;</span></span>
+<span id="cb26-341"><a href="#cb26-341"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb26-342"><a href="#cb26-342"></a>  <span class="fu">select</span>(city, date, <span class="at">hpi =</span> value)</span>
+<span id="cb26-343"><a href="#cb26-343"></a></span>
+<span id="cb26-344"><a href="#cb26-344"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb26-345"><a href="#cb26-345"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> city, <span class="at">values_from =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb26-346"><a href="#cb26-346"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-347"><a href="#cb26-347"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-348"><a href="#cb26-348"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb26-349"><a href="#cb26-349"></a></span>
+<span id="cb26-350"><a href="#cb26-350"></a><span class="in">```</span></span>
+<span id="cb26-351"><a href="#cb26-351"></a></span>
+<span id="cb26-352"><a href="#cb26-352"></a>Now I can make a table of accuracy statistics for these series.</span>
+<span id="cb26-353"><a href="#cb26-353"></a></span>
+<span id="cb26-356"><a href="#cb26-356"></a><span class="in">```{r}</span></span>
+<span id="cb26-357"><a href="#cb26-357"></a><span class="co">#| label: hpi2023-acc</span></span>
+<span id="cb26-358"><a href="#cb26-358"></a></span>
+<span id="cb26-359"><a href="#cb26-359"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb26-360"><a href="#cb26-360"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb26-361"><a href="#cb26-361"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb26-362"><a href="#cb26-362"></a>      <span class="fu">filter</span>(<span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-363"><a href="#cb26-363"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-364"><a href="#cb26-364"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-365"><a href="#cb26-365"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb26-366"><a href="#cb26-366"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key),</span>
+<span id="cb26-367"><a href="#cb26-367"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"city"</span>, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">".index"</span>)</span>
+<span id="cb26-368"><a href="#cb26-368"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-369"><a href="#cb26-369"></a>  <span class="fu">group_nest</span>(city) <span class="sc">|&gt;</span></span>
+<span id="cb26-370"><a href="#cb26-370"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-371"><a href="#cb26-371"></a>    <span class="at">smape =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb26-372"><a href="#cb26-372"></a>      data,</span>
+<span id="cb26-373"><a href="#cb26-373"></a>      \(x) <span class="fu">smape</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb26-374"><a href="#cb26-374"></a>    ),</span>
+<span id="cb26-375"><a href="#cb26-375"></a>    <span class="at">rmse =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb26-376"><a href="#cb26-376"></a>      data,</span>
+<span id="cb26-377"><a href="#cb26-377"></a>      \(x) <span class="fu">rmse</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb26-378"><a href="#cb26-378"></a>    ),</span>
+<span id="cb26-379"><a href="#cb26-379"></a>    <span class="at">rsq =</span> <span class="fu">map_dbl</span>(</span>
+<span id="cb26-380"><a href="#cb26-380"></a>      data,</span>
+<span id="cb26-381"><a href="#cb26-381"></a>      \(x) <span class="fu">rsq</span>(x, hpi, .value) <span class="sc">|&gt;</span> <span class="fu">pull</span>(.estimate)</span>
+<span id="cb26-382"><a href="#cb26-382"></a>    )</span>
+<span id="cb26-383"><a href="#cb26-383"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-384"><a href="#cb26-384"></a>  <span class="fu">select</span>(<span class="sc">-</span>data) <span class="sc">|&gt;</span></span>
+<span id="cb26-385"><a href="#cb26-385"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-386"><a href="#cb26-386"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-387"><a href="#cb26-387"></a>  <span class="fu">gt_bold_head</span>()</span>
+<span id="cb26-388"><a href="#cb26-388"></a></span>
+<span id="cb26-389"><a href="#cb26-389"></a><span class="in">```</span></span>
+<span id="cb26-390"><a href="#cb26-390"></a></span>
+<span id="cb26-391"><a href="#cb26-391"></a>These are some pretty low (good) values of SMAPE. Let's see what these look like in plots.</span>
+<span id="cb26-392"><a href="#cb26-392"></a></span>
+<span id="cb26-395"><a href="#cb26-395"></a><span class="in">```{r}</span></span>
+<span id="cb26-396"><a href="#cb26-396"></a><span class="co">#| label: hpi2023-forecast-plot</span></span>
+<span id="cb26-397"><a href="#cb26-397"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb26-398"><a href="#cb26-398"></a></span>
+<span id="cb26-399"><a href="#cb26-399"></a>hpi_data <span class="sc">|&gt;</span></span>
+<span id="cb26-400"><a href="#cb26-400"></a>  <span class="fu">mutate</span>(<span class="at">model_name =</span> <span class="st">"ACTUAL"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-401"><a href="#cb26-401"></a>  <span class="fu">rename</span>(<span class="at">.value =</span> hpi) <span class="sc">|&gt;</span></span>
+<span id="cb26-402"><a href="#cb26-402"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb26-403"><a href="#cb26-403"></a>    hpi_refit <span class="sc">|&gt;</span></span>
+<span id="cb26-404"><a href="#cb26-404"></a>      <span class="fu">extract_nested_future_forecast</span>() <span class="sc">|&gt;</span></span>
+<span id="cb26-405"><a href="#cb26-405"></a>      <span class="fu">filter</span>(.key <span class="sc">%in%</span> <span class="st">"prediction"</span>, <span class="sc">!</span>city <span class="sc">%in%</span> <span class="st">"San Diego"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-406"><a href="#cb26-406"></a>      <span class="fu">unite</span>(<span class="st">"model_name"</span>, .model_id, .model_desc) <span class="sc">|&gt;</span></span>
+<span id="cb26-407"><a href="#cb26-407"></a>      <span class="fu">select</span>(<span class="sc">!</span>.key) <span class="sc">|&gt;</span></span>
+<span id="cb26-408"><a href="#cb26-408"></a>      <span class="fu">rename</span>(<span class="at">date =</span> .index)</span>
+<span id="cb26-409"><a href="#cb26-409"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-410"><a href="#cb26-410"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-411"><a href="#cb26-411"></a>    <span class="at">model_name =</span> <span class="fu">fct_relevel</span>(model_name, <span class="st">"ACTUAL"</span>),</span>
+<span id="cb26-412"><a href="#cb26-412"></a>    <span class="at">lwidth =</span> <span class="fu">if_else</span>(model_name <span class="sc">%in%</span> <span class="st">"ACTUAL"</span>, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb26-413"><a href="#cb26-413"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb26-414"><a href="#cb26-414"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">group =</span> model_name, <span class="at">color =</span> model_name)) <span class="sc">+</span></span>
+<span id="cb26-415"><a href="#cb26-415"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .value, <span class="at">linewidth =</span> lwidth)) <span class="sc">+</span></span>
+<span id="cb26-416"><a href="#cb26-416"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> .conf_lo, <span class="at">ymax =</span> .conf_hi), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb26-417"><a href="#cb26-417"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> fcst_pal) <span class="sc">+</span></span>
+<span id="cb26-418"><a href="#cb26-418"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb26-419"><a href="#cb26-419"></a>  <span class="fu">scale_linewidth</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb26-420"><a href="#cb26-420"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> city, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb26-421"><a href="#cb26-421"></a>  <span class="fu">labs</span>(</span>
+<span id="cb26-422"><a href="#cb26-422"></a>    <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-423"><a href="#cb26-423"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-424"><a href="#cb26-424"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-425"><a href="#cb26-425"></a>    <span class="at">title =</span> <span class="st">"Forecasts vs. Actual Data"</span></span>
+<span id="cb26-426"><a href="#cb26-426"></a>  ) <span class="sc">+</span></span>
+<span id="cb26-427"><a href="#cb26-427"></a>  <span class="fu">guides</span>(<span class="at">linewidth =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb26-428"><a href="#cb26-428"></a>  theme_timetk <span class="sc">+</span></span>
+<span id="cb26-429"><a href="#cb26-429"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb26-430"><a href="#cb26-430"></a></span>
+<span id="cb26-431"><a href="#cb26-431"></a><span class="in">```</span></span>
+<span id="cb26-432"><a href="#cb26-432"></a></span>
+<span id="cb26-433"><a href="#cb26-433"></a>Not too bad! All three forecasts look like they were very close in the first few months of the forecast period, but started to underestimate later on.</span>
+<span id="cb26-434"><a href="#cb26-434"></a></span>
+<span id="cb26-435"><a href="#cb26-435"></a>This ends the series of planned posts on using <span class="co">[</span><span class="ot">modeltime</span><span class="co">](https://business-science.github.io/modeltime/index.html)</span> with R. All in all this is a great package with all sorts of goodies for forecasting time series.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
