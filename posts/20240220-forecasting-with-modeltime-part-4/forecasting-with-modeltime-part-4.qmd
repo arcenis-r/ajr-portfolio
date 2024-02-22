@@ -330,7 +330,8 @@ That's all the heavy lifting. Now it's time to let the computer processors do th
 #| cache: true
 
 avail_cores <- unname(parallelly::availableCores() - 1)                     # <1>
-modulo_vec <- sapply(avail_cores:2, \(x) nrow(hpi_wfset) %% x)              
+modulo_vec <- sapply(avail_cores:2, \(x) nrow(hpi_wfset) %% x)
+           
 num_cores <- max(                                                           # <2>
   max(which(modulo_vec == max(modulo_vec))),
     max(which(modulo_vec == 0))
@@ -341,7 +342,7 @@ doParallel::registerDoParallel(cl)                                          # <3
 invisible(                                                                  # <3>
   parallel::clusterCall(cl, function(x) .libPaths(x), .libPaths())          # <3>
 )                                                                           # <3>
-parallel::clusterEvalQ(cl, set.seed(500))                                   # <4>
+invisible(parallel::clusterEvalQ(cl, set.seed(500)))                        # <4>
 
 hpi_mods_start <- proc.time()
 
@@ -355,9 +356,7 @@ hpi_mods_end <- proc.time()
 
 parallel::stopCluster(cl)                                                   # <9>
 rm(cl)
-gc()
 
-hpi_mods
 ```
 
 1.  Get the number of cores available and leave one out for common tasks like running the operating system
@@ -369,6 +368,13 @@ hpi_mods
 7.  Use the training portion of the split object to train the models
 8.  Set some controls for the model fitting function
 9.  Stop the parallel cluster from running
+
+```{r}
+#| label: show-hpi-mod
+
+hpi_mods |> as_tibble()
+
+```
 
 ```{r}
 #| label: show-fitting-time
