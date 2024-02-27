@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Arcenis Rojas - Consumer Expenditure Surveys Dashboards</title>
+<title>Arcenis Rojas - Dashboards</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -131,7 +131,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./ce-dashboards.html" aria-current="page"> 
+    <a class="nav-link active" href="./dashboards.html" aria-current="page"> 
 <span class="menu-text">Dashboards</span></a>
   </li>  
 </ul>
@@ -164,7 +164,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#interactive-ce-visualization-tool" id="toc-interactive-ce-visualization-tool" class="nav-link active" data-scroll-target="#interactive-ce-visualization-tool">Interactive CE Visualization Tool</a></li>
   <li><a href="#interactive-ce-dictionary" id="toc-interactive-ce-dictionary" class="nav-link" data-scroll-target="#interactive-ce-dictionary">Interactive CE Dictionary</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#loan-evaluation-app" id="toc-loan-evaluation-app" class="nav-link" data-scroll-target="#loan-evaluation-app">Loan Evaluation App</a></li>
+  <li><a href="#bmi-calculator" id="toc-bmi-calculator" class="nav-link" data-scroll-target="#bmi-calculator">BMI Calculator</a></li>
   </ul>
 </nav>
     </div>
@@ -173,7 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Consumer Expenditure Surveys Dashboards</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Dashboards</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -202,7 +203,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interactive-ce-dictionary" class="level2">
 <h2 class="anchored" data-anchor-id="interactive-ce-dictionary">Interactive CE Dictionary</h2>
-<p>The purpose of the <a href="https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/">Interactive CE Dictionary</a> is to help data users interactively search for variables, codes, and other elements of the CE PUMD rather than read through various PDF documents.</p>
+<p>Like the Interactive CE Dashboard, I built the <a href="https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/">Interactive CE Dictionary</a> while working as an economist at the U.S. Bureau of Labor Statistics Consumer Expenditure Surveys program. Its purpose is to help internal data users interactively search for variables, codes, and other elements of the CE PUMD rather than read through various PDF documents.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/"><img src="images/ce-interactive-dictionary.png" class="img-fluid figure-img" alt="Interactive CE Dictionary"></a></p>
@@ -210,8 +211,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"></h2>
+<section id="loan-evaluation-app" class="level2">
+<h2 class="anchored" data-anchor-id="loan-evaluation-app">Loan Evaluation App</h2>
+<p>Some time ago I had to choose between loan products and I wanted to consider using some cash to offset my loan requirement or to invest it. I found myself writing a bit of code to generate things like amortization schedules. I just kept on writing code and built a <a href="https://ajr-apps.shinyapps.io/loan-evaluation/">loan evaluation app</a>. Building this app gave me an opportunity to use the {rhandsontable} package to make interactive tables.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://ajr-apps.shinyapps.io/loan-evaluation/"><img src="images/loan-evaluation.png" class="img-fluid figure-img" alt="Loan evaluation app"></a></p>
+<figcaption>Loan evaluation app</figcaption>
+</figure>
+</div>
+</section>
+<section id="bmi-calculator" class="level2">
+<h2 class="anchored" data-anchor-id="bmi-calculator">BMI Calculator</h2>
+<p>The first Shiny app I ever created was a <a href="https://ajr-apps.shinyapps.io/DDP_ShinyApp/">body mass index (BMI) calculator</a> as an assignment for the <a href="https://www.coursera.org/specializations/jhu-data-science">Data Science Specialization on Coursera</a>. It simply calculates body mass index (BMI) using a very simple formula given the inputs of height and weight.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://ajr-apps.shinyapps.io/DDP_ShinyApp/"><img src="images/bmi-calculator.png" class="img-fluid figure-img" alt="BMI calculator app"></a></p>
+<figcaption>BMI calculator app</figcaption>
+</figure>
+</div>
 
 
 <!-- -->
@@ -719,7 +737,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="an">title:</span><span class="co"> "Consumer Expenditure Surveys Dashboards"</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="an">title:</span><span class="co"> "Dashboards"</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="an">format:</span><span class="co"> </span></span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="co">  html:</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="co">    link-external-newwindow: true</span></span>
@@ -736,11 +754,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-16"><a href="#cb1-16"></a></span>
 <span id="cb1-17"><a href="#cb1-17"></a><span class="fu">## Interactive CE Dictionary</span></span>
 <span id="cb1-18"><a href="#cb1-18"></a></span>
-<span id="cb1-19"><a href="#cb1-19"></a>The purpose of the <span class="co">[</span><span class="ot">Interactive CE Dictionary</span><span class="co">](https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/)</span> is to help data users interactively search for variables, codes, and other elements of the CE PUMD rather than read through various PDF documents.</span>
+<span id="cb1-19"><a href="#cb1-19"></a>Like the Interactive CE Dashboard, I built the <span class="co">[</span><span class="ot">Interactive CE Dictionary</span><span class="co">](https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/)</span> while working as an economist at the U.S. Bureau of Labor Statistics Consumer Expenditure Surveys program. Its purpose is to help internal data users interactively search for variables, codes, and other elements of the CE PUMD rather than read through various PDF documents.</span>
 <span id="cb1-20"><a href="#cb1-20"></a></span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co">[</span><span class="al">![Interactive CE Dictionary](images/ce-interactive-dictionary.png)</span><span class="co">](https://osmrbls.shinyapps.io/Interactive_CE_Dictionary/)</span></span>
 <span id="cb1-22"><a href="#cb1-22"></a></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="fu">## </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="fu">## Loan Evaluation App</span></span>
+<span id="cb1-24"><a href="#cb1-24"></a></span>
+<span id="cb1-25"><a href="#cb1-25"></a>Some time ago I had to choose between loan products and I wanted to consider using some cash to offset my loan requirement or to invest it. I found myself writing a bit of code to generate things like amortization schedules. I just kept on writing code and built a <span class="co">[</span><span class="ot">loan evaluation app</span><span class="co">](https://ajr-apps.shinyapps.io/loan-evaluation/)</span>. Building this app gave me an opportunity to use the {rhandsontable} package to make interactive tables.</span>
+<span id="cb1-26"><a href="#cb1-26"></a></span>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="co">[</span><span class="al">![Loan evaluation app](images/loan-evaluation.png)</span><span class="co">](https://ajr-apps.shinyapps.io/loan-evaluation/)</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a></span>
+<span id="cb1-29"><a href="#cb1-29"></a><span class="fu">## BMI Calculator</span></span>
+<span id="cb1-30"><a href="#cb1-30"></a></span>
+<span id="cb1-31"><a href="#cb1-31"></a>The first Shiny app I ever created was a <span class="co">[</span><span class="ot">body mass index (BMI) calculator</span><span class="co">](https://ajr-apps.shinyapps.io/DDP_ShinyApp/)</span> as an assignment for the <span class="co">[</span><span class="ot">Data Science Specialization on Coursera</span><span class="co">](https://www.coursera.org/specializations/jhu-data-science)</span>. It simply calculates body mass index (BMI) using a very simple formula given the inputs of height and weight.</span>
+<span id="cb1-32"><a href="#cb1-32"></a></span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="co">[</span><span class="al">![BMI calculator app](images/bmi-calculator.png)</span><span class="co">](https://ajr-apps.shinyapps.io/DDP_ShinyApp/)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
