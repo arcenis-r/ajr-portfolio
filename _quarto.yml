@@ -11,7 +11,7 @@ website:
         text: "Personal Projects"
       - href: publications.qmd
         text: "Publications"
-      - href: ce-dashboards.qmd
+      - href: dashboards.qmd
         text: "Dashboards"
     right:
       - icon: linkedin
