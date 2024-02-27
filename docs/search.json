@@ -308,25 +308,39 @@
     "text": "Final Thoughts\nWhile these methods of looking into machine learning algorithms are not designed for inference, they do go a long way in helping to elucidate the relationships or patterns that machine learning algorithms find. They help answer the questions about why some predictions come out the way that they do, whether they make sense or not."
   },
   {
-    "objectID": "ce-dashboards.html",
-    "href": "ce-dashboards.html",
+    "objectID": "dashboards.html",
+    "href": "dashboards.html",
     "title": "Dashboards",
     "section": "",
     "text": "I built the Interactive CE Visualization Tool while working as an economist at the U.S. Bureau of Labor Statistics Consumer Expenditure Surveys program. The motivation was to help Public-Use Microdata (PUMD) users better understand some of the methods the program employs to generate annual expenditure estimates. The dashboard helps to answer questions about why it’s not statistically sound practice to generate mean expenditure estimates for certain cross-sections of the data, for example.\n\n\n\nInteractive CE Visualization Tool - 2015 Data"
   },
   {
-    "objectID": "ce-dashboards.html#interactive-ce-visualization-tool",
-    "href": "ce-dashboards.html#interactive-ce-visualization-tool",
+    "objectID": "dashboards.html#interactive-ce-visualization-tool",
+    "href": "dashboards.html#interactive-ce-visualization-tool",
     "title": "Dashboards",
     "section": "",
     "text": "I built the Interactive CE Visualization Tool while working as an economist at the U.S. Bureau of Labor Statistics Consumer Expenditure Surveys program. The motivation was to help Public-Use Microdata (PUMD) users better understand some of the methods the program employs to generate annual expenditure estimates. The dashboard helps to answer questions about why it’s not statistically sound practice to generate mean expenditure estimates for certain cross-sections of the data, for example.\n\n\n\nInteractive CE Visualization Tool - 2015 Data"
   },
   {
-    "objectID": "ce-dashboards.html#interactive-ce-dictionary",
-    "href": "ce-dashboards.html#interactive-ce-dictionary",
+    "objectID": "dashboards.html#interactive-ce-dictionary",
+    "href": "dashboards.html#interactive-ce-dictionary",
     "title": "Dashboards",
     "section": "Interactive CE Dictionary",
     "text": "Interactive CE Dictionary\nLike the Interactive CE Dashboard, I built the Interactive CE Dictionary while working as an economist at the U.S. Bureau of Labor Statistics Consumer Expenditure Surveys program. Its purpose is to help internal data users interactively search for variables, codes, and other elements of the CE PUMD rather than read through various PDF documents.\n\n\n\nInteractive CE Dictionary"
+  },
+  {
+    "objectID": "dashboards.html#loan-evaluation-app",
+    "href": "dashboards.html#loan-evaluation-app",
+    "title": "Dashboards",
+    "section": "Loan Evaluation App",
+    "text": "Loan Evaluation App\nSome time ago I had to choose between loan products and I wanted to consider using some cash to offset my loan requirement or to invest it. I found myself writing a bit of code to generate things like amortization schedules. I just kept on writing code and built a loan evaluation app. Building this app gave me an opportunity to use the {rhandsontable} package to make interactive tables.\n\n\n\nLoan evaluation app"
+  },
+  {
+    "objectID": "dashboards.html#bmi-calculator",
+    "href": "dashboards.html#bmi-calculator",
+    "title": "Dashboards",
+    "section": "BMI Calculator",
+    "text": "BMI Calculator\nThe first Shiny app I ever created was a body mass index (BMI) calculator as an assignment for the Data Science Specialization on Coursera. It simply calculates body mass index (BMI) using a very simple formula given the inputs of height and weight.\n\n\n\nBMI calculator app"
   },
   {
     "objectID": "index.html",
@@ -530,19 +544,5 @@
     "title": "Projects in Data Science and Statistics",
     "section": "",
     "text": "Forecasting with {modeltime} - Part V\n\n\nSelecting the best model for each city\n\n\n\nTime Series\n\n\nForecasting\n\n\nMachine Learning\n\n\n\n\n\n\n\n\n\nFeb 21, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nForecasting with {modeltime} - Part IV\n\n\nTuning many global models\n\n\n\nTime Series\n\n\nForecasting\n\n\nMachine Learning\n\n\n\n\n\n\n\n\n\nFeb 20, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nForecasting with {modeltime} - Part III\n\n\nGlobal vs. iterative modeling\n\n\n\nTime Series\n\n\nForecasting\n\n\nMachine Learning\n\n\n\n\n\n\n\n\n\nFeb 16, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nForecasting with {modeltime} - Part II\n\n\nTime series analysis\n\n\n\nTime Series\n\n\nInferential Statistics\n\n\n\n\n\n\n\n\n\nFeb 15, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nForecasting with {modeltime} - Part I\n\n\nGathering data\n\n\n\nTime Series\n\n\nData Acquisition\n\n\nData Wrangling\n\n\n\n\n\n\n\n\n\nFeb 12, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nTopic Modeling with R\n\n\n\n\n\n\nText Analysis\n\n\nTopic Modeling\n\n\n\n\n\n\n\n\n\nJan 25, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nIntroduction to cepumd\n\n\n\n\n\n\nPackage Development\n\n\nData Wrangling\n\n\n\n\n\n\n\n\n\nJan 24, 2024\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nOptimal Threshold vs. Upsampling\n\n\nDealing with Unbalanced Data\n\n\n\nMachine Learning\n\n\nClassification\n\n\n\n\n\n\n\n\n\nFeb 15, 2023\n\n\nArcenis Rojas\n\n\n\n\n\n\n\n\n\n\n\n\nOpening the ML ‘Black Box’ with Shapley Values\n\n\nA Tidy Approach\n\n\n\nMachine Learning\n\n\nPrediction\n\n\n\n\n\n\n\n\n\nAug 29, 2021\n\n\nArcenis Rojas\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "ce-dashboards.html#loan-evaluation-app",
-    "href": "ce-dashboards.html#loan-evaluation-app",
-    "title": "Dashboards",
-    "section": "Loan Evaluation App",
-    "text": "Loan Evaluation App\nSome time ago I had to choose between loan products and I wanted to consider using some cash to offset my loan requirement or to invest it. I found myself writing a bit of code to generate things like amortization schedules. I just kept on writing code and built a loan evaluation app. Building this app gave me an opportunity to use the {rhandsontable} package to make interactive tables.\n\n\n\nLoan evaluation app"
-  },
-  {
-    "objectID": "ce-dashboards.html#bmi-calculator",
-    "href": "ce-dashboards.html#bmi-calculator",
-    "title": "Dashboards",
-    "section": "BMI Calculator",
-    "text": "BMI Calculator\nThe first Shiny app I ever created was a body mass index (BMI) calculator as an assignment for the Data Science Specialization on Coursera. It simply calculates body mass index (BMI) using a very simple formula given the inputs of height and weight.\n\n\n\nBMI calculator app"
   }
 ]
