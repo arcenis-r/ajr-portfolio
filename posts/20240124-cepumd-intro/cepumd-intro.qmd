@@ -14,10 +14,12 @@ categories:
 
 ## Motivation
 
-::: {layout="[35, 65]"}
-![](images/cepumd.png){fig-alt="cepumd hexsticker" fig-align="center" width="300"}
+::: columns
+::: {.column width="35%"}
+![](images/cepumd.png){fig-alt="cepumd hexsticker" fig-align="center" style="padding: 50px 20px 0px 0px" width="300"}
+:::
 
-::: {layout="[35, 65]"}
+::: {.column width="65%"}
 The purpose of `cepumd` is to make working with Consumer Expenditure Surveys (CE) Public-Use Microdata (PUMD) easier toward calculating mean, weighted, annual expenditures (henceforth "mean expenditures"). The challenges `cepumd` seeks to address deal primarily with pulling together the necessary data toward this end. Some of the overarching ideas underlying the package are as follows:
 
 -   Use a [Tidyverse](https://www.tidyverse.org/) framework for most operations and be (hopefully) generally [Tidyverse](https://www.tidyverse.org/) friendly
@@ -44,10 +46,10 @@ Some important things to note are that expenditure data are collected through tw
 
 Please visit the following pages to learn more about the CE program overall and CE PUMD more specifically.
 
--   CE homepage: (<https://www.bls.gov/cex/)>
--   CE PUMD page: (<https://www.bls.gov/cex/pumd.htm)>
+-   CE homepage: (<https://www.bls.gov/cex/>)
+-   CE PUMD page: (<https://www.bls.gov/cex/pumd.htm>)
 -   CE PUMD Getting Started Guide: <https://www.bls.gov/cex/pumd-getting-started-guide.htm>
--   CE Dictionary for Interview and Diary Surveys (XLSX download) (<https://www.bls.gov/cex/pumd/ce_pumd_interview_diary_dictionary.xlsx)>
+-   CE Dictionary for Interview and Diary Surveys (XLSX download) (<https://www.bls.gov/cex/pumd/ce_pumd_interview_diary_dictionary.xlsx>)
 -   CE PUMD published tables: (<https://www.bls.gov/cex/tables.htm)>
 -   CE PUMD Handbook of Methods: <https://www.bls.gov/opub/hom/cex/>
 -   CE Frequently Asked Questions: <https://www.bls.gov/cex/csxfaqs.htm>
