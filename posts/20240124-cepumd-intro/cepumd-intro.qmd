@@ -181,7 +181,7 @@ int21_hg <- ce_hg(
 )
 
 int21_hg |>
-  filter(str_detect(title, "Used [cars|trucks]")) |>
+  filter(str_detect(title, "Used (cars|trucks)")) |>
   kable(booktabs = TRUE)
 
 ```
@@ -197,7 +197,7 @@ car_data <- ce_prepdata(
   interview,
   int21_hg,
   uccs = int21_hg |>
-    filter(str_detect(title, "Used [cars|trucks]"), !is.na(as.numeric(ucc))) |>
+    filter(str_detect(title, "Used (cars|trucks)"), !is.na(as.numeric(ucc))) |>
     pull(ucc),
   bls_urbn,  # <------- this is the variable for urbanicity
   int_zp = c(
