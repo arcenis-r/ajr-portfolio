@@ -235,7 +235,7 @@ At least 95% of households in the Interview survey did not report expenditures o
 
 ### Very advanced workflow: Inflation adjusted food away from home expenditures by household size
 
-In this last example I'm going to assume very little knowledge about the CE. I'd like to compare mean annual expenditures on food away from home between 2010 and 2020 by household size and I want to convert expenditures to 2023 dollars using the CPI. First I'd go to the [CE PUMD Data Files](https://www.bls.gov/cex/pumd_data.htm#csv) page and download the files that I need for both years. I'll also go to the [CE PUMD Documentation](https://www.bls.gov/cex/pumd_doc.htm) page to download the hierarchical grouping files to get the UCCs for "Food away from home" and the CE Dictionary to find out what variable has data on the household size.
+Here I'm going to assume very little knowledge about the CE. I'd like to compare mean annual expenditures on food away from home between 2010 and 2020 by household size and I want to convert expenditures to 2023 dollars using the CPI. First I'd go to the [CE PUMD Data Files](https://www.bls.gov/cex/pumd_data.htm#csv) page and download the files that I need for both years. I'll also go to the [CE PUMD Documentation](https://www.bls.gov/cex/pumd_doc.htm) page to download the hierarchical grouping files to get the UCCs for "Food away from home" and the CE Dictionary to find out what variable has data on the household size.
 
 With all that done, now I want to look at the hierarchical grouping files for 2010 and 2020 for integrated data as they relate to "Food away from home".
 
