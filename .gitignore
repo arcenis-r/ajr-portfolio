@@ -12,3 +12,5 @@ check.html
 /.quarto/
 /_site/
 post-writing-checklist.txt
+
+**/*.quarto_ipynb

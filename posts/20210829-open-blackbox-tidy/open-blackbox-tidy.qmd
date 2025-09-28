@@ -347,7 +347,7 @@ xgb_grid <- grid_random(
 Now I'll create the [workflow](https://workflows.tidymodels.org/) objects that I'll use in model tuning and evaluation.
 
 ```{r}
-#| create-workflow-objects
+#| label: create-workflow-objects
 
 # Create model objects for both XGB and LM
 xgb_mod <- boost_tree(
