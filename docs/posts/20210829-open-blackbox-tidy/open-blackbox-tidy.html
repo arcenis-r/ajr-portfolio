@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.8.24">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Arcenis Rojas">
 <meta name="dcterms.date" content="2021-08-29">
 
-<title>Arcenis Rojas - Opening the ML ‘Black Box’ with Shapley Values</title>
+<title>Opening the ML ‘Black Box’ with Shapley Values – Arcenis Rojas</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,8 +23,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -66,15 +67,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-c70c0031252f74d50129453a9c8e908e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,25 +106,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+
 <link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Arcenis Rojas</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -152,7 +159,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
-          <div class="quarto-navbar-tools">
+            <div class="quarto-navbar-tools">
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -228,7 +235,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="introduction-motivation">Introduction / Motivation</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
 <p><a href="https://christophm.github.io/interpretable-ml-book/shapley.html"><img src="images/shapley-instance.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Apartment price predicted by square footage, floor number, whether there are nearby parks, and whether cats are banned" width="443"></a></p>
+</figure>
+</div>
 <figcaption>[Image from “Interpretable Machine Learning” by Christopher Molnar](https://christophm.github.io/interpretable-ml-book/shapley.html)</figcaption>
 </figure>
 </div>
@@ -262,17 +273,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, tidymodels, yardstick, fastshap, kableExtra)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, tidymodels, yardstick, fastshap, kableExtra)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a>conflicted<span class="sc">::</span><span class="fu">conflict_prefer</span>(<span class="st">"select"</span>, <span class="st">"dplyr"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">tidymodels_prefer</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Next I loaded a script containing some functions that I defined <a href="https://github.com/arcenis-r/ajr-portfolio/tree/master/helper-functions">(available on GitHub)</a>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">source</span>(<span class="st">"./tidy-ml-evaluation-funs.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"posts"</span>, <span class="st">"20210829-open-blackbox-tidy"</span>, <span class="st">"tidy-ml-evaluation-funs.R"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>At this point I was ready to start with data exploration.</p>
@@ -283,7 +294,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load the Ames data set</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load the Ames data set</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="fu">data</span>(ames)</span>
 <span id="cb3-3"><a href="#cb3-3"></a></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co"># Convert month variable to a factor and set the largest category of each</span></span>
@@ -305,10 +316,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-20"><a href="#cb3-20"></a>neighborhoods <span class="sc">|&gt;</span></span>
 <span id="cb3-21"><a href="#cb3-21"></a>  <span class="fu">kable</span>(<span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb3-22"><a href="#cb3-22"></a>  <span class="fu">kable_styling</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a>  <span class="fu">row_spec</span>(hl_neigh_rows, <span class="at">bold =</span> T, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">background =</span> <span class="st">"yellow"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-23"><a href="#cb3-23"></a>  <span class="fu">row_spec</span>(hl_neigh_rows, <span class="at">bold =</span> T, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">background =</span> <span class="st">"yellow"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Neighborhood</th>
@@ -342,15 +353,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </div>
 </div>
 <p>Next I just wanted to check whether there were any missing values in the data (there shouldn’t be).</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(housing))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(housing))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
@@ -360,7 +369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">select</span>(housing, <span class="sc">-</span>sale_price) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">select</span>(housing, <span class="sc">-</span>sale_price) <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">select_if</span>(is.factor) <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), \(x) <span class="fu">n_distinct</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">pivot_longer</span>(</span>
@@ -375,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-13"><a href="#cb6-13"></a>    <span class="at">x =</span> <span class="st">"Number of Categories"</span>,</span>
 <span id="cb6-14"><a href="#cb6-14"></a>    <span class="at">title =</span> <span class="st">"Number of Categories in Each Factor Variable"</span></span>
 <span id="cb6-15"><a href="#cb6-15"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a>  <span class="fu">ml_eval_theme</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-16"><a href="#cb6-16"></a>  <span class="fu">ml_eval_theme</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -389,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Check for near-zero variance</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Check for near-zero variance</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>uniqueCut <span class="ot">&lt;-</span> <span class="fu">select</span>(housing, <span class="sc">-</span>sale_price) <span class="sc">|&gt;</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">select_if</span>(is.factor) <span class="sc">|&gt;</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"category"</span>) <span class="sc">|&gt;</span> </span>
@@ -416,10 +425,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-25"><a href="#cb7-25"></a></span>
 <span id="cb7-26"><a href="#cb7-26"></a>hl_nzv_rows <span class="ot">&lt;-</span> <span class="fu">which</span>(housing_nzv_counts<span class="sc">$</span>nzv <span class="sc">==</span> <span class="dv">1</span>)</span>
 <span id="cb7-27"><a href="#cb7-27"></a></span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="fu">kable</span>(<span class="fu">slice</span>(housing_nzv, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>), <span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="fu">kable</span>(<span class="fu">slice</span>(housing_nzv, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>), <span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
@@ -481,17 +490,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">kable</span>(housing_nzv_counts, <span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">kable</span>(housing_nzv_counts, <span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">kable_styling</span>() <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">row_spec</span>(hl_nzv_rows, <span class="at">bold =</span> T, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">background =</span> <span class="st">"yellow"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">row_spec</span>(hl_nzv_rows, <span class="at">bold =</span> T, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">background =</span> <span class="st">"yellow"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">nzv</th>
@@ -509,15 +516,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </div>
 </div>
 <p>Next I want to look at the distributions of numeric data with violin plots from <a href="https://ggplot2.tidyverse.org/reference/geom_violin.html">ggplot2</a>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">select</span>(housing, <span class="fu">where</span>(is.numeric)) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">select</span>(housing, <span class="fu">where</span>(is.numeric)) <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> variable, <span class="at">y =</span> value)) <span class="sc">+</span></span>
 <span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">geom_violin</span>(<span class="at">fill =</span> <span class="st">"gray"</span>) <span class="sc">+</span></span>
@@ -528,7 +533,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-9"><a href="#cb9-9"></a>    <span class="at">title =</span> <span class="st">"Distributions of Numeric Variables"</span></span>
 <span id="cb9-10"><a href="#cb9-10"></a>  ) <span class="sc">+</span></span>
 <span id="cb9-11"><a href="#cb9-11"></a>  <span class="fu">ml_eval_theme</span>() <span class="sc">+</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-12"><a href="#cb9-12"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -543,7 +548,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>factor_names <span class="ot">&lt;-</span> <span class="fu">select</span>(housing, <span class="sc">-</span>sale_price, <span class="fu">where</span>(is.factor)) <span class="sc">|&gt;</span>  <span class="fu">names</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>factor_names <span class="ot">&lt;-</span> <span class="fu">select</span>(housing, <span class="sc">-</span>sale_price, <span class="fu">where</span>(is.factor)) <span class="sc">|&gt;</span>  <span class="fu">names</span>()</span>
 <span id="cb10-2"><a href="#cb10-2"></a></span>
 <span id="cb10-3"><a href="#cb10-3"></a>chi_sq_dat <span class="ot">&lt;-</span> <span class="fu">crossing</span>(<span class="at">var1 =</span> factor_names, <span class="at">var2 =</span> factor_names) <span class="sc">|&gt;</span></span>
 <span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">mutate</span>(</span>
@@ -577,7 +582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-32"><a href="#cb10-32"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
 <span id="cb10-33"><a href="#cb10-33"></a>    <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb10-34"><a href="#cb10-34"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>()</span>
-<span id="cb10-35"><a href="#cb10-35"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-35"><a href="#cb10-35"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -591,7 +596,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">select</span>(housing, <span class="sc">-</span>sale_price) <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">select</span>(housing, <span class="sc">-</span>sale_price) <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">select_if</span>(is.numeric) <span class="sc">|&gt;</span></span>
 <span id="cb11-3"><a href="#cb11-3"></a>  corrr<span class="sc">::</span><span class="fu">correlate</span>(<span class="at">method =</span> <span class="st">"spearman"</span>, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb11-4"><a href="#cb11-4"></a>  corrr<span class="sc">::</span><span class="fu">rearrange</span>(<span class="at">absolute =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
@@ -603,7 +608,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-10"><a href="#cb11-10"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
 <span id="cb11-11"><a href="#cb11-11"></a>    <span class="at">panel.border =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb11-12"><a href="#cb11-12"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>()</span>
-<span id="cb11-13"><a href="#cb11-13"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-13"><a href="#cb11-13"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -622,7 +627,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Set the random number seed</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Set the random number seed</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a><span class="fu">set.seed</span>(<span class="dv">485</span>)</span>
 <span id="cb12-3"><a href="#cb12-3"></a></span>
 <span id="cb12-4"><a href="#cb12-4"></a><span class="co"># Split the data</span></span>
@@ -631,7 +636,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-7"><a href="#cb12-7"></a>housing_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(housing_split)</span>
 <span id="cb12-8"><a href="#cb12-8"></a></span>
 <span id="cb12-9"><a href="#cb12-9"></a><span class="co"># Create the CV dataframe</span></span>
-<span id="cb12-10"><a href="#cb12-10"></a>housing_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(housing_train, <span class="at">v =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-10"><a href="#cb12-10"></a>housing_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(housing_train, <span class="at">v =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Next I’ll write my pre-processing recipes; one for each type of model. The only difference between the two recipes is that in the linear model recipe I set <code>one_hot = FALSE</code> to keep the reference level out of the contrast matrix. The steps are as follows:</p>
@@ -646,7 +651,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># XGBoost recipe</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># XGBoost recipe</span></span>
 <span id="cb13-2"><a href="#cb13-2"></a>xgb_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(housing_train) <span class="sc">|&gt;</span></span>
 <span id="cb13-3"><a href="#cb13-3"></a>  <span class="fu">update_role</span>(sale_price, <span class="at">new_role =</span> <span class="st">"outcome"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">update_role</span>(<span class="sc">-</span><span class="fu">has_role</span>(<span class="st">"outcome"</span>), <span class="at">new_role =</span> <span class="st">"predictor"</span>) <span class="sc">|&gt;</span></span>
@@ -664,14 +669,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-16"><a href="#cb13-16"></a><span class="co"># Linear Model recipe</span></span>
 <span id="cb13-17"><a href="#cb13-17"></a>num_steps <span class="ot">&lt;-</span> <span class="fu">length</span>(xgb_rec<span class="sc">$</span>steps)</span>
 <span id="cb13-18"><a href="#cb13-18"></a>lm_rec <span class="ot">&lt;-</span> xgb_rec</span>
-<span id="cb13-19"><a href="#cb13-19"></a>lm_rec<span class="sc">$</span>steps[[num_steps]] <span class="ot">&lt;-</span> <span class="fu">update</span>(lm_rec<span class="sc">$</span>steps[[num_steps]], <span class="at">one_hot =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-19"><a href="#cb13-19"></a>lm_rec<span class="sc">$</span>steps[[num_steps]] <span class="ot">&lt;-</span> <span class="fu">update</span>(lm_rec<span class="sc">$</span>steps[[num_steps]], <span class="at">one_hot =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Next I want to generate a tuning grid for the XGB model. To limit the number of features selected randomly at each node I’ll first get the number of features that will be in the data after the pre-processing recipe has been applied. I also set the range for the learning rate a bit arbitrarily because I found that the default range resulted in the model learning too quickly and not keeping enough information from early iterations.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Get the number of features in the training data for XGB tuning grid</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Get the number of features in the training data for XGB tuning grid</span></span>
 <span id="cb14-2"><a href="#cb14-2"></a>n_features <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(xgb_rec), <span class="at">new_data =</span> housing_train) <span class="sc">|&gt;</span></span>
 <span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">ncol</span>() <span class="sc">|&gt;</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a>  magrittr<span class="sc">::</span><span class="fu">subtract</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
@@ -685,14 +690,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-12"><a href="#cb14-12"></a>  <span class="fu">learn_rate</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">7</span>, <span class="dv">1</span>)),   <span class="co"># Learning rate</span></span>
 <span id="cb14-13"><a href="#cb14-13"></a>  <span class="fu">loss_reduction</span>(),</span>
 <span id="cb14-14"><a href="#cb14-14"></a>  <span class="at">size =</span> <span class="dv">50</span></span>
-<span id="cb14-15"><a href="#cb14-15"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-15"><a href="#cb14-15"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Now I’ll create the <a href="https://workflows.tidymodels.org/">workflow</a> objects that I’ll use in model tuning and evaluation.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Create model objects for both XGB and LM</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co"># Create model objects for both XGB and LM</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a>xgb_mod <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(</span>
 <span id="cb15-3"><a href="#cb15-3"></a>  <span class="at">mtry =</span> <span class="fu">tune</span>(), </span>
 <span id="cb15-4"><a href="#cb15-4"></a>  <span class="at">trees =</span> <span class="fu">tune</span>(), </span>
@@ -706,7 +711,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-12"><a href="#cb15-12"></a></span>
 <span id="cb15-13"><a href="#cb15-13"></a><span class="co"># Create workflow objects for tuning</span></span>
 <span id="cb15-14"><a href="#cb15-14"></a>xgb_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(xgb_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(xgb_mod)</span>
-<span id="cb15-15"><a href="#cb15-15"></a>lm_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(lm_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(lm_mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-15"><a href="#cb15-15"></a>lm_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(lm_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(lm_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -718,7 +723,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Register and set up the parallel backend</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Register and set up the parallel backend</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a>cl <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makePSOCKcluster</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>(<span class="at">logical =</span> <span class="cn">FALSE</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
 <span id="cb16-3"><a href="#cb16-3"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
 <span id="cb16-4"><a href="#cb16-4"></a><span class="fu">invisible</span>(parallel<span class="sc">::</span><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">853</span>)))</span>
@@ -740,7 +745,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-20"><a href="#cb16-20"></a>)</span>
 <span id="cb16-21"><a href="#cb16-21"></a></span>
 <span id="cb16-22"><a href="#cb16-22"></a><span class="co"># Close the connection to the cluster</span></span>
-<span id="cb16-23"><a href="#cb16-23"></a>doParallel<span class="sc">::</span><span class="fu">stopImplicitCluster</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-23"><a href="#cb16-23"></a>doParallel<span class="sc">::</span><span class="fu">stopImplicitCluster</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -750,7 +755,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Get the best models from each tuning process</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Get the best models from each tuning process</span></span>
 <span id="cb17-2"><a href="#cb17-2"></a>best_models <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">xgb =</span> xgb_tune, <span class="at">lm =</span> lm_tune) <span class="sc">|&gt;</span></span>
 <span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">map</span>(select_best, <span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
 <span id="cb17-4"><a href="#cb17-4"></a></span>
@@ -762,8 +767,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-10"><a href="#cb17-10"></a>final_wflows <span class="ot">&lt;-</span> <span class="fu">map2</span>(</span>
 <span id="cb17-11"><a href="#cb17-11"></a>  <span class="fu">list</span>(<span class="at">xgb =</span> xgb_wflow, <span class="at">lm =</span> lm_wflow),</span>
 <span id="cb17-12"><a href="#cb17-12"></a>  best_models,</span>
-<span id="cb17-13"><a href="#cb17-13"></a>  \(x, y) <span class="fu">finalize_workflow</span>(x, y) <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> housing_train)</span>
-<span id="cb17-14"><a href="#cb17-14"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-13"><a href="#cb17-13"></a>  finalize_workflow</span>
+<span id="cb17-14"><a href="#cb17-14"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -773,7 +778,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Evaluate each model with the test data and store 'last_fit' objects</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Evaluate each model with the test data and store 'last_fit' objects</span></span>
 <span id="cb18-2"><a href="#cb18-2"></a><span class="fu">set.seed</span>(<span class="dv">485</span>)</span>
 <span id="cb18-3"><a href="#cb18-3"></a>final_wflow_evals <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
 <span id="cb18-4"><a href="#cb18-4"></a>  final_wflows,</span>
@@ -782,14 +787,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-7"><a href="#cb18-7"></a>    <span class="at">split =</span> housing_split,</span>
 <span id="cb18-8"><a href="#cb18-8"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(rmse, mae, mape, rsq_trad)</span>
 <span id="cb18-9"><a href="#cb18-9"></a>  )</span>
-<span id="cb18-10"><a href="#cb18-10"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-10"><a href="#cb18-10"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Now I can see how each model performed on the test data.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># Generate a dataframe of model metrics to compare the two models</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># Generate a dataframe of model metrics to compare the two models</span></span>
 <span id="cb19-2"><a href="#cb19-2"></a>model_metrics <span class="ot">&lt;-</span> final_wflow_evals <span class="sc">|&gt;</span></span>
 <span id="cb19-3"><a href="#cb19-3"></a>  <span class="fu">map2_df</span>(</span>
 <span id="cb19-4"><a href="#cb19-4"></a>    <span class="fu">names</span>(final_wflow_evals),</span>
@@ -800,10 +805,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-9"><a href="#cb19-9"></a>      <span class="fu">relocate</span>(algorithm)</span>
 <span id="cb19-10"><a href="#cb19-10"></a>  )</span>
 <span id="cb19-11"><a href="#cb19-11"></a></span>
-<span id="cb19-12"><a href="#cb19-12"></a><span class="fu">kable</span>(model_metrics, <span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="fu">kable</span>(model_metrics, <span class="at">booktabs =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="table caption-top table-sm table-striped small">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">algorithm</th>
@@ -830,8 +835,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-
-
 </div>
 </div>
 <p>It looks like the XGB model outperformed the Linear Model on every metric, but not by very much. Both seem to have performed pretty well at predicting home sale prices. It’s important to keep in mind here that the data were transformed, which is why the RMSE and MAE are so small. Now let’s go ahead and open these “black boxes”.</p>
@@ -846,22 +849,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># Get matrices of training features for each model</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a>training_features <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span> </span>
-<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">map</span>(\(x) <span class="fu">pull_workflow_mold</span>(x) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">"predictors"</span>))</span>
-<span id="cb20-4"><a href="#cb20-4"></a></span>
-<span id="cb20-5"><a href="#cb20-5"></a><span class="co"># Register and set up the parallel backend</span></span>
-<span id="cb20-6"><a href="#cb20-6"></a>cl <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makePSOCKcluster</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>(<span class="at">logical =</span> <span class="cn">FALSE</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb20-7"><a href="#cb20-7"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
-<span id="cb20-8"><a href="#cb20-8"></a><span class="fu">invisible</span>(parallel<span class="sc">::</span><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">44</span>)))</span>
-<span id="cb20-9"><a href="#cb20-9"></a></span>
-<span id="cb20-10"><a href="#cb20-10"></a>shap <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap)</span>
-<span id="cb20-11"><a href="#cb20-11"></a></span>
-<span id="cb20-12"><a href="#cb20-12"></a><span class="co"># Get SHAP variable importance features</span></span>
-<span id="cb20-13"><a href="#cb20-13"></a>var_imp <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap_imp)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># Fit the final models to the training data</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>final_wflows_fit <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span> <span class="fu">map</span>(\(x) <span class="fu">fit</span>(x, housing_train))</span>
+<span id="cb20-3"><a href="#cb20-3"></a></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="co"># Get matrices of training features for each model</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a>training_features <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span> </span>
+<span id="cb20-6"><a href="#cb20-6"></a>  <span class="fu">map</span>(\(x) <span class="fu">pull_workflow_mold</span>(x) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">"predictors"</span>))</span>
+<span id="cb20-7"><a href="#cb20-7"></a></span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="co"># Register and set up the parallel backend</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a>cl <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makePSOCKcluster</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>(<span class="at">logical =</span> <span class="cn">FALSE</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb20-10"><a href="#cb20-10"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
+<span id="cb20-11"><a href="#cb20-11"></a><span class="fu">invisible</span>(parallel<span class="sc">::</span><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">44</span>)))</span>
+<span id="cb20-12"><a href="#cb20-12"></a></span>
+<span id="cb20-13"><a href="#cb20-13"></a>shap <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap)</span>
 <span id="cb20-14"><a href="#cb20-14"></a></span>
-<span id="cb20-15"><a href="#cb20-15"></a><span class="co"># Close the connection to the cluster</span></span>
-<span id="cb20-16"><a href="#cb20-16"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-15"><a href="#cb20-15"></a><span class="co"># Get SHAP variable importance features</span></span>
+<span id="cb20-16"><a href="#cb20-16"></a>var_imp <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap_imp)</span>
+<span id="cb20-17"><a href="#cb20-17"></a></span>
+<span id="cb20-18"><a href="#cb20-18"></a><span class="co"># Close the connection to the cluster</span></span>
+<span id="cb20-19"><a href="#cb20-19"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -871,7 +877,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Pull data from the outermost point on the SHAP summary plot</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># Pull data from the outermost point on the SHAP summary plot</span></span>
 <span id="cb21-2"><a href="#cb21-2"></a>point_dat_xgb <span class="ot">&lt;-</span> <span class="fu">get_shap_summary</span>(</span>
 <span id="cb21-3"><a href="#cb21-3"></a>  var_imp<span class="sc">$</span>xgb, </span>
 <span id="cb21-4"><a href="#cb21-4"></a>  shap<span class="sc">$</span>xgb, </span>
@@ -914,27 +920,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-41"><a href="#cb21-41"></a>  <span class="fu">pmap</span>(get_shap_summary, <span class="at">max_features =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb21-42"><a href="#cb21-42"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_shap_summary)</span>
 <span id="cb21-43"><a href="#cb21-43"></a></span>
-<span id="cb21-44"><a href="#cb21-44"></a>total_bsmt_sf_pdp <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span></span>
-<span id="cb21-45"><a href="#cb21-45"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> total_bsmt_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-44"><a href="#cb21-44"></a>total_bsmt_sf_pdp <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span></span>
+<span id="cb21-45"><a href="#cb21-45"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> total_bsmt_sf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
 <span id="cb22-2"><a href="#cb22-2"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
 <span id="cb22-3"><a href="#cb22-3"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
-<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb22-5"><a href="#cb22-5"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">0.5</span>, <span class="at">xend =</span> <span class="fl">0.575</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">yend =</span> <span class="fl">10.01</span>), </span>
-<span id="cb22-6"><a href="#cb22-6"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb22-7"><a href="#cb22-7"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>))</span>
-<span id="cb22-8"><a href="#cb22-8"></a>  ) <span class="sc">+</span></span>
-<span id="cb22-9"><a href="#cb22-9"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb22-10"><a href="#cb22-10"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb22-11"><a href="#cb22-11"></a>    <span class="at">x =</span> <span class="fl">0.46</span>, </span>
-<span id="cb22-12"><a href="#cb22-12"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_xgb, </span>
-<span id="cb22-13"><a href="#cb22-13"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb22-14"><a href="#cb22-14"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb22-5"><a href="#cb22-5"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb22-7"><a href="#cb22-7"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb22-8"><a href="#cb22-8"></a>    <span class="at">x =</span> <span class="fl">0.15</span>,</span>
+<span id="cb22-9"><a href="#cb22-9"></a>    <span class="at">xend =</span> <span class="fl">0.17</span>,</span>
+<span id="cb22-10"><a href="#cb22-10"></a>    <span class="at">y =</span> <span class="fl">6.2</span>,</span>
+<span id="cb22-11"><a href="#cb22-11"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
+<span id="cb22-12"><a href="#cb22-12"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb22-14"><a href="#cb22-14"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb22-15"><a href="#cb22-15"></a>    <span class="at">x =</span> <span class="fl">0.15</span>, </span>
+<span id="cb22-16"><a href="#cb22-16"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
+<span id="cb22-17"><a href="#cb22-17"></a>    <span class="at">label =</span> point_annotation_xgb, </span>
+<span id="cb22-18"><a href="#cb22-18"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb22-19"><a href="#cb22-19"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -947,7 +958,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
 <span id="cb23-2"><a href="#cb23-2"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
 <span id="cb23-3"><a href="#cb23-3"></a>shap_summary_plots<span class="sc">$</span>lm <span class="sc">+</span> </span>
 <span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">geom_segment</span>(</span>
@@ -960,7 +971,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb23-11"><a href="#cb23-11"></a>    <span class="at">x =</span> <span class="fl">0.8</span>, </span>
 <span id="cb23-12"><a href="#cb23-12"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_lm, </span>
 <span id="cb23-13"><a href="#cb23-13"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb23-14"><a href="#cb23-14"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-14"><a href="#cb23-14"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -970,14 +981,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The first plot above shows that row 1693 has a positive SHAP value of 0.5879337 for the gr_liv_area (0.095) in the XGB model, which had an above average value of 4.1097005 in the training data. When considering all the observations collectively the feature value is ideally positively related with the SHAP value. Next I’ll look at partial dependence plots to show the effect that the <code>gr_liv_area</code> has on <code>sale_price</code> according to each model.</p>
+<p>The first plot above shows that row 595 has a positive SHAP value of 0.2387634 for the gr_liv_area (0.077) in the XGB model, which had an above average value of 5.8030753 in the training data. When considering all the observations collectively the feature value is ideally positively related with the SHAP value. Next I’ll look at partial dependence plots to show the effect that the <code>gr_liv_area</code> has on <code>sale_price</code> according to each model.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>gr_liv_area_pdp <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>gr_liv_area_pdp <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span></span>
 <span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> gr_liv_area)</span>
 <span id="cb24-3"><a href="#cb24-3"></a></span>
-<span id="cb24-4"><a href="#cb24-4"></a>gr_liv_area_pdp<span class="sc">$</span>xgb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-4"><a href="#cb24-4"></a>gr_liv_area_pdp<span class="sc">$</span>xgb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -988,7 +999,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>gr_liv_area_pdp<span class="sc">$</span>lm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>gr_liv_area_pdp<span class="sc">$</span>lm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1003,19 +1014,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>obs_2409_contrib <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>obs_2409_contrib <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span></span>
 <span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">map2</span>(</span>
 <span id="cb26-3"><a href="#cb26-3"></a>    <span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), </span>
 <span id="cb26-4"><a href="#cb26-4"></a>    get_contributions, </span>
 <span id="cb26-5"><a href="#cb26-5"></a>    <span class="at">rnum =</span> <span class="dv">2049</span>, </span>
 <span id="cb26-6"><a href="#cb26-6"></a>    <span class="at">nfeat =</span> <span class="dv">15</span> </span>
-<span id="cb26-7"><a href="#cb26-7"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-7"><a href="#cb26-7"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>obs_2409_contrib<span class="sc">$</span>xgb<span class="sc">$</span>contrib_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>obs_2409_contrib<span class="sc">$</span>xgb<span class="sc">$</span>contrib_plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1028,7 +1039,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>obs_2409_contrib<span class="sc">$</span>lm<span class="sc">$</span>contrib_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>obs_2409_contrib<span class="sc">$</span>lm<span class="sc">$</span>contrib_plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1052,43 +1063,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
@@ -1096,233 +1122,242 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
       return codeEl.innerText;
     }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("^(?:http:|https:)\/\/arcenis-r\.github\.io\/ajr-portfolio");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-          if (link.getAttribute("rel") === null) {
-            link.setAttribute("rel", "noopener");
-          }
-          // default icon
-          link.classList.add("external");
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
           } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
         }
-        return container.innerHTML
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("^(?:http:|https:)\/\/arcenis-r\.github\.io\/ajr-portfolio");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      // TODO in 1.5, we should make sure this works without a callout special case
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -1330,231 +1365,232 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
-      for (let i=0; i<annoteTargets.length; i++) {
-        const annoteTarget = annoteTargets[i];
-        const targetCell = annoteTarget.getAttribute("data-target-cell");
-        const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
-        const contentFn = () => {
-          const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-          if (content) {
-            const tipContent = content.cloneNode(true);
-            tipContent.classList.add("code-annotation-tip-content");
-            return tipContent.outerHTML;
-          }
-        }
-        const config = {
-          allowHTML: true,
-          content: contentFn,
-          onShow: (instance) => {
-            selectCodeLines(instance.reference);
-            instance.reference.classList.add('code-annotation-active');
-            window.tippy.hideAll();
-          },
-          onHide: (instance) => {
-            unselectCodeLines();
-            instance.reference.classList.remove('code-annotation-active');
-          },
-          maxWidth: 300,
-          delay: [50, 0],
-          duration: [200, 0],
-          offset: [5, 10],
-          arrow: true,
-          trigger: 'click',
-          appendTo: function(el) {
-            return el.parentElement.parentElement.parentElement;
-          },
-          interactive: true,
-          interactiveBorder: 10,
-          theme: 'quarto',
-          placement: 'right',
-          positionFixed: true,
-          popperOptions: {
-            modifiers: [
-            {
-              name: 'flip',
-              options: {
-                flipVariations: false, // true by default
-                allowedAutoPlacements: ['right'],
-                fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
-              },
-            },
-            {
-              name: 'preventOverflow',
-              options: {
-                mainAxis: false,
-                altAxis: false
-              }
-            }
-            ]        
-          }      
-        };
-        window.tippy(annoteTarget, config); 
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
-<script src="https://giscus.app/client.js" data-repo="arcenis-r/ajr-portfolio" data-repo-id="MDEwOlJlcG9zaXRvcnkxNzg3MDY3MTM=" data-category="General" data-category-id="DIC_kwDOCqbZGc4CdJXz" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="light" data-lang="en" crossorigin="anonymous" async="">
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            trigger: 'click',
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            positionFixed: true,
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 <input type="hidden" id="giscus-base-theme" value="light">
-<input type="hidden" id="giscus-alt-theme" value="dark"><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb29" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1"></a><span class="co">---</span></span>
+<input type="hidden" id="giscus-alt-theme" value="dark">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "arcenis-r/ajr-portfolio";
+    script.dataset.repoId = "MDEwOlJlcG9zaXRvcnkxNzg3MDY3MTM=";
+    script.dataset.category = "General";
+    script.dataset.categoryId = "DIC_kwDOCqbZGc4CdJXz";
+    script.dataset.mapping = "title";
+    script.dataset.reactionsEnabled = "1";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1"></a><span class="co">---</span></span>
 <span id="cb29-2"><a href="#cb29-2"></a><span class="an">title:</span><span class="co"> "Opening the ML ‘Black Box’ with Shapley Values"</span></span>
 <span id="cb29-3"><a href="#cb29-3"></a><span class="an">subtitle:</span><span class="co"> "A Tidy Approach"</span></span>
 <span id="cb29-4"><a href="#cb29-4"></a><span class="an">author:</span><span class="co"> "Arcenis Rojas"</span></span>
@@ -1620,7 +1656,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb29-68"><a href="#cb29-68"></a><span class="in">```{r}</span></span>
 <span id="cb29-69"><a href="#cb29-69"></a><span class="co">#| label: load-helper-funs</span></span>
 <span id="cb29-70"><a href="#cb29-70"></a></span>
-<span id="cb29-71"><a href="#cb29-71"></a><span class="fu">source</span>(<span class="st">"./tidy-ml-evaluation-funs.R"</span>)</span>
+<span id="cb29-71"><a href="#cb29-71"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"posts"</span>, <span class="st">"20210829-open-blackbox-tidy"</span>, <span class="st">"tidy-ml-evaluation-funs.R"</span>))</span>
 <span id="cb29-72"><a href="#cb29-72"></a></span>
 <span id="cb29-73"><a href="#cb29-73"></a><span class="in">```</span></span>
 <span id="cb29-74"><a href="#cb29-74"></a></span>
@@ -1903,7 +1939,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb29-371"><a href="#cb29-371"></a>Now I'll create the <span class="co">[</span><span class="ot">workflow</span><span class="co">](https://workflows.tidymodels.org/)</span> objects that I'll use in model tuning and evaluation.</span>
 <span id="cb29-372"><a href="#cb29-372"></a></span>
 <span id="cb29-375"><a href="#cb29-375"></a><span class="in">```{r}</span></span>
-<span id="cb29-376"><a href="#cb29-376"></a><span class="co">#| create-workflow-objects</span></span>
+<span id="cb29-376"><a href="#cb29-376"></a><span class="co">#| label: create-workflow-objects</span></span>
 <span id="cb29-377"><a href="#cb29-377"></a></span>
 <span id="cb29-378"><a href="#cb29-378"></a><span class="co"># Create model objects for both XGB and LM</span></span>
 <span id="cb29-379"><a href="#cb29-379"></a>xgb_mod <span class="ot">&lt;-</span> <span class="fu">boost_tree</span>(</span>
@@ -1978,7 +2014,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb29-452"><a href="#cb29-452"></a>final_wflows <span class="ot">&lt;-</span> <span class="fu">map2</span>(</span>
 <span id="cb29-453"><a href="#cb29-453"></a>  <span class="fu">list</span>(<span class="at">xgb =</span> xgb_wflow, <span class="at">lm =</span> lm_wflow),</span>
 <span id="cb29-454"><a href="#cb29-454"></a>  best_models,</span>
-<span id="cb29-455"><a href="#cb29-455"></a>  \(x, y) <span class="fu">finalize_workflow</span>(x, y) <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> housing_train)</span>
+<span id="cb29-455"><a href="#cb29-455"></a>  finalize_workflow</span>
 <span id="cb29-456"><a href="#cb29-456"></a>)</span>
 <span id="cb29-457"><a href="#cb29-457"></a></span>
 <span id="cb29-458"><a href="#cb29-458"></a><span class="in">```</span></span>
@@ -2037,171 +2073,179 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb29-517"><a href="#cb29-517"></a><span class="co">#| label: get-shap</span></span>
 <span id="cb29-518"><a href="#cb29-518"></a><span class="co">#| cache: true</span></span>
 <span id="cb29-519"><a href="#cb29-519"></a></span>
-<span id="cb29-520"><a href="#cb29-520"></a><span class="co"># Get matrices of training features for each model</span></span>
-<span id="cb29-521"><a href="#cb29-521"></a>training_features <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span> </span>
-<span id="cb29-522"><a href="#cb29-522"></a>  <span class="fu">map</span>(\(x) <span class="fu">pull_workflow_mold</span>(x) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">"predictors"</span>))</span>
-<span id="cb29-523"><a href="#cb29-523"></a></span>
-<span id="cb29-524"><a href="#cb29-524"></a><span class="co"># Register and set up the parallel backend</span></span>
-<span id="cb29-525"><a href="#cb29-525"></a>cl <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makePSOCKcluster</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>(<span class="at">logical =</span> <span class="cn">FALSE</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb29-526"><a href="#cb29-526"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
-<span id="cb29-527"><a href="#cb29-527"></a><span class="fu">invisible</span>(parallel<span class="sc">::</span><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">44</span>)))</span>
-<span id="cb29-528"><a href="#cb29-528"></a></span>
-<span id="cb29-529"><a href="#cb29-529"></a>shap <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap)</span>
-<span id="cb29-530"><a href="#cb29-530"></a></span>
-<span id="cb29-531"><a href="#cb29-531"></a><span class="co"># Get SHAP variable importance features</span></span>
-<span id="cb29-532"><a href="#cb29-532"></a>var_imp <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap_imp)</span>
+<span id="cb29-520"><a href="#cb29-520"></a><span class="co"># Fit the final models to the training data</span></span>
+<span id="cb29-521"><a href="#cb29-521"></a>final_wflows_fit <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span> <span class="fu">map</span>(\(x) <span class="fu">fit</span>(x, housing_train))</span>
+<span id="cb29-522"><a href="#cb29-522"></a></span>
+<span id="cb29-523"><a href="#cb29-523"></a><span class="co"># Get matrices of training features for each model</span></span>
+<span id="cb29-524"><a href="#cb29-524"></a>training_features <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span> </span>
+<span id="cb29-525"><a href="#cb29-525"></a>  <span class="fu">map</span>(\(x) <span class="fu">pull_workflow_mold</span>(x) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">"predictors"</span>))</span>
+<span id="cb29-526"><a href="#cb29-526"></a></span>
+<span id="cb29-527"><a href="#cb29-527"></a><span class="co"># Register and set up the parallel backend</span></span>
+<span id="cb29-528"><a href="#cb29-528"></a>cl <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">makePSOCKcluster</span>(parallel<span class="sc">::</span><span class="fu">detectCores</span>(<span class="at">logical =</span> <span class="cn">FALSE</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb29-529"><a href="#cb29-529"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>(cl)</span>
+<span id="cb29-530"><a href="#cb29-530"></a><span class="fu">invisible</span>(parallel<span class="sc">::</span><span class="fu">clusterEvalQ</span>(cl, <span class="fu">set.seed</span>(<span class="dv">44</span>)))</span>
+<span id="cb29-531"><a href="#cb29-531"></a></span>
+<span id="cb29-532"><a href="#cb29-532"></a>shap <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap)</span>
 <span id="cb29-533"><a href="#cb29-533"></a></span>
-<span id="cb29-534"><a href="#cb29-534"></a><span class="co"># Close the connection to the cluster</span></span>
-<span id="cb29-535"><a href="#cb29-535"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cl)</span>
+<span id="cb29-534"><a href="#cb29-534"></a><span class="co"># Get SHAP variable importance features</span></span>
+<span id="cb29-535"><a href="#cb29-535"></a>var_imp <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span> <span class="fu">map</span>(get_shap_imp)</span>
 <span id="cb29-536"><a href="#cb29-536"></a></span>
-<span id="cb29-537"><a href="#cb29-537"></a><span class="in">```</span></span>
-<span id="cb29-538"><a href="#cb29-538"></a></span>
-<span id="cb29-539"><a href="#cb29-539"></a><span class="fu">### Plot Relationships Between SHAP and the Training Data</span></span>
-<span id="cb29-540"><a href="#cb29-540"></a></span>
-<span id="cb29-541"><a href="#cb29-541"></a>I now have my SHAP values and can begin to visualize a few different things. The first visualization will be a <span class="co">[</span><span class="ot">SHAP summary plot</span><span class="co">](https://christophm.github.io/interpretable-ml-book/shap.html#shap-summary-plot)</span>, which I also found in Christoph Molnar's <span class="co">[</span><span class="ot">Interpretable Machine Learning</span><span class="co">](https://christophm.github.io/interpretable-ml-book/)</span>. When I saw this plot I was amazed at how much information it actually contains once you grasp the dimensionality.</span>
-<span id="cb29-542"><a href="#cb29-542"></a></span>
-<span id="cb29-545"><a href="#cb29-545"></a><span class="in">```{r}</span></span>
-<span id="cb29-546"><a href="#cb29-546"></a><span class="co">#| label: explain-shap-summary</span></span>
-<span id="cb29-547"><a href="#cb29-547"></a></span>
-<span id="cb29-548"><a href="#cb29-548"></a><span class="co"># Pull data from the outermost point on the SHAP summary plot</span></span>
-<span id="cb29-549"><a href="#cb29-549"></a>point_dat_xgb <span class="ot">&lt;-</span> <span class="fu">get_shap_summary</span>(</span>
-<span id="cb29-550"><a href="#cb29-550"></a>  var_imp<span class="sc">$</span>xgb, </span>
-<span id="cb29-551"><a href="#cb29-551"></a>  shap<span class="sc">$</span>xgb, </span>
-<span id="cb29-552"><a href="#cb29-552"></a>  training_features<span class="sc">$</span>xgb, </span>
-<span id="cb29-553"><a href="#cb29-553"></a>  <span class="at">max_features =</span> <span class="dv">1</span></span>
-<span id="cb29-554"><a href="#cb29-554"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb29-555"><a href="#cb29-555"></a>  <span class="fu">mutate</span>(<span class="at">shap_value =</span> <span class="fu">as.numeric</span>(shap_value)) <span class="sc">|&gt;</span></span>
-<span id="cb29-556"><a href="#cb29-556"></a>  <span class="fu">slice_max</span>(shap_value, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb29-557"><a href="#cb29-557"></a></span>
-<span id="cb29-558"><a href="#cb29-558"></a>point_dat_lm <span class="ot">&lt;-</span> <span class="fu">get_shap_summary</span>(</span>
-<span id="cb29-559"><a href="#cb29-559"></a>  var_imp<span class="sc">$</span>lm, </span>
-<span id="cb29-560"><a href="#cb29-560"></a>  shap<span class="sc">$</span>lm, </span>
-<span id="cb29-561"><a href="#cb29-561"></a>  training_features<span class="sc">$</span>lm, </span>
-<span id="cb29-562"><a href="#cb29-562"></a>  <span class="at">max_features =</span> <span class="dv">1</span></span>
-<span id="cb29-563"><a href="#cb29-563"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb29-564"><a href="#cb29-564"></a>  <span class="fu">mutate</span>(<span class="at">shap_value =</span> <span class="fu">as.numeric</span>(shap_value)) <span class="sc">|&gt;</span></span>
-<span id="cb29-565"><a href="#cb29-565"></a>  <span class="fu">slice_max</span>(shap_value, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb29-566"><a href="#cb29-566"></a></span>
-<span id="cb29-567"><a href="#cb29-567"></a><span class="co"># Put the data from that point into a string object</span></span>
-<span id="cb29-568"><a href="#cb29-568"></a>point_annotation_xgb <span class="ot">&lt;-</span> <span class="fu">str_glue</span>(</span>
-<span id="cb29-569"><a href="#cb29-569"></a>  <span class="st">"Row = {point_dat_xgb$id}</span></span>
-<span id="cb29-570"><a href="#cb29-570"></a><span class="st">  Variable = {point_dat_xgb$variable}</span></span>
-<span id="cb29-571"><a href="#cb29-571"></a><span class="st">  SHAP Value = {round(point_dat_xgb$shap_value, 3)}</span></span>
-<span id="cb29-572"><a href="#cb29-572"></a><span class="st">  Feature Value = {round(point_dat_xgb$feature_value, 3)}"</span></span>
-<span id="cb29-573"><a href="#cb29-573"></a>)</span>
-<span id="cb29-574"><a href="#cb29-574"></a></span>
-<span id="cb29-575"><a href="#cb29-575"></a>point_annotation_lm <span class="ot">&lt;-</span> <span class="fu">str_glue</span>(</span>
-<span id="cb29-576"><a href="#cb29-576"></a>  <span class="st">"Row = {point_dat_lm$id}</span></span>
-<span id="cb29-577"><a href="#cb29-577"></a><span class="st">  Variable = {point_dat_lm$variable}</span></span>
-<span id="cb29-578"><a href="#cb29-578"></a><span class="st">  SHAP Value = {round(point_dat_lm$shap_value, 3)}</span></span>
-<span id="cb29-579"><a href="#cb29-579"></a><span class="st">  Feature Value = {round(point_dat_lm$feature_value, 3)}"</span></span>
-<span id="cb29-580"><a href="#cb29-580"></a>)</span>
-<span id="cb29-581"><a href="#cb29-581"></a></span>
-<span id="cb29-582"><a href="#cb29-582"></a><span class="co"># Create SHAP summaries containing data frames and plots</span></span>
-<span id="cb29-583"><a href="#cb29-583"></a>shap_summary_plots <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb29-584"><a href="#cb29-584"></a>  var_imp, </span>
-<span id="cb29-585"><a href="#cb29-585"></a>  shap, </span>
-<span id="cb29-586"><a href="#cb29-586"></a>  training_features</span>
-<span id="cb29-587"><a href="#cb29-587"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb29-588"><a href="#cb29-588"></a>  <span class="fu">pmap</span>(get_shap_summary, <span class="at">max_features =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb29-589"><a href="#cb29-589"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_shap_summary)</span>
-<span id="cb29-590"><a href="#cb29-590"></a></span>
-<span id="cb29-591"><a href="#cb29-591"></a>total_bsmt_sf_pdp <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span></span>
-<span id="cb29-592"><a href="#cb29-592"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> total_bsmt_sf)</span>
+<span id="cb29-537"><a href="#cb29-537"></a><span class="co"># Close the connection to the cluster</span></span>
+<span id="cb29-538"><a href="#cb29-538"></a>parallel<span class="sc">::</span><span class="fu">stopCluster</span>(cl)</span>
+<span id="cb29-539"><a href="#cb29-539"></a></span>
+<span id="cb29-540"><a href="#cb29-540"></a><span class="in">```</span></span>
+<span id="cb29-541"><a href="#cb29-541"></a></span>
+<span id="cb29-542"><a href="#cb29-542"></a><span class="fu">### Plot Relationships Between SHAP and the Training Data</span></span>
+<span id="cb29-543"><a href="#cb29-543"></a></span>
+<span id="cb29-544"><a href="#cb29-544"></a>I now have my SHAP values and can begin to visualize a few different things. The first visualization will be a <span class="co">[</span><span class="ot">SHAP summary plot</span><span class="co">](https://christophm.github.io/interpretable-ml-book/shap.html#shap-summary-plot)</span>, which I also found in Christoph Molnar's <span class="co">[</span><span class="ot">Interpretable Machine Learning</span><span class="co">](https://christophm.github.io/interpretable-ml-book/)</span>. When I saw this plot I was amazed at how much information it actually contains once you grasp the dimensionality.</span>
+<span id="cb29-545"><a href="#cb29-545"></a></span>
+<span id="cb29-548"><a href="#cb29-548"></a><span class="in">```{r}</span></span>
+<span id="cb29-549"><a href="#cb29-549"></a><span class="co">#| label: explain-shap-summary</span></span>
+<span id="cb29-550"><a href="#cb29-550"></a></span>
+<span id="cb29-551"><a href="#cb29-551"></a><span class="co"># Pull data from the outermost point on the SHAP summary plot</span></span>
+<span id="cb29-552"><a href="#cb29-552"></a>point_dat_xgb <span class="ot">&lt;-</span> <span class="fu">get_shap_summary</span>(</span>
+<span id="cb29-553"><a href="#cb29-553"></a>  var_imp<span class="sc">$</span>xgb, </span>
+<span id="cb29-554"><a href="#cb29-554"></a>  shap<span class="sc">$</span>xgb, </span>
+<span id="cb29-555"><a href="#cb29-555"></a>  training_features<span class="sc">$</span>xgb, </span>
+<span id="cb29-556"><a href="#cb29-556"></a>  <span class="at">max_features =</span> <span class="dv">1</span></span>
+<span id="cb29-557"><a href="#cb29-557"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb29-558"><a href="#cb29-558"></a>  <span class="fu">mutate</span>(<span class="at">shap_value =</span> <span class="fu">as.numeric</span>(shap_value)) <span class="sc">|&gt;</span></span>
+<span id="cb29-559"><a href="#cb29-559"></a>  <span class="fu">slice_max</span>(shap_value, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb29-560"><a href="#cb29-560"></a></span>
+<span id="cb29-561"><a href="#cb29-561"></a>point_dat_lm <span class="ot">&lt;-</span> <span class="fu">get_shap_summary</span>(</span>
+<span id="cb29-562"><a href="#cb29-562"></a>  var_imp<span class="sc">$</span>lm, </span>
+<span id="cb29-563"><a href="#cb29-563"></a>  shap<span class="sc">$</span>lm, </span>
+<span id="cb29-564"><a href="#cb29-564"></a>  training_features<span class="sc">$</span>lm, </span>
+<span id="cb29-565"><a href="#cb29-565"></a>  <span class="at">max_features =</span> <span class="dv">1</span></span>
+<span id="cb29-566"><a href="#cb29-566"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb29-567"><a href="#cb29-567"></a>  <span class="fu">mutate</span>(<span class="at">shap_value =</span> <span class="fu">as.numeric</span>(shap_value)) <span class="sc">|&gt;</span></span>
+<span id="cb29-568"><a href="#cb29-568"></a>  <span class="fu">slice_max</span>(shap_value, <span class="at">with_ties =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb29-569"><a href="#cb29-569"></a></span>
+<span id="cb29-570"><a href="#cb29-570"></a><span class="co"># Put the data from that point into a string object</span></span>
+<span id="cb29-571"><a href="#cb29-571"></a>point_annotation_xgb <span class="ot">&lt;-</span> <span class="fu">str_glue</span>(</span>
+<span id="cb29-572"><a href="#cb29-572"></a>  <span class="st">"Row = {point_dat_xgb$id}</span></span>
+<span id="cb29-573"><a href="#cb29-573"></a><span class="st">  Variable = {point_dat_xgb$variable}</span></span>
+<span id="cb29-574"><a href="#cb29-574"></a><span class="st">  SHAP Value = {round(point_dat_xgb$shap_value, 3)}</span></span>
+<span id="cb29-575"><a href="#cb29-575"></a><span class="st">  Feature Value = {round(point_dat_xgb$feature_value, 3)}"</span></span>
+<span id="cb29-576"><a href="#cb29-576"></a>)</span>
+<span id="cb29-577"><a href="#cb29-577"></a></span>
+<span id="cb29-578"><a href="#cb29-578"></a>point_annotation_lm <span class="ot">&lt;-</span> <span class="fu">str_glue</span>(</span>
+<span id="cb29-579"><a href="#cb29-579"></a>  <span class="st">"Row = {point_dat_lm$id}</span></span>
+<span id="cb29-580"><a href="#cb29-580"></a><span class="st">  Variable = {point_dat_lm$variable}</span></span>
+<span id="cb29-581"><a href="#cb29-581"></a><span class="st">  SHAP Value = {round(point_dat_lm$shap_value, 3)}</span></span>
+<span id="cb29-582"><a href="#cb29-582"></a><span class="st">  Feature Value = {round(point_dat_lm$feature_value, 3)}"</span></span>
+<span id="cb29-583"><a href="#cb29-583"></a>)</span>
+<span id="cb29-584"><a href="#cb29-584"></a></span>
+<span id="cb29-585"><a href="#cb29-585"></a><span class="co"># Create SHAP summaries containing data frames and plots</span></span>
+<span id="cb29-586"><a href="#cb29-586"></a>shap_summary_plots <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb29-587"><a href="#cb29-587"></a>  var_imp, </span>
+<span id="cb29-588"><a href="#cb29-588"></a>  shap, </span>
+<span id="cb29-589"><a href="#cb29-589"></a>  training_features</span>
+<span id="cb29-590"><a href="#cb29-590"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb29-591"><a href="#cb29-591"></a>  <span class="fu">pmap</span>(get_shap_summary, <span class="at">max_features =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-592"><a href="#cb29-592"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_shap_summary)</span>
 <span id="cb29-593"><a href="#cb29-593"></a></span>
-<span id="cb29-594"><a href="#cb29-594"></a><span class="in">```</span></span>
-<span id="cb29-595"><a href="#cb29-595"></a></span>
-<span id="cb29-598"><a href="#cb29-598"></a><span class="in">```{r}</span></span>
-<span id="cb29-599"><a href="#cb29-599"></a><span class="co">#| label: plot-shap-summary-xgb</span></span>
-<span id="cb29-600"><a href="#cb29-600"></a></span>
-<span id="cb29-601"><a href="#cb29-601"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
-<span id="cb29-602"><a href="#cb29-602"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb29-603"><a href="#cb29-603"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
-<span id="cb29-604"><a href="#cb29-604"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb29-605"><a href="#cb29-605"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">0.5</span>, <span class="at">xend =</span> <span class="fl">0.575</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">yend =</span> <span class="fl">10.01</span>), </span>
-<span id="cb29-606"><a href="#cb29-606"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb29-607"><a href="#cb29-607"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>))</span>
-<span id="cb29-608"><a href="#cb29-608"></a>  ) <span class="sc">+</span></span>
-<span id="cb29-609"><a href="#cb29-609"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb29-610"><a href="#cb29-610"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb29-611"><a href="#cb29-611"></a>    <span class="at">x =</span> <span class="fl">0.46</span>, </span>
-<span id="cb29-612"><a href="#cb29-612"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_xgb, </span>
-<span id="cb29-613"><a href="#cb29-613"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb29-614"><a href="#cb29-614"></a>  )</span>
-<span id="cb29-615"><a href="#cb29-615"></a></span>
-<span id="cb29-616"><a href="#cb29-616"></a><span class="in">```</span></span>
-<span id="cb29-617"><a href="#cb29-617"></a></span>
-<span id="cb29-620"><a href="#cb29-620"></a><span class="in">```{r}</span></span>
-<span id="cb29-621"><a href="#cb29-621"></a><span class="co">#| label: plot-shap-summary-lm</span></span>
-<span id="cb29-622"><a href="#cb29-622"></a></span>
-<span id="cb29-623"><a href="#cb29-623"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
-<span id="cb29-624"><a href="#cb29-624"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb29-625"><a href="#cb29-625"></a>shap_summary_plots<span class="sc">$</span>lm <span class="sc">+</span> </span>
-<span id="cb29-626"><a href="#cb29-626"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb29-627"><a href="#cb29-627"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">0.79</span>, <span class="at">xend =</span> <span class="fl">0.9</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">yend =</span> <span class="dv">10</span>), </span>
-<span id="cb29-628"><a href="#cb29-628"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb29-629"><a href="#cb29-629"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>))</span>
-<span id="cb29-630"><a href="#cb29-630"></a>  ) <span class="sc">+</span></span>
-<span id="cb29-631"><a href="#cb29-631"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb29-632"><a href="#cb29-632"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb29-633"><a href="#cb29-633"></a>    <span class="at">x =</span> <span class="fl">0.8</span>, </span>
-<span id="cb29-634"><a href="#cb29-634"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_lm, </span>
-<span id="cb29-635"><a href="#cb29-635"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb29-636"><a href="#cb29-636"></a>  )</span>
-<span id="cb29-637"><a href="#cb29-637"></a></span>
-<span id="cb29-638"><a href="#cb29-638"></a><span class="in">```</span></span>
-<span id="cb29-639"><a href="#cb29-639"></a></span>
-<span id="cb29-640"><a href="#cb29-640"></a>The first plot above shows that row <span class="in">`r point_dat_xgb |&gt; pull(id)`</span> has a positive SHAP value of <span class="in">`r point_dat_xgb |&gt; pull(shap_value)`</span> for the <span class="in">`r point_dat_xgb |&gt; pull(variable)`</span> in the XGB model, which had an above average value of <span class="in">`r point_dat_xgb |&gt; pull(feature_value)`</span> in the training data. When considering all the observations collectively the feature value is ideally positively related with the SHAP value. Next I'll look at partial dependence plots to show the effect that the <span class="in">`gr_liv_area`</span> has on <span class="in">`sale_price`</span> according to each model.</span>
-<span id="cb29-641"><a href="#cb29-641"></a></span>
-<span id="cb29-644"><a href="#cb29-644"></a><span class="in">```{r}</span></span>
-<span id="cb29-645"><a href="#cb29-645"></a><span class="co">#| label: pdp-plots</span></span>
-<span id="cb29-646"><a href="#cb29-646"></a></span>
-<span id="cb29-647"><a href="#cb29-647"></a>gr_liv_area_pdp <span class="ot">&lt;-</span> final_wflows <span class="sc">|&gt;</span></span>
-<span id="cb29-648"><a href="#cb29-648"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> gr_liv_area)</span>
+<span id="cb29-594"><a href="#cb29-594"></a>total_bsmt_sf_pdp <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span></span>
+<span id="cb29-595"><a href="#cb29-595"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> total_bsmt_sf)</span>
+<span id="cb29-596"><a href="#cb29-596"></a></span>
+<span id="cb29-597"><a href="#cb29-597"></a><span class="in">```</span></span>
+<span id="cb29-598"><a href="#cb29-598"></a></span>
+<span id="cb29-601"><a href="#cb29-601"></a><span class="in">```{r}</span></span>
+<span id="cb29-602"><a href="#cb29-602"></a><span class="co">#| label: plot-shap-summary-xgb</span></span>
+<span id="cb29-603"><a href="#cb29-603"></a></span>
+<span id="cb29-604"><a href="#cb29-604"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<span id="cb29-605"><a href="#cb29-605"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
+<span id="cb29-606"><a href="#cb29-606"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
+<span id="cb29-607"><a href="#cb29-607"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-608"><a href="#cb29-608"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb29-609"><a href="#cb29-609"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb29-610"><a href="#cb29-610"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb29-611"><a href="#cb29-611"></a>    <span class="at">x =</span> <span class="fl">0.15</span>,</span>
+<span id="cb29-612"><a href="#cb29-612"></a>    <span class="at">xend =</span> <span class="fl">0.17</span>,</span>
+<span id="cb29-613"><a href="#cb29-613"></a>    <span class="at">y =</span> <span class="fl">6.2</span>,</span>
+<span id="cb29-614"><a href="#cb29-614"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
+<span id="cb29-615"><a href="#cb29-615"></a>  ) <span class="sc">+</span></span>
+<span id="cb29-616"><a href="#cb29-616"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-617"><a href="#cb29-617"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb29-618"><a href="#cb29-618"></a>    <span class="at">x =</span> <span class="fl">0.15</span>, </span>
+<span id="cb29-619"><a href="#cb29-619"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
+<span id="cb29-620"><a href="#cb29-620"></a>    <span class="at">label =</span> point_annotation_xgb, </span>
+<span id="cb29-621"><a href="#cb29-621"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb29-622"><a href="#cb29-622"></a>  )</span>
+<span id="cb29-623"><a href="#cb29-623"></a></span>
+<span id="cb29-624"><a href="#cb29-624"></a><span class="in">```</span></span>
+<span id="cb29-625"><a href="#cb29-625"></a></span>
+<span id="cb29-628"><a href="#cb29-628"></a><span class="in">```{r}</span></span>
+<span id="cb29-629"><a href="#cb29-629"></a><span class="co">#| label: plot-shap-summary-lm</span></span>
+<span id="cb29-630"><a href="#cb29-630"></a></span>
+<span id="cb29-631"><a href="#cb29-631"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<span id="cb29-632"><a href="#cb29-632"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
+<span id="cb29-633"><a href="#cb29-633"></a>shap_summary_plots<span class="sc">$</span>lm <span class="sc">+</span> </span>
+<span id="cb29-634"><a href="#cb29-634"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb29-635"><a href="#cb29-635"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">0.79</span>, <span class="at">xend =</span> <span class="fl">0.9</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">yend =</span> <span class="dv">10</span>), </span>
+<span id="cb29-636"><a href="#cb29-636"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb29-637"><a href="#cb29-637"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>))</span>
+<span id="cb29-638"><a href="#cb29-638"></a>  ) <span class="sc">+</span></span>
+<span id="cb29-639"><a href="#cb29-639"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-640"><a href="#cb29-640"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb29-641"><a href="#cb29-641"></a>    <span class="at">x =</span> <span class="fl">0.8</span>, </span>
+<span id="cb29-642"><a href="#cb29-642"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_lm, </span>
+<span id="cb29-643"><a href="#cb29-643"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb29-644"><a href="#cb29-644"></a>  )</span>
+<span id="cb29-645"><a href="#cb29-645"></a></span>
+<span id="cb29-646"><a href="#cb29-646"></a><span class="in">```</span></span>
+<span id="cb29-647"><a href="#cb29-647"></a></span>
+<span id="cb29-648"><a href="#cb29-648"></a>The first plot above shows that row <span class="in">`r point_dat_xgb |&gt; pull(id)`</span> has a positive SHAP value of <span class="in">`r point_dat_xgb |&gt; pull(shap_value)`</span> for the <span class="in">`r point_dat_xgb |&gt; pull(variable)`</span> in the XGB model, which had an above average value of <span class="in">`r point_dat_xgb |&gt; pull(feature_value)`</span> in the training data. When considering all the observations collectively the feature value is ideally positively related with the SHAP value. Next I'll look at partial dependence plots to show the effect that the <span class="in">`gr_liv_area`</span> has on <span class="in">`sale_price`</span> according to each model.</span>
 <span id="cb29-649"><a href="#cb29-649"></a></span>
-<span id="cb29-650"><a href="#cb29-650"></a>gr_liv_area_pdp<span class="sc">$</span>xgb</span>
-<span id="cb29-651"><a href="#cb29-651"></a>gr_liv_area_pdp<span class="sc">$</span>lm</span>
-<span id="cb29-652"><a href="#cb29-652"></a></span>
-<span id="cb29-653"><a href="#cb29-653"></a><span class="in">```</span></span>
+<span id="cb29-652"><a href="#cb29-652"></a><span class="in">```{r}</span></span>
+<span id="cb29-653"><a href="#cb29-653"></a><span class="co">#| label: pdp-plots</span></span>
 <span id="cb29-654"><a href="#cb29-654"></a></span>
-<span id="cb29-655"><a href="#cb29-655"></a>According to both models the <span class="in">`gr_liv_area`</span> variable positively effects the predicted sale price of a home in the training data, which seems consistent with general knowledge about home prices given that <span class="in">`gr_liv_area`</span> is a measure of the above ground living area (more commonly known as "square footage"). It's important to note, however, that, unlike the coefficient in a regression model, one should not make inferences from a partial dependency beyond the dimensions of the training data. A partial dependency plot is meant only to provide an overview on the broad relationship between an explanatory variable and the target variable.</span>
-<span id="cb29-656"><a href="#cb29-656"></a></span>
-<span id="cb29-657"><a href="#cb29-657"></a>Lastly, I can look at how each feature affects a particular observation with a contribution plot. I'll consider the house observed in row 2049 of the training data set.</span>
-<span id="cb29-658"><a href="#cb29-658"></a></span>
-<span id="cb29-661"><a href="#cb29-661"></a><span class="in">```{r}</span></span>
-<span id="cb29-662"><a href="#cb29-662"></a><span class="co">#| label: save-contrib-plots</span></span>
-<span id="cb29-663"><a href="#cb29-663"></a></span>
-<span id="cb29-664"><a href="#cb29-664"></a>obs_2409_contrib <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span></span>
-<span id="cb29-665"><a href="#cb29-665"></a>  <span class="fu">map2</span>(</span>
-<span id="cb29-666"><a href="#cb29-666"></a>    <span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), </span>
-<span id="cb29-667"><a href="#cb29-667"></a>    get_contributions, </span>
-<span id="cb29-668"><a href="#cb29-668"></a>    <span class="at">rnum =</span> <span class="dv">2049</span>, </span>
-<span id="cb29-669"><a href="#cb29-669"></a>    <span class="at">nfeat =</span> <span class="dv">15</span> </span>
-<span id="cb29-670"><a href="#cb29-670"></a>  )</span>
+<span id="cb29-655"><a href="#cb29-655"></a>gr_liv_area_pdp <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span></span>
+<span id="cb29-656"><a href="#cb29-656"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> gr_liv_area)</span>
+<span id="cb29-657"><a href="#cb29-657"></a></span>
+<span id="cb29-658"><a href="#cb29-658"></a>gr_liv_area_pdp<span class="sc">$</span>xgb</span>
+<span id="cb29-659"><a href="#cb29-659"></a>gr_liv_area_pdp<span class="sc">$</span>lm</span>
+<span id="cb29-660"><a href="#cb29-660"></a></span>
+<span id="cb29-661"><a href="#cb29-661"></a><span class="in">```</span></span>
+<span id="cb29-662"><a href="#cb29-662"></a></span>
+<span id="cb29-663"><a href="#cb29-663"></a>According to both models the <span class="in">`gr_liv_area`</span> variable positively effects the predicted sale price of a home in the training data, which seems consistent with general knowledge about home prices given that <span class="in">`gr_liv_area`</span> is a measure of the above ground living area (more commonly known as "square footage"). It's important to note, however, that, unlike the coefficient in a regression model, one should not make inferences from a partial dependency beyond the dimensions of the training data. A partial dependency plot is meant only to provide an overview on the broad relationship between an explanatory variable and the target variable.</span>
+<span id="cb29-664"><a href="#cb29-664"></a></span>
+<span id="cb29-665"><a href="#cb29-665"></a>Lastly, I can look at how each feature affects a particular observation with a contribution plot. I'll consider the house observed in row 2049 of the training data set.</span>
+<span id="cb29-666"><a href="#cb29-666"></a></span>
+<span id="cb29-669"><a href="#cb29-669"></a><span class="in">```{r}</span></span>
+<span id="cb29-670"><a href="#cb29-670"></a><span class="co">#| label: save-contrib-plots</span></span>
 <span id="cb29-671"><a href="#cb29-671"></a></span>
-<span id="cb29-672"><a href="#cb29-672"></a></span>
-<span id="cb29-673"><a href="#cb29-673"></a><span class="in">```</span></span>
-<span id="cb29-674"><a href="#cb29-674"></a></span>
-<span id="cb29-677"><a href="#cb29-677"></a><span class="in">```{r}</span></span>
-<span id="cb29-678"><a href="#cb29-678"></a><span class="co">#| label: contrib-xgb</span></span>
+<span id="cb29-672"><a href="#cb29-672"></a>obs_2409_contrib <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span></span>
+<span id="cb29-673"><a href="#cb29-673"></a>  <span class="fu">map2</span>(</span>
+<span id="cb29-674"><a href="#cb29-674"></a>    <span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), </span>
+<span id="cb29-675"><a href="#cb29-675"></a>    get_contributions, </span>
+<span id="cb29-676"><a href="#cb29-676"></a>    <span class="at">rnum =</span> <span class="dv">2049</span>, </span>
+<span id="cb29-677"><a href="#cb29-677"></a>    <span class="at">nfeat =</span> <span class="dv">15</span> </span>
+<span id="cb29-678"><a href="#cb29-678"></a>  )</span>
 <span id="cb29-679"><a href="#cb29-679"></a></span>
-<span id="cb29-680"><a href="#cb29-680"></a>obs_2409_contrib<span class="sc">$</span>xgb<span class="sc">$</span>contrib_plot</span>
-<span id="cb29-681"><a href="#cb29-681"></a></span>
-<span id="cb29-682"><a href="#cb29-682"></a><span class="in">```</span></span>
-<span id="cb29-683"><a href="#cb29-683"></a></span>
-<span id="cb29-686"><a href="#cb29-686"></a><span class="in">```{r}</span></span>
-<span id="cb29-687"><a href="#cb29-687"></a><span class="co">#| label: contrib-lm</span></span>
-<span id="cb29-688"><a href="#cb29-688"></a></span>
-<span id="cb29-689"><a href="#cb29-689"></a>obs_2409_contrib<span class="sc">$</span>lm<span class="sc">$</span>contrib_plot</span>
-<span id="cb29-690"><a href="#cb29-690"></a></span>
-<span id="cb29-691"><a href="#cb29-691"></a><span class="in">```</span></span>
-<span id="cb29-692"><a href="#cb29-692"></a></span>
-<span id="cb29-693"><a href="#cb29-693"></a>The above XG Boost contribution plot shows that <span class="in">`total_bsmt_sf`</span> had the largest positive effect on the predicted sale price of the sale in observation 2049 and having <span class="in">`garage_finish_Unf`</span> (having an unfinished garage) had the largest negative effect. The Linear Regression contribution plot shows that <span class="in">`gr_liv_area`</span> had the largest positive effect and <span class="in">`neighborhood_Brookside`</span> had the largest negative effect on the predicted sale price. However, it's interesting to note that <span class="in">`garage_finish_Fin`</span>, the opposite of <span class="in">`garage_finish_Unf`</span>, had a negative effect in the Linear Regression.</span>
-<span id="cb29-694"><a href="#cb29-694"></a></span>
-<span id="cb29-695"><a href="#cb29-695"></a><span class="fu">## Final Thoughts</span></span>
+<span id="cb29-680"><a href="#cb29-680"></a></span>
+<span id="cb29-681"><a href="#cb29-681"></a><span class="in">```</span></span>
+<span id="cb29-682"><a href="#cb29-682"></a></span>
+<span id="cb29-685"><a href="#cb29-685"></a><span class="in">```{r}</span></span>
+<span id="cb29-686"><a href="#cb29-686"></a><span class="co">#| label: contrib-xgb</span></span>
+<span id="cb29-687"><a href="#cb29-687"></a></span>
+<span id="cb29-688"><a href="#cb29-688"></a>obs_2409_contrib<span class="sc">$</span>xgb<span class="sc">$</span>contrib_plot</span>
+<span id="cb29-689"><a href="#cb29-689"></a></span>
+<span id="cb29-690"><a href="#cb29-690"></a><span class="in">```</span></span>
+<span id="cb29-691"><a href="#cb29-691"></a></span>
+<span id="cb29-694"><a href="#cb29-694"></a><span class="in">```{r}</span></span>
+<span id="cb29-695"><a href="#cb29-695"></a><span class="co">#| label: contrib-lm</span></span>
 <span id="cb29-696"><a href="#cb29-696"></a></span>
-<span id="cb29-697"><a href="#cb29-697"></a>While these methods of looking into machine learning algorithms are not designed for inference, they do go a long way in helping to elucidate the relationships or patterns that machine learning algorithms find. They help answer the questions about why some predictions come out the way that they do, whether they make sense or not.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-697"><a href="#cb29-697"></a>obs_2409_contrib<span class="sc">$</span>lm<span class="sc">$</span>contrib_plot</span>
+<span id="cb29-698"><a href="#cb29-698"></a></span>
+<span id="cb29-699"><a href="#cb29-699"></a><span class="in">```</span></span>
+<span id="cb29-700"><a href="#cb29-700"></a></span>
+<span id="cb29-701"><a href="#cb29-701"></a>The above XG Boost contribution plot shows that <span class="in">`total_bsmt_sf`</span> had the largest positive effect on the predicted sale price of the sale in observation 2049 and having <span class="in">`garage_finish_Unf`</span> (having an unfinished garage) had the largest negative effect. The Linear Regression contribution plot shows that <span class="in">`gr_liv_area`</span> had the largest positive effect and <span class="in">`neighborhood_Brookside`</span> had the largest negative effect on the predicted sale price. However, it's interesting to note that <span class="in">`garage_finish_Fin`</span>, the opposite of <span class="in">`garage_finish_Unf`</span>, had a negative effect in the Linear Regression.</span>
+<span id="cb29-702"><a href="#cb29-702"></a></span>
+<span id="cb29-703"><a href="#cb29-703"></a><span class="fu">## Final Thoughts</span></span>
+<span id="cb29-704"><a href="#cb29-704"></a></span>
+<span id="cb29-705"><a href="#cb29-705"></a>While these methods of looking into machine learning algorithms are not designed for inference, they do go a long way in helping to elucidate the relationships or patterns that machine learning algorithms find. They help answer the questions about why some predictions come out the way that they do, whether they make sense or not.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

@@ -64,7 +64,7 @@ Next I loaded a script containing some functions that I defined [(available on G
 ```{r}
 #| label: load-helper-funs
 
-source("./tidy-ml-evaluation-funs.R")
+source(here::here("posts", "20210829-open-blackbox-tidy", "tidy-ml-evaluation-funs.R"))
 
 ```
 
@@ -422,7 +422,7 @@ tune_metrics <- list(xgb = xgb_tune, lm = lm_tune) |>
 final_wflows <- map2(
   list(xgb = xgb_wflow, lm = lm_wflow),
   best_models,
-  \(x, y) finalize_workflow(x, y) |> fit(data = housing_train)
+  finalize_workflow
 )
 
 ```
@@ -481,8 +481,11 @@ With that in mind, now that the models have been tuned, trained, and evaluated, 
 #| label: get-shap
 #| cache: true
 
+# Fit the final models to the training data
+final_wflows_fit <- final_wflows |> map(\(x) fit(x, housing_train))
+
 # Get matrices of training features for each model
-training_features <- final_wflows |> 
+training_features <- final_wflows_fit |> 
   map(\(x) pull_workflow_mold(x) |> pluck("predictors"))
 
 # Register and set up the parallel backend
@@ -490,7 +493,7 @@ cl <- parallel::makePSOCKcluster(parallel::detectCores(logical = FALSE) - 1)
 doParallel::registerDoParallel(cl)
 invisible(parallel::clusterEvalQ(cl, set.seed(44)))
 
-shap <- final_wflows |> map(get_shap)
+shap <- final_wflows_fit |> map(get_shap)
 
 # Get SHAP variable importance features
 var_imp <- shap |> map(get_shap_imp)
@@ -550,7 +553,7 @@ shap_summary_plots <- list(
   pmap(get_shap_summary, max_features = 10) %>%
   map2(c("XG Boost", "Linear Regression"), plot_shap_summary)
 
-total_bsmt_sf_pdp <- final_wflows |>
+total_bsmt_sf_pdp <- final_wflows_fit |>
   map2(c("XG Boost", "Linear Regression"), plot_pdp, pred_var = total_bsmt_sf)
 
 ```
@@ -561,15 +564,20 @@ total_bsmt_sf_pdp <- final_wflows |>
 # Generate the SHAP summary plot with an annotation for the outermost point
 set.seed(23)
 shap_summary_plots$xgb + 
-  geom_segment(
-    aes(x = 0.5, xend = 0.575, y = 8, yend = 10.01), 
+  annotate(
+    geom = "segment",
+    arrow = arrow(length = unit(0.03, "npc")),
     color = "black",
-    arrow = arrow(length = unit(0.03, "npc"))
+    x = 0.15,
+    xend = 0.17,
+    y = 6.2,
+    yend = 9.8
   ) +
   annotate(
     geom = "text", 
-    x = 0.46, 
-    y = 6.8, label = point_annotation_xgb, 
+    x = 0.15, 
+    y = 5,
+    label = point_annotation_xgb, 
     hjust = "center"
   )
 
@@ -600,7 +608,7 @@ The first plot above shows that row `r point_dat_xgb |> pull(id)` has a positive
 ```{r}
 #| label: pdp-plots
 
-gr_liv_area_pdp <- final_wflows |>
+gr_liv_area_pdp <- final_wflows_fit |>
   map2(c("XG Boost", "Linear Regression"), plot_pdp, pred_var = gr_liv_area)
 
 gr_liv_area_pdp$xgb
