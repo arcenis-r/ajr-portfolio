@@ -517,7 +517,6 @@ point_dat_xgb <- get_shap_summary(
   training_features$xgb, 
   max_features = 1
 ) |>
-  mutate(shap_value = as.numeric(shap_value)) |>
   slice_max(shap_value, with_ties = FALSE)
 
 point_dat_lm <- get_shap_summary(
