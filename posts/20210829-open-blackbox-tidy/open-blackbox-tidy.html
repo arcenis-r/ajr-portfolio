@@ -927,25 +927,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb22-3"><a href="#cb22-3"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
-<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb22-5"><a href="#cb22-5"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
-<span id="cb22-6"><a href="#cb22-6"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
-<span id="cb22-7"><a href="#cb22-7"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb22-8"><a href="#cb22-8"></a>    <span class="at">x =</span> <span class="fl">0.15</span>,</span>
-<span id="cb22-9"><a href="#cb22-9"></a>    <span class="at">xend =</span> <span class="fl">0.17</span>,</span>
-<span id="cb22-10"><a href="#cb22-10"></a>    <span class="at">y =</span> <span class="fl">6.2</span>,</span>
-<span id="cb22-11"><a href="#cb22-11"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
-<span id="cb22-12"><a href="#cb22-12"></a>  ) <span class="sc">+</span></span>
-<span id="cb22-13"><a href="#cb22-13"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb22-14"><a href="#cb22-14"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb22-15"><a href="#cb22-15"></a>    <span class="at">x =</span> <span class="fl">0.15</span>, </span>
-<span id="cb22-16"><a href="#cb22-16"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
-<span id="cb22-17"><a href="#cb22-17"></a>    <span class="at">label =</span> point_annotation_xgb, </span>
-<span id="cb22-18"><a href="#cb22-18"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb22-19"><a href="#cb22-19"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># Get the maximum of the x_summary</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>point_x_lim_max <span class="ot">&lt;-</span> shap_summary_plots <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">map</span>(</span>
+<span id="cb22-4"><a href="#cb22-4"></a>    \(x) {</span>
+<span id="cb22-5"><a href="#cb22-5"></a>      <span class="fu">ggplot_build</span>(x) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a>        <span class="fu">pluck</span>(<span class="st">"layout"</span>, <span class="st">"panel_scales_x"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a>        (\(x) x<span class="sc">$</span><span class="fu">get_limits</span>()[<span class="dv">2</span>])()</span>
+<span id="cb22-8"><a href="#cb22-8"></a>    }</span>
+<span id="cb22-9"><a href="#cb22-9"></a>  )</span>
+<span id="cb22-10"><a href="#cb22-10"></a>  </span>
+<span id="cb22-11"><a href="#cb22-11"></a></span>
+<span id="cb22-12"><a href="#cb22-12"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<span id="cb22-13"><a href="#cb22-13"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
+<span id="cb22-14"><a href="#cb22-14"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
+<span id="cb22-15"><a href="#cb22-15"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb22-16"><a href="#cb22-16"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb22-17"><a href="#cb22-17"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb22-18"><a href="#cb22-18"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb22-19"><a href="#cb22-19"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>xgb <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb22-20"><a href="#cb22-20"></a>    <span class="at">xend =</span> point_dat_xgb<span class="sc">$</span>shap_value <span class="sc">*</span> .<span class="dv">98</span>,</span>
+<span id="cb22-21"><a href="#cb22-21"></a>    <span class="at">y =</span> <span class="dv">6</span>,</span>
+<span id="cb22-22"><a href="#cb22-22"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
+<span id="cb22-23"><a href="#cb22-23"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-24"><a href="#cb22-24"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb22-25"><a href="#cb22-25"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb22-26"><a href="#cb22-26"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>xgb <span class="sc">/</span> <span class="dv">2</span>, </span>
+<span id="cb22-27"><a href="#cb22-27"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
+<span id="cb22-28"><a href="#cb22-28"></a>    <span class="at">label =</span> point_annotation_xgb, </span>
+<span id="cb22-29"><a href="#cb22-29"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb22-30"><a href="#cb22-30"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -961,17 +972,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
 <span id="cb23-2"><a href="#cb23-2"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
 <span id="cb23-3"><a href="#cb23-3"></a>shap_summary_plots<span class="sc">$</span>lm <span class="sc">+</span> </span>
-<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb23-5"><a href="#cb23-5"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">0.79</span>, <span class="at">xend =</span> <span class="fl">0.9</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">yend =</span> <span class="dv">10</span>), </span>
-<span id="cb23-6"><a href="#cb23-6"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb23-7"><a href="#cb23-7"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>))</span>
-<span id="cb23-8"><a href="#cb23-8"></a>  ) <span class="sc">+</span></span>
-<span id="cb23-9"><a href="#cb23-9"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb23-10"><a href="#cb23-10"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb23-11"><a href="#cb23-11"></a>    <span class="at">x =</span> <span class="fl">0.8</span>, </span>
-<span id="cb23-12"><a href="#cb23-12"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_lm, </span>
-<span id="cb23-13"><a href="#cb23-13"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb23-14"><a href="#cb23-14"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb23-5"><a href="#cb23-5"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb23-7"><a href="#cb23-7"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>lm <span class="sc">*</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>),</span>
+<span id="cb23-9"><a href="#cb23-9"></a>    <span class="at">xend =</span> point_dat_lm<span class="sc">$</span>shap_value <span class="sc">*</span> .<span class="dv">98</span>,</span>
+<span id="cb23-10"><a href="#cb23-10"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
+<span id="cb23-11"><a href="#cb23-11"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
+<span id="cb23-12"><a href="#cb23-12"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-13"><a href="#cb23-13"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb23-14"><a href="#cb23-14"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb23-15"><a href="#cb23-15"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>lm <span class="sc">*</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>), </span>
+<span id="cb23-16"><a href="#cb23-16"></a>    <span class="at">y =</span> <span class="dv">4</span>,</span>
+<span id="cb23-17"><a href="#cb23-17"></a>    <span class="at">label =</span> point_annotation_lm, </span>
+<span id="cb23-18"><a href="#cb23-18"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb23-19"><a href="#cb23-19"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2153,98 +2169,114 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb29-601"><a href="#cb29-601"></a><span class="in">```{r}</span></span>
 <span id="cb29-602"><a href="#cb29-602"></a><span class="co">#| label: plot-shap-summary-xgb</span></span>
 <span id="cb29-603"><a href="#cb29-603"></a></span>
-<span id="cb29-604"><a href="#cb29-604"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
-<span id="cb29-605"><a href="#cb29-605"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb29-606"><a href="#cb29-606"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
-<span id="cb29-607"><a href="#cb29-607"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb29-608"><a href="#cb29-608"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
-<span id="cb29-609"><a href="#cb29-609"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
-<span id="cb29-610"><a href="#cb29-610"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb29-611"><a href="#cb29-611"></a>    <span class="at">x =</span> <span class="fl">0.15</span>,</span>
-<span id="cb29-612"><a href="#cb29-612"></a>    <span class="at">xend =</span> <span class="fl">0.17</span>,</span>
-<span id="cb29-613"><a href="#cb29-613"></a>    <span class="at">y =</span> <span class="fl">6.2</span>,</span>
-<span id="cb29-614"><a href="#cb29-614"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
-<span id="cb29-615"><a href="#cb29-615"></a>  ) <span class="sc">+</span></span>
-<span id="cb29-616"><a href="#cb29-616"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb29-617"><a href="#cb29-617"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb29-618"><a href="#cb29-618"></a>    <span class="at">x =</span> <span class="fl">0.15</span>, </span>
-<span id="cb29-619"><a href="#cb29-619"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
-<span id="cb29-620"><a href="#cb29-620"></a>    <span class="at">label =</span> point_annotation_xgb, </span>
-<span id="cb29-621"><a href="#cb29-621"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb29-622"><a href="#cb29-622"></a>  )</span>
-<span id="cb29-623"><a href="#cb29-623"></a></span>
-<span id="cb29-624"><a href="#cb29-624"></a><span class="in">```</span></span>
-<span id="cb29-625"><a href="#cb29-625"></a></span>
-<span id="cb29-628"><a href="#cb29-628"></a><span class="in">```{r}</span></span>
-<span id="cb29-629"><a href="#cb29-629"></a><span class="co">#| label: plot-shap-summary-lm</span></span>
-<span id="cb29-630"><a href="#cb29-630"></a></span>
-<span id="cb29-631"><a href="#cb29-631"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
-<span id="cb29-632"><a href="#cb29-632"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
-<span id="cb29-633"><a href="#cb29-633"></a>shap_summary_plots<span class="sc">$</span>lm <span class="sc">+</span> </span>
-<span id="cb29-634"><a href="#cb29-634"></a>  <span class="fu">geom_segment</span>(</span>
-<span id="cb29-635"><a href="#cb29-635"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">0.79</span>, <span class="at">xend =</span> <span class="fl">0.9</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">yend =</span> <span class="dv">10</span>), </span>
-<span id="cb29-636"><a href="#cb29-636"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
-<span id="cb29-637"><a href="#cb29-637"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>))</span>
-<span id="cb29-638"><a href="#cb29-638"></a>  ) <span class="sc">+</span></span>
-<span id="cb29-639"><a href="#cb29-639"></a>  <span class="fu">annotate</span>(</span>
-<span id="cb29-640"><a href="#cb29-640"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
-<span id="cb29-641"><a href="#cb29-641"></a>    <span class="at">x =</span> <span class="fl">0.8</span>, </span>
-<span id="cb29-642"><a href="#cb29-642"></a>    <span class="at">y =</span> <span class="fl">6.8</span>, <span class="at">label =</span> point_annotation_lm, </span>
-<span id="cb29-643"><a href="#cb29-643"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
-<span id="cb29-644"><a href="#cb29-644"></a>  )</span>
-<span id="cb29-645"><a href="#cb29-645"></a></span>
-<span id="cb29-646"><a href="#cb29-646"></a><span class="in">```</span></span>
-<span id="cb29-647"><a href="#cb29-647"></a></span>
-<span id="cb29-648"><a href="#cb29-648"></a>The first plot above shows that row <span class="in">`r point_dat_xgb |&gt; pull(id)`</span> has a positive SHAP value of <span class="in">`r point_dat_xgb |&gt; pull(shap_value)`</span> for the <span class="in">`r point_dat_xgb |&gt; pull(variable)`</span> in the XGB model, which had an above average value of <span class="in">`r point_dat_xgb |&gt; pull(feature_value)`</span> in the training data. When considering all the observations collectively the feature value is ideally positively related with the SHAP value. Next I'll look at partial dependence plots to show the effect that the <span class="in">`gr_liv_area`</span> has on <span class="in">`sale_price`</span> according to each model.</span>
-<span id="cb29-649"><a href="#cb29-649"></a></span>
-<span id="cb29-652"><a href="#cb29-652"></a><span class="in">```{r}</span></span>
-<span id="cb29-653"><a href="#cb29-653"></a><span class="co">#| label: pdp-plots</span></span>
-<span id="cb29-654"><a href="#cb29-654"></a></span>
-<span id="cb29-655"><a href="#cb29-655"></a>gr_liv_area_pdp <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span></span>
-<span id="cb29-656"><a href="#cb29-656"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> gr_liv_area)</span>
-<span id="cb29-657"><a href="#cb29-657"></a></span>
-<span id="cb29-658"><a href="#cb29-658"></a>gr_liv_area_pdp<span class="sc">$</span>xgb</span>
-<span id="cb29-659"><a href="#cb29-659"></a>gr_liv_area_pdp<span class="sc">$</span>lm</span>
-<span id="cb29-660"><a href="#cb29-660"></a></span>
-<span id="cb29-661"><a href="#cb29-661"></a><span class="in">```</span></span>
-<span id="cb29-662"><a href="#cb29-662"></a></span>
-<span id="cb29-663"><a href="#cb29-663"></a>According to both models the <span class="in">`gr_liv_area`</span> variable positively effects the predicted sale price of a home in the training data, which seems consistent with general knowledge about home prices given that <span class="in">`gr_liv_area`</span> is a measure of the above ground living area (more commonly known as "square footage"). It's important to note, however, that, unlike the coefficient in a regression model, one should not make inferences from a partial dependency beyond the dimensions of the training data. A partial dependency plot is meant only to provide an overview on the broad relationship between an explanatory variable and the target variable.</span>
-<span id="cb29-664"><a href="#cb29-664"></a></span>
-<span id="cb29-665"><a href="#cb29-665"></a>Lastly, I can look at how each feature affects a particular observation with a contribution plot. I'll consider the house observed in row 2049 of the training data set.</span>
-<span id="cb29-666"><a href="#cb29-666"></a></span>
-<span id="cb29-669"><a href="#cb29-669"></a><span class="in">```{r}</span></span>
-<span id="cb29-670"><a href="#cb29-670"></a><span class="co">#| label: save-contrib-plots</span></span>
-<span id="cb29-671"><a href="#cb29-671"></a></span>
-<span id="cb29-672"><a href="#cb29-672"></a>obs_2409_contrib <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span></span>
-<span id="cb29-673"><a href="#cb29-673"></a>  <span class="fu">map2</span>(</span>
-<span id="cb29-674"><a href="#cb29-674"></a>    <span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), </span>
-<span id="cb29-675"><a href="#cb29-675"></a>    get_contributions, </span>
-<span id="cb29-676"><a href="#cb29-676"></a>    <span class="at">rnum =</span> <span class="dv">2049</span>, </span>
-<span id="cb29-677"><a href="#cb29-677"></a>    <span class="at">nfeat =</span> <span class="dv">15</span> </span>
-<span id="cb29-678"><a href="#cb29-678"></a>  )</span>
-<span id="cb29-679"><a href="#cb29-679"></a></span>
+<span id="cb29-604"><a href="#cb29-604"></a><span class="co"># Get the maximum of the x_summary</span></span>
+<span id="cb29-605"><a href="#cb29-605"></a>point_x_lim_max <span class="ot">&lt;-</span> shap_summary_plots <span class="sc">|&gt;</span></span>
+<span id="cb29-606"><a href="#cb29-606"></a>  <span class="fu">map</span>(</span>
+<span id="cb29-607"><a href="#cb29-607"></a>    \(x) {</span>
+<span id="cb29-608"><a href="#cb29-608"></a>      <span class="fu">ggplot_build</span>(x) <span class="sc">|&gt;</span></span>
+<span id="cb29-609"><a href="#cb29-609"></a>        <span class="fu">pluck</span>(<span class="st">"layout"</span>, <span class="st">"panel_scales_x"</span>, <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-610"><a href="#cb29-610"></a>        (\(x) x<span class="sc">$</span><span class="fu">get_limits</span>()[<span class="dv">2</span>])()</span>
+<span id="cb29-611"><a href="#cb29-611"></a>    }</span>
+<span id="cb29-612"><a href="#cb29-612"></a>  )</span>
+<span id="cb29-613"><a href="#cb29-613"></a>  </span>
+<span id="cb29-614"><a href="#cb29-614"></a></span>
+<span id="cb29-615"><a href="#cb29-615"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<span id="cb29-616"><a href="#cb29-616"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
+<span id="cb29-617"><a href="#cb29-617"></a>shap_summary_plots<span class="sc">$</span>xgb <span class="sc">+</span> </span>
+<span id="cb29-618"><a href="#cb29-618"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-619"><a href="#cb29-619"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb29-620"><a href="#cb29-620"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb29-621"><a href="#cb29-621"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb29-622"><a href="#cb29-622"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>xgb <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb29-623"><a href="#cb29-623"></a>    <span class="at">xend =</span> point_dat_xgb<span class="sc">$</span>shap_value <span class="sc">*</span> .<span class="dv">98</span>,</span>
+<span id="cb29-624"><a href="#cb29-624"></a>    <span class="at">y =</span> <span class="dv">6</span>,</span>
+<span id="cb29-625"><a href="#cb29-625"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
+<span id="cb29-626"><a href="#cb29-626"></a>  ) <span class="sc">+</span></span>
+<span id="cb29-627"><a href="#cb29-627"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-628"><a href="#cb29-628"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb29-629"><a href="#cb29-629"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>xgb <span class="sc">/</span> <span class="dv">2</span>, </span>
+<span id="cb29-630"><a href="#cb29-630"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
+<span id="cb29-631"><a href="#cb29-631"></a>    <span class="at">label =</span> point_annotation_xgb, </span>
+<span id="cb29-632"><a href="#cb29-632"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb29-633"><a href="#cb29-633"></a>  )</span>
+<span id="cb29-634"><a href="#cb29-634"></a></span>
+<span id="cb29-635"><a href="#cb29-635"></a><span class="in">```</span></span>
+<span id="cb29-636"><a href="#cb29-636"></a></span>
+<span id="cb29-639"><a href="#cb29-639"></a><span class="in">```{r}</span></span>
+<span id="cb29-640"><a href="#cb29-640"></a><span class="co">#| label: plot-shap-summary-lm</span></span>
+<span id="cb29-641"><a href="#cb29-641"></a></span>
+<span id="cb29-642"><a href="#cb29-642"></a><span class="co"># Generate the SHAP summary plot with an annotation for the outermost point</span></span>
+<span id="cb29-643"><a href="#cb29-643"></a><span class="fu">set.seed</span>(<span class="dv">23</span>)</span>
+<span id="cb29-644"><a href="#cb29-644"></a>shap_summary_plots<span class="sc">$</span>lm <span class="sc">+</span> </span>
+<span id="cb29-645"><a href="#cb29-645"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-646"><a href="#cb29-646"></a>    <span class="at">geom =</span> <span class="st">"segment"</span>,</span>
+<span id="cb29-647"><a href="#cb29-647"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"npc"</span>)),</span>
+<span id="cb29-648"><a href="#cb29-648"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb29-649"><a href="#cb29-649"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>lm <span class="sc">*</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>),</span>
+<span id="cb29-650"><a href="#cb29-650"></a>    <span class="at">xend =</span> point_dat_lm<span class="sc">$</span>shap_value <span class="sc">*</span> .<span class="dv">98</span>,</span>
+<span id="cb29-651"><a href="#cb29-651"></a>    <span class="at">y =</span> <span class="dv">5</span>,</span>
+<span id="cb29-652"><a href="#cb29-652"></a>    <span class="at">yend =</span> <span class="fl">9.8</span></span>
+<span id="cb29-653"><a href="#cb29-653"></a>  ) <span class="sc">+</span></span>
+<span id="cb29-654"><a href="#cb29-654"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb29-655"><a href="#cb29-655"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, </span>
+<span id="cb29-656"><a href="#cb29-656"></a>    <span class="at">x =</span> point_x_lim_max<span class="sc">$</span>lm <span class="sc">*</span> (<span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>), </span>
+<span id="cb29-657"><a href="#cb29-657"></a>    <span class="at">y =</span> <span class="dv">4</span>,</span>
+<span id="cb29-658"><a href="#cb29-658"></a>    <span class="at">label =</span> point_annotation_lm, </span>
+<span id="cb29-659"><a href="#cb29-659"></a>    <span class="at">hjust =</span> <span class="st">"center"</span></span>
+<span id="cb29-660"><a href="#cb29-660"></a>  )</span>
+<span id="cb29-661"><a href="#cb29-661"></a></span>
+<span id="cb29-662"><a href="#cb29-662"></a><span class="in">```</span></span>
+<span id="cb29-663"><a href="#cb29-663"></a></span>
+<span id="cb29-664"><a href="#cb29-664"></a>The first plot above shows that row <span class="in">`r point_dat_xgb |&gt; pull(id)`</span> has a positive SHAP value of <span class="in">`r point_dat_xgb |&gt; pull(shap_value)`</span> for the <span class="in">`r point_dat_xgb |&gt; pull(variable)`</span> in the XGB model, which had an above average value of <span class="in">`r point_dat_xgb |&gt; pull(feature_value)`</span> in the training data. When considering all the observations collectively the feature value is ideally positively related with the SHAP value. Next I'll look at partial dependence plots to show the effect that the <span class="in">`gr_liv_area`</span> has on <span class="in">`sale_price`</span> according to each model.</span>
+<span id="cb29-665"><a href="#cb29-665"></a></span>
+<span id="cb29-668"><a href="#cb29-668"></a><span class="in">```{r}</span></span>
+<span id="cb29-669"><a href="#cb29-669"></a><span class="co">#| label: pdp-plots</span></span>
+<span id="cb29-670"><a href="#cb29-670"></a></span>
+<span id="cb29-671"><a href="#cb29-671"></a>gr_liv_area_pdp <span class="ot">&lt;-</span> final_wflows_fit <span class="sc">|&gt;</span></span>
+<span id="cb29-672"><a href="#cb29-672"></a>  <span class="fu">map2</span>(<span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), plot_pdp, <span class="at">pred_var =</span> gr_liv_area)</span>
+<span id="cb29-673"><a href="#cb29-673"></a></span>
+<span id="cb29-674"><a href="#cb29-674"></a>gr_liv_area_pdp<span class="sc">$</span>xgb</span>
+<span id="cb29-675"><a href="#cb29-675"></a>gr_liv_area_pdp<span class="sc">$</span>lm</span>
+<span id="cb29-676"><a href="#cb29-676"></a></span>
+<span id="cb29-677"><a href="#cb29-677"></a><span class="in">```</span></span>
+<span id="cb29-678"><a href="#cb29-678"></a></span>
+<span id="cb29-679"><a href="#cb29-679"></a>According to both models the <span class="in">`gr_liv_area`</span> variable positively effects the predicted sale price of a home in the training data, which seems consistent with general knowledge about home prices given that <span class="in">`gr_liv_area`</span> is a measure of the above ground living area (more commonly known as "square footage"). It's important to note, however, that, unlike the coefficient in a regression model, one should not make inferences from a partial dependency beyond the dimensions of the training data. A partial dependency plot is meant only to provide an overview on the broad relationship between an explanatory variable and the target variable.</span>
 <span id="cb29-680"><a href="#cb29-680"></a></span>
-<span id="cb29-681"><a href="#cb29-681"></a><span class="in">```</span></span>
+<span id="cb29-681"><a href="#cb29-681"></a>Lastly, I can look at how each feature affects a particular observation with a contribution plot. I'll consider the house observed in row 2049 of the training data set.</span>
 <span id="cb29-682"><a href="#cb29-682"></a></span>
 <span id="cb29-685"><a href="#cb29-685"></a><span class="in">```{r}</span></span>
-<span id="cb29-686"><a href="#cb29-686"></a><span class="co">#| label: contrib-xgb</span></span>
+<span id="cb29-686"><a href="#cb29-686"></a><span class="co">#| label: save-contrib-plots</span></span>
 <span id="cb29-687"><a href="#cb29-687"></a></span>
-<span id="cb29-688"><a href="#cb29-688"></a>obs_2409_contrib<span class="sc">$</span>xgb<span class="sc">$</span>contrib_plot</span>
-<span id="cb29-689"><a href="#cb29-689"></a></span>
-<span id="cb29-690"><a href="#cb29-690"></a><span class="in">```</span></span>
-<span id="cb29-691"><a href="#cb29-691"></a></span>
-<span id="cb29-694"><a href="#cb29-694"></a><span class="in">```{r}</span></span>
-<span id="cb29-695"><a href="#cb29-695"></a><span class="co">#| label: contrib-lm</span></span>
+<span id="cb29-688"><a href="#cb29-688"></a>obs_2409_contrib <span class="ot">&lt;-</span> shap <span class="sc">|&gt;</span></span>
+<span id="cb29-689"><a href="#cb29-689"></a>  <span class="fu">map2</span>(</span>
+<span id="cb29-690"><a href="#cb29-690"></a>    <span class="fu">c</span>(<span class="st">"XG Boost"</span>, <span class="st">"Linear Regression"</span>), </span>
+<span id="cb29-691"><a href="#cb29-691"></a>    get_contributions, </span>
+<span id="cb29-692"><a href="#cb29-692"></a>    <span class="at">rnum =</span> <span class="dv">2049</span>, </span>
+<span id="cb29-693"><a href="#cb29-693"></a>    <span class="at">nfeat =</span> <span class="dv">15</span> </span>
+<span id="cb29-694"><a href="#cb29-694"></a>  )</span>
+<span id="cb29-695"><a href="#cb29-695"></a></span>
 <span id="cb29-696"><a href="#cb29-696"></a></span>
-<span id="cb29-697"><a href="#cb29-697"></a>obs_2409_contrib<span class="sc">$</span>lm<span class="sc">$</span>contrib_plot</span>
+<span id="cb29-697"><a href="#cb29-697"></a><span class="in">```</span></span>
 <span id="cb29-698"><a href="#cb29-698"></a></span>
-<span id="cb29-699"><a href="#cb29-699"></a><span class="in">```</span></span>
-<span id="cb29-700"><a href="#cb29-700"></a></span>
-<span id="cb29-701"><a href="#cb29-701"></a>The above XG Boost contribution plot shows that <span class="in">`total_bsmt_sf`</span> had the largest positive effect on the predicted sale price of the sale in observation 2049 and having <span class="in">`garage_finish_Unf`</span> (having an unfinished garage) had the largest negative effect. The Linear Regression contribution plot shows that <span class="in">`gr_liv_area`</span> had the largest positive effect and <span class="in">`neighborhood_Brookside`</span> had the largest negative effect on the predicted sale price. However, it's interesting to note that <span class="in">`garage_finish_Fin`</span>, the opposite of <span class="in">`garage_finish_Unf`</span>, had a negative effect in the Linear Regression.</span>
-<span id="cb29-702"><a href="#cb29-702"></a></span>
-<span id="cb29-703"><a href="#cb29-703"></a><span class="fu">## Final Thoughts</span></span>
-<span id="cb29-704"><a href="#cb29-704"></a></span>
-<span id="cb29-705"><a href="#cb29-705"></a>While these methods of looking into machine learning algorithms are not designed for inference, they do go a long way in helping to elucidate the relationships or patterns that machine learning algorithms find. They help answer the questions about why some predictions come out the way that they do, whether they make sense or not.</span>
+<span id="cb29-701"><a href="#cb29-701"></a><span class="in">```{r}</span></span>
+<span id="cb29-702"><a href="#cb29-702"></a><span class="co">#| label: contrib-xgb</span></span>
+<span id="cb29-703"><a href="#cb29-703"></a></span>
+<span id="cb29-704"><a href="#cb29-704"></a>obs_2409_contrib<span class="sc">$</span>xgb<span class="sc">$</span>contrib_plot</span>
+<span id="cb29-705"><a href="#cb29-705"></a></span>
+<span id="cb29-706"><a href="#cb29-706"></a><span class="in">```</span></span>
+<span id="cb29-707"><a href="#cb29-707"></a></span>
+<span id="cb29-710"><a href="#cb29-710"></a><span class="in">```{r}</span></span>
+<span id="cb29-711"><a href="#cb29-711"></a><span class="co">#| label: contrib-lm</span></span>
+<span id="cb29-712"><a href="#cb29-712"></a></span>
+<span id="cb29-713"><a href="#cb29-713"></a>obs_2409_contrib<span class="sc">$</span>lm<span class="sc">$</span>contrib_plot</span>
+<span id="cb29-714"><a href="#cb29-714"></a></span>
+<span id="cb29-715"><a href="#cb29-715"></a><span class="in">```</span></span>
+<span id="cb29-716"><a href="#cb29-716"></a></span>
+<span id="cb29-717"><a href="#cb29-717"></a>The above XG Boost contribution plot shows that <span class="in">`total_bsmt_sf`</span> had the largest positive effect on the predicted sale price of the sale in observation 2049 and having <span class="in">`garage_finish_Unf`</span> (having an unfinished garage) had the largest negative effect. The Linear Regression contribution plot shows that <span class="in">`gr_liv_area`</span> had the largest positive effect and <span class="in">`neighborhood_Brookside`</span> had the largest negative effect on the predicted sale price. However, it's interesting to note that <span class="in">`garage_finish_Fin`</span>, the opposite of <span class="in">`garage_finish_Unf`</span>, had a negative effect in the Linear Regression.</span>
+<span id="cb29-718"><a href="#cb29-718"></a></span>
+<span id="cb29-719"><a href="#cb29-719"></a><span class="fu">## Final Thoughts</span></span>
+<span id="cb29-720"><a href="#cb29-720"></a></span>
+<span id="cb29-721"><a href="#cb29-721"></a>While these methods of looking into machine learning algorithms are not designed for inference, they do go a long way in helping to elucidate the relationships or patterns that machine learning algorithms find. They help answer the questions about why some predictions come out the way that they do, whether they make sense or not.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
