@@ -561,6 +561,17 @@ total_bsmt_sf_pdp <- final_wflows_fit |>
 ```{r}
 #| label: plot-shap-summary-xgb
 
+# Get the maximum of the x_summary
+point_x_lim_max <- shap_summary_plots |>
+  map(
+    \(x) {
+      ggplot_build(x) |>
+        pluck("layout", "panel_scales_x", 1) |>
+        (\(x) x$get_limits()[2])()
+    }
+  )
+  
+
 # Generate the SHAP summary plot with an annotation for the outermost point
 set.seed(23)
 shap_summary_plots$xgb + 
@@ -568,14 +579,14 @@ shap_summary_plots$xgb +
     geom = "segment",
     arrow = arrow(length = unit(0.03, "npc")),
     color = "black",
-    x = 0.15,
-    xend = 0.17,
-    y = 6.2,
+    x = point_x_lim_max$xgb / 2,
+    xend = point_dat_xgb$shap_value * .98,
+    y = 6,
     yend = 9.8
   ) +
   annotate(
     geom = "text", 
-    x = 0.15, 
+    x = point_x_lim_max$xgb / 2, 
     y = 5,
     label = point_annotation_xgb, 
     hjust = "center"
@@ -589,15 +600,20 @@ shap_summary_plots$xgb +
 # Generate the SHAP summary plot with an annotation for the outermost point
 set.seed(23)
 shap_summary_plots$lm + 
-  geom_segment(
-    aes(x = 0.79, xend = 0.9, y = 8, yend = 10), 
+  annotate(
+    geom = "segment",
+    arrow = arrow(length = unit(0.03, "npc")),
     color = "black",
-    arrow = arrow(length = unit(0.03, "npc"))
+    x = point_x_lim_max$lm * (2/3),
+    xend = point_dat_lm$shap_value * .98,
+    y = 5,
+    yend = 9.8
   ) +
   annotate(
     geom = "text", 
-    x = 0.8, 
-    y = 6.8, label = point_annotation_lm, 
+    x = point_x_lim_max$lm * (2/3), 
+    y = 4,
+    label = point_annotation_lm, 
     hjust = "center"
   )
 
